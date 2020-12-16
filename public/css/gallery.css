@@ -1,0 +1,229 @@
+.header-content-wrapper {
+    background-image: url('/images/gallery/erin-dolson-uwEt4grBcdo-unsplash.jpg');
+    background-position-x: right;
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+.header-content-wrapper.no-background {
+    background-image: none;
+}
+
+.header-title {
+    border-bottom: none;
+    padding-bottom: 20vh;
+}
+
+.header-title h2 {
+    padding: 0;
+}
+
+.blur-2 {
+    display: none;
+}
+
+.blur-3 {
+    bottom: 15vh;
+    left: auto;
+    right: 70px;
+}
+
+.header-bg {
+    z-index: 1;
+}
+
+/* albom-list */
+
+.gallery-content-wrapper {
+    padding-bottom: 5vh;
+}
+
+.albom-list-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    padding: 0 5vh;
+    grid-gap: 10vh;
+    grid-template-rows: auto;
+}
+
+.albom-list-element {
+    overflow: hidden;
+    height: 35vh;
+    position: relative;
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-end;
+    flex-wrap: wrap;
+}
+
+.albom-list-element img {
+    position: absolute;
+    top: 0;
+    z-index: 0;
+    transition: 0.6s ease-in-out;
+}
+
+.albom-list-element:hover img {
+    transform: scale(1.1);
+}
+
+.albom-list-element:hover .albom-list-title {
+    color: #ff0a0a;
+}
+
+.albom-list-element .flex-row {
+    width: 100%;
+    padding: 1vh 2vh;
+    z-index: 1;
+    flex-wrap: wrap;
+    background: linear-gradient(0deg, rgba(19,19,19,1) 11%, rgba(19,19,19,0.6250875350140056) 61%, rgba(0,0,0,0) 100%);
+}
+
+.albom-list-date {
+    color: #797878d1;
+    width: 100%;
+    padding-bottom: 3vh;
+    padding-top: 1vh;
+}
+
+.albom-list-date p::before {
+    content: "";
+    margin-right: 1vh;
+    border: 1px solid #ff0a0a;
+}
+
+.albom-list-title {
+    color: whitesmoke;
+    width: 100%;
+}
+
+
+/* albom-list end */
+
+/* albom page */
+
+.albom-container {
+    padding: 0 10vh;
+}
+
+.albom {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-auto-rows: auto;
+    grid-auto-flow: dense;
+    grid-gap: 5vh;
+}
+
+.albom-element {
+    height: 25vh;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.albom-element img {
+    transition: 0.6s ease-in-out;
+}
+
+.albom-element:hover img {
+    transform: scale(1.2);
+}
+
+
+/* media style */
+
+/* global media */
+
+@media screen and (min-width:0px) and (max-width:1024px) { 
+    .header-navigation {
+        font-size: 100%;
+        padding-bottom: 4vh;
+    }
+
+    .page-title-1 {
+        font-size: 80%;
+        padding-bottom: 1vh;
+    }
+
+    .page-title-2 {
+        display: none;
+    }
+
+    .header-content-wrapper {
+        background-image: url('/images/gallery/erin-dolson-uwEt4grBcdo-unsplashm.jpg');
+    }
+
+    .albom-list-container {
+        padding: 0 1vh;
+        grid-gap: 1vh;
+    }
+
+    .gallery-content-wrapper {
+        height: max-content;
+    }
+
+    .albom {
+        grid-gap: 1vh;
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .albom-container {
+        padding: 0 1vh;
+    }
+
+    .albom-element {
+        height: 120px;
+    }
+}
+
+/* ipad */
+
+@media screen and (min-width:541px) and (max-width: 768px) { 
+    .header-navigation {
+        font-size: 120%;
+        padding-bottom: 5vh;
+    }
+
+    .page-title-1 {
+        font-size: 120%;
+        padding-bottom: 5vh;
+    }
+
+    .albom-list-element {
+        height: 30vh;
+    }
+
+    .albom-element {
+        height: 200px;
+    }
+
+}
+
+/* ipad-pro */
+
+@media screen and (min-width:769px) and (max-width: 1024px) {
+    
+    .header-navigation {
+        font-size: 190%;
+        padding-bottom: 5vh;
+    }
+
+    .page-title-1 {
+        font-size: 180%;
+        padding-bottom: 5vh;
+    }
+
+    .albom-list-element {
+        height: 30vh;
+    }
+
+    .albom-list-element .flex-row {
+        font-size: 150%;
+    }
+
+    .albom-element {
+        height: 300px;
+    }
+}
+
+
+/* media style end */

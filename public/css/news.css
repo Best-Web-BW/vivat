@@ -1,0 +1,518 @@
+.header-content-wrapper {
+    background-image     : url('/images/services/elegant-girl-farm-wiith-horse.jpg');
+    background-position-x: right;
+    background-size      : cover;
+    background-repeat    : no-repeat;
+}
+
+.header-content-wrapper.no-background {
+    background-image: none;
+}
+
+.header-title {
+    border-bottom : none;
+    padding-bottom: 20vh;
+}
+
+.header-title h2 {
+    padding: 0;
+}
+
+.blur-2 {
+    display: none;
+}
+
+.blur-3 {
+    bottom: 15vh;
+    left  : auto;
+    right : 70px;
+}
+
+.header-bg {
+    z-index: 1;
+}
+
+/* content */
+
+.blog-content {
+    display  : flex;
+    flex-wrap: nowrap;
+    height: auto;
+}
+
+.right-column {
+    width: 20%;
+}
+
+.left-column {
+    width: 80%;
+    position: relative;
+    padding: 0 2vh;
+    margin-bottom: 5vh;
+}
+
+/* right-column */
+
+.blog-menu-wrapper {
+    padding: 0 2vh;
+}
+
+.blog-menu-section {
+    background-color: rgb(49 49 49);
+    max-width       : 100%;
+    padding         : 5%;
+    margin-bottom   : 2vh;
+    position        : relative;
+}
+
+.blog-form-search {
+    width   : 100%;
+    position: relative;
+}
+
+.blog-search-input-container {
+    width   : 100%;
+    position: relative;
+}
+
+.blog-search {
+    width           : calc(85% - 1vh);
+    height          : 4vh;
+    font-size       : 100%;
+    padding-left    : 1vh;
+    padding-right   : 15%;
+    border          : 1px solid whitesmoke;
+    background-color: transparent;
+    color           : gray;
+}
+
+.blog-search-button {
+    cursor    : pointer;
+    width     : 100%;
+    height    : 4vh;
+    margin    : 1vh 0 0 0;
+    background-color: rgb(49 49 49);
+    border    : 1px solid white;
+    color     : whitesmoke;
+    font-size : 120%;
+}
+
+.blog-categories-wrapper {
+    display  : flex;
+    flex-wrap: wrap;
+}
+
+.blog-categories-wrapper h2 {
+    width         : 100%;
+    color         : whitesmoke;
+    font-size     : 140%;
+    border-bottom : 1px solid whitesmoke;
+    padding-bottom: 1vh;
+}
+
+.blog-categories-button {
+    width        : 100%;
+    height       : 4vh;
+    border       : none;
+    border-bottom: 1px solid gray;
+    background   : transparent;
+    text-align   : left;
+    font-size    : 110%;
+    color        : gray;
+    cursor       : pointer;
+}
+
+.blog-keywords-wrapper {
+    display  : flex;
+    flex-wrap: wrap;
+}
+
+.blog-keywords-button {
+    margin          : 1vh 1vh 0 0;
+    height          : 3vh;
+    padding         : 0 1vh;
+    font-size       : 90%;
+    color           : whitesmoke;
+    background-color: rgb(49 49 49);
+    border          : 1px solid whitesmoke;
+    cursor          : pointer;
+    display         : flex;
+    flex-wrap       : wrap;
+    align-items     : center;
+}
+
+.blog-keywords-button input {
+    -webkit-appearance: none;
+}
+
+.blog-categories-button:hover,
+.blog-keywords-button:hover,
+.blog-search-button:hover,
+.blog-search:hover,
+.blog-search:hover::placeholder,
+.blog-categories-button:hover a,
+.blog-keywords-button:hover a,
+.blog-search-button:hover a,
+.blog-keywords-button.active {
+    color       : #ff0a0a;
+    border-color: #ff0a0a;
+    box-shadow: 0 0 10px 1px #ff0a0a;
+}
+
+.blog-search:hover::placeholder, .blog-categories-button:hover {
+    box-shadow: none
+}
+
+/* right-column end */
+
+/* left-column */
+
+.blog-card {
+    background-color: rgb(49 49 49);
+    box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+    width: 100%;
+    transition: 0.5s ease-in-out;
+    margin-bottom: 5vh;
+    padding-bottom: 1vh;
+}
+
+.blog-img {
+    width: 100%;
+    overflow: hidden;
+    height: 60vh;
+}
+
+.blog-card-content {
+    width: calc(100% - 2vh);
+    height: 50vh;
+    overflow: hidden;
+    position: relative;
+    padding: 0 1vh;
+    color: whitesmoke;
+    margin: 1vh 0 1vh 0;
+    line-height: 1.1;
+}
+
+.blog-card-title {
+    font-size: 140%;
+    width: fit-content;
+    border-bottom: 1px solid gray;
+    padding-bottom: 1vh;
+}
+
+.blog-card-content-article {
+    height: 100%;
+    overflow: hidden;
+    margin: 0 0 1vh 0px;
+    font-size: 120%;
+}
+
+.blog-card-footer {
+    width: calc(100% - 2vh);
+    justify-content: space-between;
+    padding: 0 1vh;
+    margin-bottom: 1vh;
+    display: flex;
+    flex-wrap: nowrap;
+}
+
+.blog-card-keywords-wrapper {
+    
+}
+
+.blog-page-keywords {
+    color: gray;
+    font-size: 120%;
+    margin: 0 1vh 0 0;
+    position: relative;
+}
+
+.blog-page-keywords::before {
+    position: absolute;
+    bottom: 0;
+    content: "";
+    width: 0%;
+    border-bottom: 0px solid whitesmoke;
+    transition: 0.6s ease-in-out;
+}
+
+.blog-page-keywords:hover {
+    color: whitesmoke;
+}
+
+.blog-page-keywords:hover::before {
+    width: 100%;
+    border-bottom: 1px solid whitesmoke;
+}
+
+.blog-card-button-wrapper {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+}
+
+.read-more, .hide-blog {
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    color: gray;
+    position: relative;
+}
+
+.read-more::before, .hide-blog::before {
+    position: absolute;
+    bottom: 0;
+    content: "";
+    width: 0%;
+    border-bottom: 0px solid whitesmoke;
+    transition: 0.6s ease-in-out;
+}
+
+.read-more:hover, .hide-blog:hover {
+    color: whitesmoke;
+}
+
+.read-more:hover::before, .hide-blog:hover::before {
+    width: 100%;
+    border-bottom: 1px solid whitesmoke;
+}
+
+.hide-blog {
+    display: none;
+}
+
+.read {
+    cursor: pointer;
+    padding: 0 3vh;
+    border: 1px solid gray;
+    height: 3vh;
+    font-size: 100%;
+    background-color: transparent;
+    margin-left: 1vh;
+}
+
+.read a {
+    color: whitesmoke;
+}
+
+.read:hover {
+    border-color: #ff0a0a;
+    box-shadow: 0 0 10px 1px #ff0a0a;
+}
+
+.read:hover a {
+    color: #ff0a0a;
+    text-shadow: 0 0 10px #ff0a0a;
+}
+
+/* left-colum end */
+
+/* news page */
+
+.news-content {
+    height: max-content;
+    padding: 2vh 5vh;
+    margin-bottom: 5vh;
+}
+
+.news-navigation-row {
+    padding-bottom: 2vh;
+}
+
+.news-navigation-row a {
+    color: gray;
+}
+
+.news-navigation-row a:hover {
+    color: #ff0a0a;
+}
+
+.news-article-wrapper {
+
+}
+
+.news-article {
+
+}
+
+.news-article img {
+    width: 25%;
+    margin: 0 1vh;
+}
+
+.news-article p {
+    height: max-content;
+    color: whitesmoke;
+    padding-bottom: 1vh;
+}
+
+.article-titles {
+    color:  whitesmoke;
+    margin: 1vh;
+}
+
+/* news page end */
+
+.modile-blog-menu {
+    display: none;
+}
+
+/* content end */
+
+/* media style */
+
+/* global media */
+
+@media screen and (min-width:0px) and (max-width:1024px) { 
+    .header-navigation {
+        font-size: 100%;
+        padding-bottom: 4vh;
+    }
+
+    .page-title-1 {
+        font-size: 80%;
+        padding-bottom: 1vh;
+    }
+
+    .page-title-2 {
+        display: none;
+    }
+
+    .header-content-wrapper {
+        background-image: url('/images/services/elegant-girl-farm-wiith-horsem.jpg');
+    }
+
+    .blog-content {
+        padding: 0;
+        flex-wrap: wrap;
+    }
+
+    .left-column, .right-column {
+        width: 100%;
+    }
+
+    .blog-img {
+        height: max-content;
+    }
+
+    .blog-card-footer {
+        flex-wrap: wrap;
+    }
+
+    .blog-card-button-wrapper {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .read-more, .hide-blog {
+        margin: 1vh 0;
+    }
+
+    .read {
+        width: 100%;
+    }
+
+    .modile-blog-menu {
+        display: block;
+        width: 100%;
+        z-index: 1;
+    }
+
+    .mobile-blog-menu-wrapper {
+        background-color: #313131;
+        width: 100%;
+        height: 6vh;
+        display: flex;
+        position: relative;
+        align-items: center;
+    }
+
+    .mobile-nav-button {
+        background-color: transparent;
+        width: 5vh;
+        height: 5vh;
+        display: flex;
+        flex-wrap: wrap;
+        margin-left: auto;
+        margin-right: 2vh;
+    }
+
+    .blog-menu-wrapper {
+        padding: 0;
+        height: 0;
+        overflow: hidden;
+        transition: 0.6s ease-in-out;
+    }
+
+    .blog-menu-section {
+        margin-bottom: 0;
+    }
+    
+}
+
+/* ipad */
+
+@media screen and (min-width:541px) and (max-width: 768px) { 
+    .header-navigation {
+        font-size: 120%;
+        padding-bottom: 5vh;
+    }
+
+    .page-title-1 {
+        font-size: 120%;
+        padding-bottom: 5vh;
+    }
+
+    .blog-card-keywords-wrapper, .blog-card-button-wrapper {
+        width: 100%;
+    }
+
+    .news-article p {
+        font-size: 140%;
+    }
+
+    .news-article img {
+        width: 40%;
+    }
+}
+
+/* ipad-pro */
+
+@media screen and (min-width:769px) and (max-width: 1024px) {
+    .header-navigation {
+        font-size: 190%;
+        padding-bottom: 5vh;
+    }
+
+    .page-title-1 {
+        font-size: 180%;
+        padding-bottom: 5vh;
+    }
+
+    .blog-card-keywords-wrapper, .blog-card-button-wrapper {
+        width: 100%;
+    }
+
+    .blog-content {
+        font-size: 180%;
+    }
+
+    .read-more, .hide-blog {
+        font-size: 90%;
+    }
+
+    .news-article p {
+        font-size: 200%;
+    }
+
+    .news-article img {
+        width: 40%;
+    }
+
+    .article-titles {
+        font-size: 210%;
+    }
+}
+
+
+/* media style end */
