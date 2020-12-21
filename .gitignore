@@ -22,3 +22,6 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .eslintcache
+.vs/slnx.sqlite
+.vs/vivat/v16/.suo
+.vs/VSWorkspaceState.json

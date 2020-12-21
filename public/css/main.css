@@ -413,7 +413,6 @@ header {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    height: 0;
     overflow: hidden;
     transition: 0.6s ease-in-out;
 }
