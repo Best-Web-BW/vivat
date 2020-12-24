@@ -38,14 +38,17 @@
     display  : flex;
     flex-wrap: nowrap;
     height: auto;
+    position: relative;
+    width: 90%;
+    margin: 0 auto;
 }
 
 .right-column {
-    width: 20%;
+    width: 30%;
 }
 
 .left-column {
-    width: 80%;
+    width: 70%;
     position: relative;
     padding: 0 2vh;
     margin-bottom: 5vh;
@@ -172,6 +175,7 @@
     box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
     width: 100%;
     transition: 0.5s ease-in-out;
+    margin: 0 auto;
     margin-bottom: 5vh;
     padding-bottom: 1vh;
 }
@@ -179,12 +183,12 @@
 .blog-img {
     width: 100%;
     overflow: hidden;
-    height: 60vh;
+    height: 50vh;
 }
 
 .blog-card-content {
     width: calc(100% - 2vh);
-    height: 50vh;
+    height: 40vh;
     overflow: hidden;
     position: relative;
     padding: 0 1vh;
@@ -389,6 +393,16 @@
 
     .left-column, .right-column {
         width: 100%;
+    }
+    
+    .right-column {
+        position: absolute;
+        top: 0;
+        z-index: 1;
+    }
+
+    .left-column {
+        padding-top: 7vh;
     }
 
     .blog-img {

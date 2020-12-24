@@ -1,0 +1,72 @@
+.header-content-wrapper {
+    background-image     : url('/images/services/elegant-girl-farm-wiith-horse.jpg');
+    background-position-x: right;
+    background-size      : cover;
+    background-repeat    : no-repeat;
+}
+
+.header-content-wrapper.no-background {
+    background-image: none;
+}
+
+.header-title {
+    border-bottom : none;
+    padding-bottom: 20vh;
+}
+
+.header-title h2 {
+    padding: 0;
+}
+
+.blur-2 {
+    display: none;
+}
+
+.blur-3 {
+    bottom: 15vh;
+    left  : auto;
+    right : 70px;
+}
+
+.header-bg {
+    z-index: 1;
+}
+
+.cookies-content {
+    height: max-content;
+}
+
+.cookies-content, .confidential-content {
+
+}
+
+.cookies-content p, .confidential-content p {
+    font-size: 120%;
+    margin-bottom: 1vh;
+}
+
+.cookies-content ul, .confidential-content ul {
+
+}
+
+.cookies-content ul p, .confidential-content ul p {
+
+}
+
+.cookies-content ul li, .confidential-content ul li {
+    font-size: 120%;
+    margin: 2vh 1vh;
+}
+
+.cookies-content h2, .confidential-content h2 {
+    font-size: 130%;
+    margin-bottom: 4vh;
+    margin-top: 3vh;
+}
+
+.cookies-content .title, .confidential-content .title {
+    font-size: 160%;
+    width: max-content;
+    margin: 0 auto;
+    margin-bottom: 4vh;
+}

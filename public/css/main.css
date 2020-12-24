@@ -413,6 +413,7 @@ header {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
+    height: 0;
     overflow: hidden;
     transition: 0.6s ease-in-out;
 }
@@ -563,6 +564,106 @@ header {
 
 /* modal search end */
 
+/* modal error */
+
+.modal-error-wrapper {
+    position: fixed;
+    top: 0;
+    left: 50%;
+    background-color: rgb(249 159 168);
+    transform: translateX(-50%);
+    width: calc(40vw - 10vh);
+    z-index: 1000;
+    padding: 2vh 5vh;
+    transition: 0.6s ease-in-out;
+}
+
+.modal-error-content {
+    width: 100%;
+    position: relative;
+    text-align: center;
+}
+
+.modal-error-content .close-modal {
+    color: #131313;
+}
+
+.modal-error-content .close-modal:hover {
+    color: #ff0a0a;
+}
+
+.modal-error-title {
+    margin-bottom: 1vh;
+    color: #131313;
+}
+
+.modal-error-message {
+    line-height: 1.5; 
+    color: #131313;
+}
+
+.modal-error-message a {
+    color: #131313;
+}
+
+.modal-error-message a:hover {
+    color: #ff0a0a;
+}
+
+/* modal error end */
+
+/* modal cookies */
+
+.modal-cookies-wrapper {
+    position: fixed;
+    background-color: #131313;
+    box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 2vh 5vh;
+    z-index: 1000;
+    width: calc(50vw - 10vh);
+}
+
+.modal-cookies-content {
+    position: relative;
+    text-align: center;
+}
+
+.modal-cookies-title {
+    color: whitesmoke;
+    margin-bottom: 1vh;
+}
+
+.modal-cookies-message {
+    color: whitesmoke;
+    margin-bottom: 1vh;
+}
+
+.modal-cookies-footer {
+
+}
+
+.learn-more-cookies, .accept-cookies-button {
+    font-size: 100%;
+    color: whitesmoke;
+    background-color: transparent;
+    border: 1px solid whitesmoke;
+    width: 20vh;
+    margin: 1vh;
+    margin-bottom: 0;
+    padding: 1vh;
+}
+
+.learn-more-cookies:hover, .accept-cookies-button:hover {
+    color       : #ff0a0a;
+    border-color: #ff0a0a;
+    box-shadow: 0 0 10px 1px #ff0a0a;
+}
+
+/* modal cookies end */
+
 /* profile preview */
 
 .profile-preview-wrapper {
@@ -669,12 +770,25 @@ header {
 .header-content-wrapper {
     width: 100%;
     position: relative;
-    background-image: url('/images/home/slider/desktop.jpg');
+    /* background-image: url('/images/home/slider/desktop.jpg');
+    background-image: url('/images/horse.mp4'); */
     background-position-x: right;
     background-size: contain;
     background-repeat: no-repeat;
     display: flex;
     flex-wrap: wrap;
+}
+
+.video-background {
+    position: absolute;
+    top: 0%;
+    width: 100%;
+    height: inherit;
+    overflow: hidden;
+}
+
+.video-background video{
+    width: 100%;
 }
 
 .header-title-wrapper {
@@ -958,8 +1072,6 @@ header {
     background-color: #c4c4c4;
     background-image: url('/images/icons/check-mark.png');
 }
-
-
 
 /* pages end */
 
