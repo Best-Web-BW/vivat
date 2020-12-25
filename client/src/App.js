@@ -27,27 +27,13 @@ function App() {
                 <main className="App-main content">
                     <ScrollToTop />
                     <Switch>
-                        <Route path="/home">
-                            <Home />
-                        </Route>
-                        <Route path="/about">
-                            <About />
-                        </Route>
-                        <Route path="/gallery">
-                            <Gallery />
-                        </Route>
-                        <Route path="/services">
-                            <Services />
-                        </Route>
-                        <Route path="/events">
-                            <Events />
-                        </Route>
-                        <Route path="/news">
-                            <News />
-                        </Route>
-                        <Route path="/contacts">
-                            <Contacts />
-                        </Route>
+                        <Route path="/home" component={Home} />
+                        <Route path="/about" component={About} />
+                        <Route path="/gallery" component={Gallery} />
+                        <Route path="/services" component={Services} />
+                        <Route path="/events" component={Events} />
+                        <Route path="/news" component={News} />
+                        <Route path="/contacts" component={Contacts} />
                         <Route path="/">
                             <Redirect to="/home" />
                         </Route>
