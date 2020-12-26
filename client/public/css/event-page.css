@@ -1,4 +1,4 @@
-.header-content-wrapper {
+.header-content-wrapper.events {
     background-image: url('/images/events/events_header.jpg');
     background-position-x: right;
     background-size: cover;
