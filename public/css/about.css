@@ -38,16 +38,17 @@
     overflow: hidden;
 }
 
-.dots-container {
+.about-slider-container .dots-container {
     width: 100%;
     height: 4vh;
     margin: 4vh 0;
     display: flex;
     justify-content: center;
     align-items: center;
+    position: relative;
 }
 
-.dot {
+.about-slider-container .dot {
     width: 1vh;
     height: 1vh;
     background-color: #797878d1;
@@ -56,11 +57,11 @@
     cursor: pointer;
 }
 
-.dot.active {
+.about-slider-container .dot.active {
     background-color: whitesmoke;
 }
 
-.dot:hover {
+.about-slider-container .dot:hover {
     background-color: rgba(245, 245, 245, 0.815);
 }
 
