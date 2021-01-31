@@ -198,13 +198,13 @@ export default class Header extends React.Component {
                         </ul>
                         <ul className="social-links">
                             <li>
-                                <a href="vk.com" className="vk-button">VK</a>
+                                <a href="vk.com" className="vk-button"></a>
                             </li>
                             <li>
-                                <a href="facebook.com" className="facebook-icon">FACEBOOK</a>
+                                <a href="facebook.com" className="facebook-icon"></a>
                             </li>
                             <li>
-                                <a href="instagram.com" className="instagram-icon">INSTAGRAM</a>
+                                <a href="instagram.com" className="instagram-icon"></a>
                             </li>
                         </ul>
                     </div>
