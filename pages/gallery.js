@@ -3,7 +3,7 @@ import ContentHeader from "../components/common/ContentHeader";
 export default function Gallery() {
     return (
         <div>
-            <ContentHeader class="gallery" address="gallery" title="Галерея">
+            <ContentHeader class="gallery" pages={[["gallery", "Галерея"]]}>
                 <p>
                     Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsam illo id beatae dolores recusandae
                     et repellat ratione! Culpa accusamus consequatur quae ipsam quidem, reiciendis distinctio

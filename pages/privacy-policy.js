@@ -3,7 +3,7 @@ import ContentHeader from "../components/common/ContentHeader";
 export default function PrivacyPolicy() {
     return (
         <div>
-            <ContentHeader class="privacy-policy" address="privacy-policy" title="Политика конфиденциальности">
+            <ContentHeader class="privacy-policy" pages={[["privacy-policy", "Политика конфиденциальности"]]}>
                 <p>
                     Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsam illo id beatae dolores recusandae
                     et repellat ratione! Culpa accusamus consequatur quae ipsam quidem, reiciendis distinctio

@@ -3,7 +3,7 @@ import ContentHeader from "../components/common/ContentHeader";
 export default function News() {
     return (
         <div>
-            <ContentHeader class="news" address="news" title="Новости">
+            <ContentHeader class="news" pages={[["news", "Новости"]]}>
                 <p>
                     Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsam illo id beatae dolores recusandae
                     et repellat ratione! Culpa accusamus consequatur quae ipsam quidem, reiciendis distinctio

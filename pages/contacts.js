@@ -3,7 +3,7 @@ import ContentHeader from "../components/common/ContentHeader";
 export default function Contacts() {
     return (
         <div>
-            <ContentHeader class="contacts" address="contacts" title="Контакты">
+            <ContentHeader class="contacts" pages={[["contacts", "Контакты"]]}>
                 <p>
                     Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsam illo id beatae dolores recusandae
                     et repellat ratione! Culpa accusamus consequatur quae ipsam quidem, reiciendis distinctio

@@ -3,7 +3,7 @@ import ContentHeader from "../components/common/ContentHeader";
 export default function Events() {
     return (
         <div>
-            <ContentHeader class="events" address="events" title="Мероприятия">
+            <ContentHeader class="events" pages={[["events", "Мероприятия"]]}>
                 <p>
                     Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsam illo id beatae dolores recusandae
                     et repellat ratione! Culpa accusamus consequatur quae ipsam quidem, reiciendis distinctio
