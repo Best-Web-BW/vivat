@@ -10,6 +10,21 @@ let translator = new Translator({
     }
 });
 
+function processNavigation(pages) {
+    return [
+        createLink("home", "Главная"),
+        ...pages.map((page, index, array) => createLink(page[0], page[1], index == (array.length - 1)))
+    ];
+}
+
+function createLink(address, text, isCurrent) {
+    return (
+        <Link key={address} href={`/${address}`}>
+            <a className={`header-link-${isCurrent ? "current" : "prev"}`}>{text}</a>
+        </Link>
+    );
+}
+
 function processChildren(children) {
     if(!children) return;
     if(!children.length) children = [children];
@@ -23,14 +38,10 @@ export default function ContentHeader(props) {
             <div className="blur-1" />
             <div className="blur-2" />
             <div className="blur-3" />
-            <div className="header-title-wrapper">
+            { props.beforeNavigation }
+            <div className={`header-title-wrapper ${props.titleClass ?? ""}`}>
                 <div className="header-navigation">
-                    <Link href="/home">
-                        <a className="header-link-prev">Главная</a>
-                    </Link>
-                    <Link href={`/${props.address}`}>
-                        <a className="header-link-current">{props.title}</a>
-                    </Link>
+                    { processNavigation(props.pages) }
                 </div>
                 <div className="header-title">
                     <h1>{props.title}</h1>
