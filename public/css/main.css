@@ -443,10 +443,12 @@ header {
 
 .unicorn-follow-input {
     width: 100%;
+    display: flex;
+    flex-wrap: wrap;
 }
 
 .login-input, .password-input, .surname-input, .name-input, .middle-name-input, .email-input, .datepicker-here {
-    width: calc(100% - 2.5vh);
+    width: 100%;
     height: 3vh;
     margin: 1vh 0;
     background-color: transparent;
