@@ -441,8 +441,12 @@ header {
     margin-bottom: 1vh;
 }
 
-.login-input, .password-input, .surname-input, .name-input, .middle-name-input, .email-input, .datepicker-here {
+.unicorn-follow-input {
     width: 100%;
+}
+
+.login-input, .password-input, .surname-input, .name-input, .middle-name-input, .email-input, .datepicker-here {
+    width: calc(100% - 2.5vh);
     height: 3vh;
     margin: 1vh 0;
     background-color: transparent;
@@ -794,6 +798,7 @@ header {
     width: 100%;
     height: inherit;
     overflow: hidden;
+    z-index: -1;
 }
 
 .video-background video{
