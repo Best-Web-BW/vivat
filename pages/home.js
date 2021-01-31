@@ -1,5 +1,4 @@
 import Translator from "../components/common/Translator";
-import ContentHeader from "../components/common/ContentHeader";
 
 let translator = new Translator({
     ru: {
@@ -28,7 +27,19 @@ export default function Home() {
     return (
         <div>
             <div className="header-content-wrapper content-block">
-                <ContentHeader header={translator.get("header")} />
+                <div>
+                    <div className="header-bg" />
+                    <div className="blur-1" />
+                    <div className="blur-2" />
+                    <div className="blur-3" />
+                    <div className="header-title-wrapper">
+                        <div className="header-navigation">{"RU" /* global.language.toUpperCase() */} | Russia, Moscow</div>
+                        <div className="header-title">
+                            <h1>Виват, Россия!</h1>
+                            <h2>{translator.get("header")}</h2>
+                        </div>
+                    </div>
+                </div>
                 <div className="events-wrapper">
                     <div className="events-navigation">
                         <div className="prev">

@@ -10,11 +10,11 @@ export default function Events() {
                 <div className="blur-3" />
                 <div className="header-title-wrapper">
                     <div className="header-navigation">
-                        <Link href="/home" className="header-link-prev">
-                            <a>Главная</a>
+                        <Link href="/home">
+                            <a className="header-link-prev">Главная</a>
                         </Link>
-                        <Link href="/events" className="header-link-current">
-                            <a>Мероприятия</a>
+                        <Link href="/events">
+                            <a className="header-link-current">Мероприятия</a>
                         </Link>
                     </div>
                     <div className="header-title">

@@ -10,11 +10,11 @@ export default function Gallery() {
                 <div className="blur-3" />
                 <div className="header-title-wrapper">
                     <div className="header-navigation">
-                        <Link href="/home" className="header-link-prev">
-                            <a>Главная</a>
+                        <Link href="/home">
+                            <a className="header-link-prev">Главная</a>
                         </Link>
-                        <Link href="/gallery" className="header-link-current">
-                            <a>Галерея</a>
+                        <Link href="/gallery">
+                            <a className="header-link-current">Галерея</a>
                         </Link>
                     </div>
                     <div className="header-title">

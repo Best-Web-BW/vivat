@@ -10,11 +10,11 @@ export default function News() {
                 <div className="blur-3" />
                 <div className="header-title-wrapper">
                     <div className="header-navigation">
-                        <Link href="/home" className="header-link-prev">
-                            <a>Главная</a>
+                        <Link href="/home">
+                            <a className="header-link-prev">Главная</a>
                         </Link>
-                        <Link href="/news" className="header-link-current">
-                            <a>Новости</a>
+                        <Link href="/news">
+                            <a className="header-link-current">Новости</a>
                         </Link>
                     </div>
                     <div className="header-title">

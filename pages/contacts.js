@@ -10,11 +10,11 @@ export default function Contacts() {
                 <div className="blur-3" />
                 <div className="header-title-wrapper">
                     <div className="header-navigation">
-                        <Link href="/home" className="header-link-prev">
-                            <a>Главная</a>
+                        <Link href="/home">
+                            <a className="header-link-prev">Главная</a>
                         </Link>
-                        <Link href="/contacts" className="header-link-current">
-                            <a>Контакты</a>
+                        <Link href="/contacts">
+                            <a className="header-link-current">Контакты</a>
                         </Link>
                     </div>
                     <div className="header-title">

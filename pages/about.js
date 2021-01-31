@@ -14,11 +14,11 @@ export default function About() {
                 <div className="blur-3" />
                 <div className="header-title-wrapper">
                     <div className="header-navigation">
-                        <Link href="/home" className="header-link-prev">
-                            <a>Главная</a>
+                        <Link href="/home">
+                            <a className="header-link-prev">Главная</a>
                         </Link>
-                        <Link href="/about" className="header-link-current">
-                            <a>О нас</a>
+                        <Link href="/about">
+                            <a className="header-link-current">О нас</a>
                         </Link>
                     </div>
                     <div className="header-title">

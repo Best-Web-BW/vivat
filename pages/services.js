@@ -10,11 +10,11 @@ export default function Services() {
                 <div className="blur-3" />
                 <div className="header-title-wrapper">
                     <div className="header-navigation">
-                        <Link href="/home" className="header-link-prev">
-                            <a>Главная</a>
+                        <Link href="/home">
+                            <a className="header-link-prev">Главная</a>
                         </Link>
-                        <Link href="/services" className="header-link-current">
-                            <a>Аренда и услуги</a>
+                        <Link href="/services">
+                            <a className="header-link-current">Аренда и услуги</a>
                         </Link>
                     </div>
                     <div className="header-title">
