@@ -43,8 +43,7 @@ export default function Footer() {
                         </Link>
 					</li>
 					<li>
-						{/* Wtf */}
-						<a href="!!privacy">Политика конфиденциальности</a>
+						<a href="/privacy-policy">Политика конфиденциальности</a>
 					</li>
 				</ul>
 			</div>
