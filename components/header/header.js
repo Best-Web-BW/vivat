@@ -320,7 +320,7 @@ export default class Header extends React.Component {
                         <input type="text" className="search-input" placeholder="Введите поисковой запрос" />
                         <span className="search-icon" />
                     </div>
-                    <span className="close-modal">x</span>
+                    <span className="close-modal" onClick={this.toggleSearch}>x</span>
                 </div>
             </header>
         );
