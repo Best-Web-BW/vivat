@@ -27,6 +27,11 @@ export default function Home() {
     return (
         <div>
             <div className="header-content-wrapper content-block">
+                <div className="video-background" >
+                    <video preload="auto" autoplay="true" loop="true" muted="muted">
+                        <source src="/images/horse.mp4" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'/>
+                    </video>
+                </div>
                 <div>
                     <div className="header-bg" />
                     <div className="blur-1" />
