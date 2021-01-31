@@ -148,38 +148,38 @@ export default class Header extends React.Component {
                     <div className="menu-list-wrapper">
                         <ul className="menu-list">
                             <li>
-                                <Link href="/home" onClick={this.toggleMenu}>
-                                    <a>Главная</a>
+                                <Link href="/home">
+                                    <a onClick={this.toggleMenu}>Главная</a>
                                 </Link>
                             </li>
                             <li>
-                                <Link href="/about" onClick={this.toggleMenu}>
-                                    <a>О нас</a>
+                                <Link href="/about">
+                                    <a onClick={this.toggleMenu}>О нас</a>
                                 </Link>
                             </li>
                             <li>
-                                <Link href="/gallery" onClick={this.toggleMenu}>
-                                    <a>Галерея</a>
+                                <Link href="/gallery">
+                                    <a onClick={this.toggleMenu}>Галерея</a>
                                 </Link>
                             </li>
                             <li>
-                                <Link href="/services" onClick={this.toggleMenu}>
-                                    <a>Услуги и аренда</a>
+                                <Link href="/services">
+                                    <a onClick={this.toggleMenu}>Услуги и аренда</a>
                                 </Link>
                             </li>
                             <li>
-                                <Link href="/events" onClick={this.toggleMenu}>
-                                    <a>Мероприятия</a>
+                                <Link href="/events">
+                                    <a onClick={this.toggleMenu}>Мероприятия</a>
                                 </Link>
                             </li>
                             <li>
-                                <Link href="/news" onClick={this.toggleMenu}>
-                                    <a>Новости</a>
+                                <Link href="/news">
+                                    <a onClick={this.toggleMenu}>Новости</a>
                                 </Link>
                             </li>
                             <li>
-                                <Link href="/contacts" onClick={this.toggleMenu}>
-                                    <a>Контакты</a>
+                                <Link href="/contacts">
+                                    <a onClick={this.toggleMenu}>Контакты</a>
                                 </Link>
                             </li>
                         </ul>
