@@ -1,40 +1,20 @@
-import Link from "next/link";
+import ContentHeader from "../components/common/ContentHeader";
 
 export default function News() {
     return (
         <div>
-            <div className="header-content-wrapper news content-block">
-                <div className="header-bg" />
-                <div className="blur-1" />
-                <div className="blur-2" />
-                <div className="blur-3" />
-                <div className="header-title-wrapper">
-                    <div className="header-navigation">
-                        <Link href="/home">
-                            <a className="header-link-prev">Главная</a>
-                        </Link>
-                        <Link href="/news">
-                            <a className="header-link-current">Новости</a>
-                        </Link>
-                    </div>
-                    <div className="header-title">
-                        <h1>Новости</h1>
-                        <h2>Конно-спортивный клуб "Виват, Россия!"</h2>
-                    </div>
-                    <div className="page-title-container">
-                        <p className="page-title-1">
-                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsam illo id beatae dolores recusandae
-                            et repellat ratione! Culpa accusamus consequatur quae ipsam quidem, reiciendis distinctio
-                            ratione aut dolore praesentium omnis quis nam modi ea architecto eveniet sunt exercitationem,
-                            totam quas aperiam cupiditate harum vero ex nihil. Aut nisi adipisci amet fugit, aliquid vel
-                            temporibus quos id provident, esse illo explicabo animi inventore at numquam? Accusantium ab
-                            dolor odit repudiandae possimus tempora eveniet autem, reprehenderit voluptatum consectetur nemo
-                            ipsam nesciunt consequuntur sequi fuga odio voluptatem, natus pariatur ullam temporibus sint
-                            rerum consequatur. Quibusdam quod sapiente debitis nulla, ad omnis ratione minima.
-                        </p>
-                    </div>
-                </div>
-            </div>
+            <ContentHeader class="news" address="news" title="Новости">
+                <p>
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsam illo id beatae dolores recusandae
+                    et repellat ratione! Culpa accusamus consequatur quae ipsam quidem, reiciendis distinctio
+                    ratione aut dolore praesentium omnis quis nam modi ea architecto eveniet sunt exercitationem,
+                    totam quas aperiam cupiditate harum vero ex nihil. Aut nisi adipisci amet fugit, aliquid vel
+                    temporibus quos id provident, esse illo explicabo animi inventore at numquam? Accusantium ab
+                    dolor odit repudiandae possimus tempora eveniet autem, reprehenderit voluptatum consectetur nemo
+                    ipsam nesciunt consequuntur sequi fuga odio voluptatem, natus pariatur ullam temporibus sint
+                    rerum consequatur. Quibusdam quod sapiente debitis nulla, ad omnis ratione minima.
+                </p>
+            </ContentHeader>
             <div className="blog-content content-block">
                 <div className="modile-blog-menu">
                     <div className="mobile-blog-menu-wrapper">
