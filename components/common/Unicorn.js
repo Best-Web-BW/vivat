@@ -207,7 +207,7 @@ export class UnicornFollowInput extends React.Component {
         this.updateText = () => {
             this.spanRef.current.innerText = this.inputRef.current.value;
             let width = this.spanRef.current.offsetWidth;
-            // this.spanRef.current.innerText = "";
+            this.spanRef.current.innerText = "";
             this.props.onChange(width / this.width);
         }
         
