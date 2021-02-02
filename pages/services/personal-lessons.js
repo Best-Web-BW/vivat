@@ -1,22 +1,21 @@
 import ContentHeader from "../../components/common/ContentHeader";
-import SimpleDotSlider from "../../components/common/SimpleDotSlider";
+import SimpleDotSlider from "../../components/sliders/SimpleDotSlider";
 
 export default function PersonalLessons() {
     return (
         <div>
             <ContentHeader
-                class="no-background"
-                titleClass="onslide"
-                pages={[
-                    ["services", "Аренда и услуги"],
-                    ["services/personal-lessons", "Персональные занятия"]
-                ]}
+                class="no-background" titleClass="onslide"
+                pages={[["services", "Аренда и услуги"], ["services/personal-lessons", "Персональные занятия"]]}
                 beforeNavigation={
-                    <SimpleDotSlider containerClass="services-slider-container" slideClass="services-slide" images={[
-                        "/images/services/personal-lessons-slider/1.jpg",
-                        "/images/services/personal-lessons-slider/2.jpg",
-                        "/images/services/personal-lessons-slider/3.jpg"
-                    ]} />
+                    <SimpleDotSlider
+                        containerClass="services-slider-container" slideClass="services-slide"
+                        images={[
+                            "/images/services/personal-lessons-slider/1.jpg",
+                            "/images/services/personal-lessons-slider/2.jpg",
+                            "/images/services/personal-lessons-slider/3.jpg"
+                        ]}
+                    />
                 }
             >
                 <p>

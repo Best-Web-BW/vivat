@@ -1,22 +1,21 @@
 import ContentHeader from "../../components/common/ContentHeader";
-import SimpleDotSlider from "../../components/common/SimpleDotSlider";
+import SimpleDotSlider from "../../components/sliders/SimpleDotSlider";
 
 export default function RentMain() {
     return (
         <div>
             <ContentHeader
-                class="no-background"
-                titleClass="onslide"
-                pages={[
-                    ["services", "Аренда и услуги"],
-                    ["services/rent-main", "Основная конюшня"]
-                ]}
+                class="no-background" titleClass="onslide"
+                pages={[["services", "Аренда и услуги"], ["services/rent-main", "Основная конюшня"]]}
                 beforeNavigation={
-                    <SimpleDotSlider containerClass="services-slider-container" slideClass="services-slide" images={[
-                        "/images/services/main-horsestable-slider/1.jpg",
-                        "/images/services/main-horsestable-slider/2.jpg",
-                        "/images/services/main-horsestable-slider/3.jpg"
-                    ]} />
+                    <SimpleDotSlider
+                        containerClass="services-slider-container" slideClass="services-slide"
+                        images={[
+                            "/images/services/main-horsestable-slider/1.jpg",
+                            "/images/services/main-horsestable-slider/2.jpg",
+                            "/images/services/main-horsestable-slider/3.jpg"
+                        ]}
+                    />
                 }
             >
                 <p>
