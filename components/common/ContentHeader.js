@@ -11,10 +11,10 @@ let translator = new Translator({
 });
 
 function processNavigation(pages) {
-    return [
+    return [pages[pages.length - 1][1], [
         createLink("home", "Главная"),
         ...pages.map((page, index, array) => createLink(page[0], page[1], index == (array.length - 1)))
-    ];
+    ]];
 }
 
 function createLink(address, text, isCurrent) {
@@ -32,6 +32,7 @@ function processChildren(children) {
 }
 
 export default function ContentHeader(props) {
+    const [title, navigation] = processNavigation(props.pages);
     return (
         <div className={"header-content-wrapper content-block " + (props.class ?? "")}>
             <div className="header-bg" />
@@ -41,15 +42,17 @@ export default function ContentHeader(props) {
             { props.beforeNavigation }
             <div className={`header-title-wrapper ${props.titleClass ?? ""}`}>
                 <div className="header-navigation">
-                    { processNavigation(props.pages) }
+                    { navigation }
                 </div>
                 <div className="header-title">
-                    <h1>{props.title}</h1>
+                    <h1>{title}</h1>
                     <h2>{translator.get("header")}</h2>
                 </div>
-                <div className="page-title-container">
-                    { processChildren(props.children) }
-                </div>
+                { props.afterTitle ?? (
+                    <div className="page-title-container">
+                        { processChildren(props.children) }
+                    </div>
+                ) }
             </div>
         </div>
     );
