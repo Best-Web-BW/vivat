@@ -1,5 +1,5 @@
 import ContentHeader from "../components/common/ContentHeader";
-import DescriptedDotSlider from "../components/common/DescriptedDotSlider";
+import DescriptedDotSlider from "../components/sliders/DescriptedDotSlider";
 
 export default function About() {
     return (
