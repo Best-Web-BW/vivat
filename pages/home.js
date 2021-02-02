@@ -1,3 +1,5 @@
+import EventSlider from "../components/sliders/EventSlider";
+import ServicesList from "../components/common/ServicesList";
 import Translator from "../components/common/Translator";
 
 let translator = new Translator({
@@ -31,10 +33,10 @@ export default function Home() {
     return (
         <div>
             <div className="header-content-wrapper content-block">
-                <div className="video-background" >
-                    <video preload="auto" autoPlay loop muted>
+                <div className="video-background">
+                    {/* <video preload="auto" autoPlay loop muted>
                         <source src="/images/horse.mp4" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"' />
-                    </video>
+                    </video> */}
                 </div>
                 <div>
                     <div className="header-bg" />
@@ -49,50 +51,7 @@ export default function Home() {
                         </div>
                     </div>
                 </div>
-                <div className="events-wrapper">
-                    <div className="events-navigation">
-                        <div className="prev">
-                            <span />
-                        </div>
-                        <div className="next">
-                            <span />
-                        </div>
-                    </div>
-                    <div className="events-blocks-wrapper">
-                        <div className="events-block">
-                            <div className="events-title">
-                                <a href="Pages/events/event-page.html">Скачки белых лошадей в этот четверг</a>
-                            </div>
-                            <div className="events-date">
-                                <a href="!!???">ЧТ. 21.01.2020</a>
-                            </div>
-                        </div>
-                        <div className="events-block">
-                            <div className="events-title">
-                                <a href="Pages/events/event-page.html">Конкурс "Гарцующий пони", маленькие лошадки и не только!</a>
-                            </div>
-                            <div className="events-date">
-                                <a href="!!???">ПН. 08.02.2020</a>
-                            </div>
-                        </div>
-                        <div className="events-block">
-                            <div className="events-title">
-                                <a href="Pages/events/event-page.html">Самые быстрые скакуны только в феврале</a>
-                            </div>
-                            <div className="events-date">
-                                <a href="!!???">СБ. 16.01.2020</a>
-                            </div>
-                        </div>
-                        <div className="events-block">
-                            <div className="events-title">
-                                <a href="Pages/events/event-page.html">Конкурс "самая длинная грива 2020"</a>
-                            </div>
-                            <div className="events-date">
-                                <a href="!!???">ПТ. 01.03.2020</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <EventSlider containerClass="events-wrapper" />
             </div>
             <div className="calendar-wrapper content-block">
                 <div className="block-title">
@@ -100,52 +59,7 @@ export default function Home() {
                 </div>
                 <div id="calendar">CALENDAR</div>
             </div>
-            <div className="services-wrapper content-block">
-                <div className="block-title">
-                    <h2>{translator.get("our_services")}</h2>
-                </div>
-                <div className="services-blocks-wrapper">
-                    <div className="services-block">
-                        <a href="Pages/services/main-horsestable.html">
-                            <div className="service-img">
-                                <img src="/images/home/services/evan-wise-O1S18WAol3w-unsplash.jpg" alt="" height="100%" />
-                            </div>
-                        </a>
-                        <div className="service-category">
-                            <a href="!!???">{translator.get("rent")}</a>
-                        </div>
-                        <div className="service-title">
-                            <a href="Pages/services/main-horsestable.html">{translator.get("main_horse_stable")}</a>
-                        </div>
-                    </div>
-                    <div className="services-block">
-                        <a href="Pages/services/guest-horsestable.html">
-                            <div className="service-img">
-                                <img src="/images/home/services/gabriella-clare-marino-O_jE3p48m44-unsplash.jpg" alt="" height="100%" />
-                            </div>
-                        </a>
-                        <div className="service-category">
-                            <a href="!!???">{translator.get("rent")}</a>
-                        </div>
-                        <div className="service-title">
-                            <a href="Pages/services/guest-horsestable.html">{translator.get("guest_horse_stable")}</a>
-                        </div>
-                    </div>
-                    <div className="services-block">
-                        <a href="Pages/services/personal-lessons.html">
-                            <div className="service-img">
-                                <img src="images/home/services/matthew-lancaster-B5KfPvpVe-c-unsplash.jpg" alt="" height="100%" />
-                            </div>
-                        </a>
-                        <div className="service-category">
-                            <a href="!!???">{translator.get("services")}</a>
-                        </div>
-                        <div className="service-title">
-                            <a href="Pages/services/personal-lessons.html">{translator.get("personal_lessons")}</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <ServicesList containerClass="services-wrapper" />
         </div>
     );
 }

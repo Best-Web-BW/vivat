@@ -1,4 +1,5 @@
 import ContentHeader from "../components/common/ContentHeader";
+import EventSlider from "../components/sliders/EventSlider";
 
 export default function Events() {
     return (
@@ -22,37 +23,7 @@ export default function Events() {
                 <div id="calendar">CALENDAR</div>
             </div>
             <div className="day-events-content-wrapper content-block">
-                <div className="day-events-container">
-                    <div className="day-events-title">
-                        <p><span>События на</span>&nbsp;<span style={{ color: "#797878d1" }}>21.03.2020</span></p>
-                    </div>
-                    <div className="events-navigation">
-                        <div className="prev">
-                            <span />
-                        </div>
-                        <div className="next">
-                            <span />
-                        </div>
-                    </div>
-                    <div className="events-blocks-wrapper">
-                        <div className="events-block">
-                            <div className="events-title">
-                                <a href="/Pages/events/event-page.html">Скачки белых лошадей в этот четверг</a>
-                            </div>
-                            <div className="events-date">
-                                <a href="!!???">ЧТ. 21.01.2020</a>
-                            </div>
-                        </div>
-                        <div className="events-block">
-                            <div className="events-title">
-                                <a href="/Pages/events/event-page.html">Конкурс "Гарцующий пони", маленькие лошадки и не только!</a>
-                            </div>
-                            <div className="events-date">
-                                <a href="!!???">ПН. 08.02.2020</a>
-                            </div>
-                        </div>  
-                    </div>
-                </div>
+                <EventSlider containerClass="day-events-container" />
             </div>
         </div>
     );
