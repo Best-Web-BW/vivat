@@ -161,7 +161,7 @@
     overflow: hidden;
 }
 
-.evetn-documents-wrapper {
+.event-documents-wrapper {
     width: calc(100% - 20vh);
     height: 6vh;
     padding: 0 10vh;
@@ -248,7 +248,7 @@
         width: 50%;
     }
 
-    .evetn-documents-wrapper {
+    .event-documents-wrapper {
         width: calc(100% - 2vh);
         height: max-content;
         padding: 0 1vh;
