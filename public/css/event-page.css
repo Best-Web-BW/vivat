@@ -62,6 +62,10 @@
     font-size: 200%;
 }
 
+.prev .inactive::before, .next .inactive::before {
+    color: #6767676b !important;
+}
+
 .prev span::before {
     content: '\e834';
 }
