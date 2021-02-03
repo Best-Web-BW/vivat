@@ -1,6 +1,7 @@
 import EventSlider from "../components/sliders/EventSlider";
 import ServicesList from "../components/common/ServicesList";
 import Translator from "../components/common/Translator";
+import Head from "next/head";
 
 let translator = new Translator({
     ru: {
@@ -32,6 +33,9 @@ let translator = new Translator({
 export default function Home() {
     return (
         <div>
+            <Head>
+                <title>{translator.get("header")} "{translator.get("vivat")}"</title>
+            </Head>
             <div className="header-content-wrapper content-block">
                 <div className="video-background">
                     {/* <video preload="auto" autoPlay loop muted>

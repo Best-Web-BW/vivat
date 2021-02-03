@@ -10,7 +10,7 @@ function convertDate(rawDate) {
     return `${daysOfWeek[date.getUTCDay()]}. ${date.toLocaleString("ru", localeConfig)}`;
 }
 
-function EventBlock({ id, title, date }) {
+function EventBlock({ id, title, dates }) {
     const link = `/events/${id}`;
     return (
         <div className="events-block">
@@ -21,7 +21,7 @@ function EventBlock({ id, title, date }) {
             </div>
             <div className="events-date">
                 <Link href={link}>
-                    <a>{convertDate(date)}</a>
+                    <a>{convertDate(dates[0])}</a>
                 </Link>
             </div>
         </div>
@@ -60,6 +60,7 @@ export default class EventSlider extends React.Component {
             const events = await EventListProvider.getEventList();
             this.events = events.map(event => <EventBlock key={event.id} {...event} />);
             this.length = events.length;
+            this.size = Math.min(this.size, this.length);
             this.setState({
                 start: 0,
                 end: this.size
@@ -74,11 +75,11 @@ export default class EventSlider extends React.Component {
                     <p><span>События на</span>&nbsp;<span style={{ color: "#797878d1" }}>{ new Date().toLocaleString("ru", localeConfig) }</span></p>
                 </div>
                 <div className="events-navigation">
-                    <div className={`prev ${this.state.start == 0 ? "inactive" : ""}`} onClick={this.scrollLeft}>
-                        <span />
+                    <div className="prev" onClick={this.scrollLeft}>
+                        <span className={this.state.start == 0 ? "inactive" : ""} />
                     </div>
-                    <div className={`next ${this.state.end == this.events.length ? "inactive" : ""}`} onClick={this.scrollRight}>
-                        <span />
+                    <div className="next" onClick={this.scrollRight}>
+                        <span className={this.state.end == this.events.length ? "inactive" : ""} />
                     </div>
                 </div>
                 <div className="events-blocks-wrapper">
