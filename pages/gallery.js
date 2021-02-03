@@ -19,69 +19,69 @@ export default function Gallery() {
                 <div className="block-title">
                     <h2>Альбомы</h2>
                 </div>
-                <div className="albom-list-container">
-                    <a href="/Pages/alboms/albom-page.html" className="albom-list-element">
+                <div className="album-list-container">
+                    <a href="/Pages/albums/album-page.html" className="album-list-element">
                         <img src="/images/gallery/yael-gonzalez-8qqHbE8_SmE-unsplash.jpg" alt="" width="100%" />
                         <div className="flex-row">
-                            <div className="albom-list-date">
+                            <div className="album-list-date">
                                 <p>03.10.2020</p>
                             </div>
-                            <div className="albom-list-title">
+                            <div className="album-list-title">
                                 <p>Скачки белых лошадей 2020</p>
                             </div>
                         </div>
                     </a>
-                    <a href="/Pages/alboms/albom-page.html" className="albom-list-element">
+                    <a href="/Pages/albums/album-page.html" className="album-list-element">
                         <img src="/images/gallery/yael-gonzalez-8qqHbE8_SmE-unsplash.jpg" alt="" width="100%" />
                         <div className="flex-row">
-                            <div className="albom-list-date">
+                            <div className="album-list-date">
                                 <p>03.10.2020</p>
                             </div>
-                            <div className="albom-list-title">
+                            <div className="album-list-title">
                                 <p>Скачки белых лошадей 2020</p>
                             </div>
                         </div>
                     </a>
-                    <a href="/Pages/alboms/albom-page.html" className="albom-list-element">
+                    <a href="/Pages/albums/album-page.html" className="album-list-element">
                         <img src="/images/gallery/yael-gonzalez-8qqHbE8_SmE-unsplash.jpg" alt="" width="100%" />
                         <div className="flex-row">
-                            <div className="albom-list-date">
+                            <div className="album-list-date">
                                 <p>03.10.2020</p>
                             </div>
-                            <div className="albom-list-title">
+                            <div className="album-list-title">
                                 <p>Скачки белых лошадей 2020</p>
                             </div>
                         </div>
                     </a>
-                    <a href="/Pages/alboms/albom-page.html" className="albom-list-element">
+                    <a href="/Pages/albums/album-page.html" className="album-list-element">
                         <img src="/images/gallery/yael-gonzalez-8qqHbE8_SmE-unsplash.jpg" alt="" width="100%" />
                         <div className="flex-row">
-                            <div className="albom-list-date">
+                            <div className="album-list-date">
                                 <p>03.10.2020</p>
                             </div>
-                            <div className="albom-list-title">
+                            <div className="album-list-title">
                                 <p>Скачки белых лошадей 2020</p>
                             </div>
                         </div>
                     </a>
-                    <a href="/Pages/alboms/albom-page.html" className="albom-list-element">
+                    <a href="/Pages/albums/album-page.html" className="album-list-element">
                         <img src="/images/gallery/yael-gonzalez-8qqHbE8_SmE-unsplash.jpg" alt="" width="100%" />
                         <div className="flex-row">
-                            <div className="albom-list-date">
+                            <div className="album-list-date">
                                 <p>03.10.2020</p>
                             </div>
-                            <div className="albom-list-title">
+                            <div className="album-list-title">
                                 <p>Скачки белых лошадей 2020</p>
                             </div>
                         </div>
                     </a>
-                    <a href="/Pages/alboms/albom-page.html" className="albom-list-element">
+                    <a href="/Pages/albums/album-page.html" className="album-list-element">
                         <img src="/images/gallery/yael-gonzalez-8qqHbE8_SmE-unsplash.jpg" alt="" width="100%" />
                         <div className="flex-row">
-                            <div className="albom-list-date">
+                            <div className="album-list-date">
                                 <p>03.10.2020</p>
                             </div>
-                            <div className="albom-list-title">
+                            <div className="album-list-title">
                                 <p>Скачки белых лошадей 2020</p>
                             </div>
                         </div>
