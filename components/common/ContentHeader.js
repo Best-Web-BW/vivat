@@ -1,3 +1,4 @@
+import Head from "next/head";
 import Link from "next/link";
 import Translator from "./Translator";
 
@@ -35,6 +36,9 @@ export default function ContentHeader(props) {
     const [title, navigation] = processNavigation(props.pages);
     return (
         <div className={"header-content-wrapper content-block " + (props.class ?? "")}>
+            <Head>
+                <title>{title}</title>
+            </Head>
             <div className="header-bg" />
             <div className="blur-1" />
             <div className="blur-2" />
