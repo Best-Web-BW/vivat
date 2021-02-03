@@ -1,14 +1,30 @@
 import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 import ContentHeader from "../../components/common/ContentHeader";
+import EventListProvider from "../../components/providers/EventListProvider";
 import EventSlider from "../../components/sliders/EventSlider";
+
+function reformatDate(rawDate) {
+    return new Date(rawDate).toLocaleString("ru", { day: "numeric", month: "numeric", year: "numeric" });
+}
 
 export default function EventPage() {
     const { id } = useRouter().query;
+    const [event, setEvent] = useState({ });
+
+    useEffect(async () => {
+        if(id) {
+            const event = await EventListProvider.getEventDetails(+id);
+            setEvent(event);
+        }
+    }, [id]);
+
+    console.log(event);
 
     return (
         <div>
             <ContentHeader
-                pages={[["events", "Мероприятия"], [`events/${id}`, `Событие с id = ${id}`]]}
+                pages={[["events", "Мероприятия"], [`events/${id}`, event.title]]}
                 afterTitle={<EventSlider containerClass="day-events-container" />}
             />
             <div className="event-page-content content-block">
@@ -17,11 +33,17 @@ export default function EventPage() {
                         <img src="/images/events/yael-gonzalez-jd9UEc8Sc58-unsplash.jpg" alt="" width="100%" />
                     </div>
                     <p className="event-article-p">
-                        Lorem ipsum, dolor sit amet consectetur adipisicing elit. Perspiciatis voluptas in nisi et suscipit
+                        Название: { event.title }<br />
+                        Описание: { event.desc }<br />
+                        Место проведения: { event.place }<br />
+                        Категория: { event.category }<br />
+                        Дата начала: { event.dates && reformatDate(event.dates[0]) }<br />
+                        Дата окончания: { event.dates && reformatDate(event.dates[1]) }
+                        {/* Lorem ipsum, dolor sit amet consectetur adipisicing elit. Perspiciatis voluptas in nisi et suscipit
                         ullam maiores expedita ut rem quidem saepe eveniet sit est accusamus dolor ea dolorem consequuntur,
                         iusto voluptatem beatae, cupiditate enim aliquid? Suscipit, nesciunt esse rem error dicta eveniet
                         numquam, corporis reiciendis, reprehenderit voluptas voluptatum inventore excepturi quibusdam fugit
-                        iusto provident!{/*  Quas ratione repellendus labore accusantium commodi asperiores enim aliquam soluta,
+                        iusto provident!  Quas ratione repellendus labore accusantium commodi asperiores enim aliquam soluta,
                         molestiae distinctio suscipit eligendi magni earum illum omnis. Unde voluptatem numquam, amet maxime
                         facere fugiat optio in voluptas. Modi placeat natus nulla? Quas aut aspernatur ullam inventore ex
                         maxime voluptatibus ut quisquam rem itaque asperiores nam nihil odio mollitia consectetur vero
