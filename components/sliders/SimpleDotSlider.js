@@ -28,6 +28,16 @@ export default class DotSlider extends React.Component {
         this.switchDot(this.state.active, true);
     }
 
+    componentDidMount() {
+        this.autoSwitchInterval = setInterval(() => {
+            this.switchImage(Math.cycle(this.state.active + 1, this.state.images.length));
+        }, 1000);
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.autoSwitchInterval);
+    }
+
     render() {
         return (
             <div className={this.props.containerClass}>
