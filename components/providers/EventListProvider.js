@@ -27,7 +27,7 @@ export default class EventListProvider {
             try {
                 const response = await fetch(`/api/events/${id}`);
                 const event = await response.json();
-                this.events.set(event.id, event);
+                this.events.set(id, event);
                 resolve();
             } catch(e) { reject(); }
         });
