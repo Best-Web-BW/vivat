@@ -1,6 +1,34 @@
+import { useEffect, useState } from "react";
 import ContentHeader from "../components/common/ContentHeader";
+import AlbumListProvider from "../components/providers/AlbumListProvider";
+import Link from "next/link";
+
+function Album({ id, image, date, title }) {
+    return (
+        <Link href={`/gallery/${id}`}>
+            <a className="album-list-element">
+                <img src={`/images/gallery/album/${image}.jpg`} alt="" width="100%" />
+                <div className="flex-row">
+                    <div className="album-list-date">
+                        <p>{ global.reformatDate(date) }</p>
+                    </div>
+                    <div className="album-list-title">
+                        <p>{ title }</p>
+                    </div>
+                </div>
+            </a>
+        </Link>
+    );
+}
 
 export default function Gallery() {
+    const [albums, setAlbums] = useState([]);
+
+    useEffect(async () => {
+        const list = await AlbumListProvider.getAlbumList();
+        setAlbums(list);
+    }, []);
+
     return (
         <div>
             <ContentHeader class="gallery" pages={[["gallery", "Галерея"]]}>
@@ -20,72 +48,7 @@ export default function Gallery() {
                     <h2>Альбомы</h2>
                 </div>
                 <div className="album-list-container">
-                    <a href="/Pages/albums/album-page.html" className="album-list-element">
-                        <img src="/images/gallery/yael-gonzalez-8qqHbE8_SmE-unsplash.jpg" alt="" width="100%" />
-                        <div className="flex-row">
-                            <div className="album-list-date">
-                                <p>03.10.2020</p>
-                            </div>
-                            <div className="album-list-title">
-                                <p>Скачки белых лошадей 2020</p>
-                            </div>
-                        </div>
-                    </a>
-                    <a href="/Pages/albums/album-page.html" className="album-list-element">
-                        <img src="/images/gallery/yael-gonzalez-8qqHbE8_SmE-unsplash.jpg" alt="" width="100%" />
-                        <div className="flex-row">
-                            <div className="album-list-date">
-                                <p>03.10.2020</p>
-                            </div>
-                            <div className="album-list-title">
-                                <p>Скачки белых лошадей 2020</p>
-                            </div>
-                        </div>
-                    </a>
-                    <a href="/Pages/albums/album-page.html" className="album-list-element">
-                        <img src="/images/gallery/yael-gonzalez-8qqHbE8_SmE-unsplash.jpg" alt="" width="100%" />
-                        <div className="flex-row">
-                            <div className="album-list-date">
-                                <p>03.10.2020</p>
-                            </div>
-                            <div className="album-list-title">
-                                <p>Скачки белых лошадей 2020</p>
-                            </div>
-                        </div>
-                    </a>
-                    <a href="/Pages/albums/album-page.html" className="album-list-element">
-                        <img src="/images/gallery/yael-gonzalez-8qqHbE8_SmE-unsplash.jpg" alt="" width="100%" />
-                        <div className="flex-row">
-                            <div className="album-list-date">
-                                <p>03.10.2020</p>
-                            </div>
-                            <div className="album-list-title">
-                                <p>Скачки белых лошадей 2020</p>
-                            </div>
-                        </div>
-                    </a>
-                    <a href="/Pages/albums/album-page.html" className="album-list-element">
-                        <img src="/images/gallery/yael-gonzalez-8qqHbE8_SmE-unsplash.jpg" alt="" width="100%" />
-                        <div className="flex-row">
-                            <div className="album-list-date">
-                                <p>03.10.2020</p>
-                            </div>
-                            <div className="album-list-title">
-                                <p>Скачки белых лошадей 2020</p>
-                            </div>
-                        </div>
-                    </a>
-                    <a href="/Pages/albums/album-page.html" className="album-list-element">
-                        <img src="/images/gallery/yael-gonzalez-8qqHbE8_SmE-unsplash.jpg" alt="" width="100%" />
-                        <div className="flex-row">
-                            <div className="album-list-date">
-                                <p>03.10.2020</p>
-                            </div>
-                            <div className="album-list-title">
-                                <p>Скачки белых лошадей 2020</p>
-                            </div>
-                        </div>
-                    </a>
+                    { albums.map(album => <Album key={album.id} { ...album } />) }
                 </div>
             </div>
         </div>
