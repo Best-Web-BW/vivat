@@ -1,53 +1,20 @@
-import React from "react";
+import { useEffect, useState } from "react";
+import DotContainer from "./DotContainer";
 
-export default class DotSlider extends React.Component {
-    constructor(props) {
-        super();
+export default function DotSlider({ images, containerClass, slideClass }) {
+    const [active, setActive] = useState(0);
 
-        this.state = {
-            active: 0,
-            images: props.images,
-            dots: []
-        }
+    useEffect(() => {
+        const interval = setInterval(() => setActive(prev => Math.cycle(prev + 1, images.length)), 1000);
+        return () => clearInterval(interval);
+    }, []);
 
-        this.createDot = (index, mode) => {
-            return <div key={index} className={`dot ${mode ? "active" : ""}`} onClick={() => this.switchImage(index)} />;
-        }
-
-        this.switchDot = (index, mode) => {
-            this.state.dots[index] = this.createDot(index, mode);
-        };
-
-        this.switchImage = (index) => {
-            this.switchDot(this.state.active, false);
-            this.switchDot(index, true);
-            this.setState({ active: index });
-        };
-
-        for(let i = 0; i < props.images.length; i++) this.switchDot(i, false);
-        this.switchDot(this.state.active, true);
-    }
-
-    componentDidMount() {
-        this.autoSwitchInterval = setInterval(() => {
-            this.switchImage(Math.cycle(this.state.active + 1, this.state.images.length));
-        }, 1000);
-    }
-
-    componentWillUnmount() {
-        clearInterval(this.autoSwitchInterval);
-    }
-
-    render() {
-        return (
-            <div className={this.props.containerClass}>
-                <div className={this.props.slideClass}>
-                    <img src={this.state.images[this.state.active]} alt="" width="100%" />
-                </div>
-                <div className="dots-container">
-                    { this.state.dots }
-                </div>
+    return (
+        <div className={containerClass}>
+            <div className={slideClass}>
+                <img src={images[active]} alt="" width="100%" />
             </div>
-        );
-    }
+            <DotContainer count={images.length} active={active} handler={setActive} />
+        </div>
+    );
 }

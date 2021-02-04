@@ -1,13 +1,12 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import EventListProvider from "../providers/EventListProvider";
 
-const daysOfWeek = ["ВС", "ПН", "ВТ", "СР", "ЧТ", "ПТ", "СБ"]
-const localeConfig = { day: "numeric", month: "numeric", year: "numeric" };
+const daysOfWeek = ["ВС", "ПН", "ВТ", "СР", "ЧТ", "ПТ", "СБ"];
 
 function convertDate(rawDate) {
     const date = new Date(rawDate);
-    return `${daysOfWeek[date.getUTCDay()]}. ${date.toLocaleString("ru", localeConfig)}`;
+    return `${daysOfWeek[date.getUTCDay()]}. ${global.reformatDate(date)}`;
 }
 
 function EventBlock({ id, title, dates }) {
@@ -28,64 +27,64 @@ function EventBlock({ id, title, dates }) {
     );
 }
 
-export default class EventSlider extends React.Component {
-    constructor() {
-        super();
+export default function EventSlider({ containerClass }) {
+    const [position, setPosition] = useState({ start: 0, end: 0 });
+    const [events, setEvents] = useState([]);
+    const [size, setSize] = useState(4);
+    const [length, setLength] = useState(0);
 
-        this.state = {
-            start: null,
-            end: null
-        };
-        
-        this.size = 4;
-        this.events = [];
-        this.length = 0;
-
-        this.scrollLeft = () => {
-            this.setState({
-                start: Math.max(this.state.start - 1, 0),
-                end: Math.max(this.state.end - 1, this.size)
-            });
-        }
-        this.scrollRight = () => {
-            this.setState({
-                start: Math.min(this.state.start + 1, this.length - this.size),
-                end: Math.min(this.state.end + 1, this.length)
-            });
-        }
+    const scrollLeft = () => {
+        setPosition(prev => ({
+            start: Math.max(prev.start - 1, 0),
+            end: Math.max(prev.end - 1, size)
+        }));
+    };
+    const scrollRight = () => {
+        setPosition(prev => ({
+            start: Math.min(prev.start + 1, length - size),
+            end: Math.min(prev.end + 1, length)
+        }));
     }
 
-    async componentDidMount() {
-        try {
-            const events = await EventListProvider.getEventList();
-            this.events = events.map(event => <EventBlock key={event.id} {...event} />);
-            this.length = events.length;
-            this.size = Math.min(this.size, this.length);
-            this.setState({
-                start: 0,
-                end: this.size
-            });
-        } catch(e) {}
-    }
+    useEffect(async () => {
+        const date = EventListProvider.currentDate;
 
-    render() {
-        return (
-            <div className={this.props.containerClass}>
-                <div className="day-events-title">
-                    <p><span>События на</span>&nbsp;<span style={{ color: "#797878d1" }}>{ new Date().toLocaleString("ru", localeConfig) }</span></p>
+        let _events;
+        try { _events = await EventListProvider.getEventList(); }
+        catch(e) {}
+
+        _events = _events.filter(event => event.dates[0] <= date && date <= event.dates[1]);
+        _events = _events.map(event => <EventBlock key={event.id} {...event} />);
+
+        setEvents(_events);
+
+        const _length = _events.length;
+        const _size = Math.min(size, _length);
+
+        setLength(_length);
+        setSize(_size);
+        setPosition({
+            start: 0,
+            end: _size
+        });
+    }, []);
+
+    return (
+        <div className={containerClass}>
+            <div className="day-events-title">
+                <p><span>События на</span>&nbsp;<span style={{ color: "#797878d1" }}>{ global.reformatDate && global.reformatDate(new Date())  }</span></p>
+            </div>
+            <div className="events-navigation">
+                <div className="prev" onClick={scrollLeft}>
+                    <span className={position.start == 0 ? "inactive" : ""} />
                 </div>
-                <div className="events-navigation">
-                    <div className="prev" onClick={this.scrollLeft}>
-                        <span className={this.state.start == 0 ? "inactive" : ""} />
-                    </div>
-                    <div className="next" onClick={this.scrollRight}>
-                        <span className={this.state.end == this.events.length ? "inactive" : ""} />
-                    </div>
-                </div>
-                <div className="events-blocks-wrapper">
-                    { this.events.slice(this.state.start, this.state.end) }
+                <div className="next" onClick={scrollRight}>
+                    <span className={position.end == events.length ? "inactive" : ""} />
                 </div>
             </div>
-        );
-    }
+            <div className="events-blocks-wrapper">
+                { events.slice(position.start, position.end) }
+            </div>
+        </div>
+    );
 }

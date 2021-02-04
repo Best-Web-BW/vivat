@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 
 let config = {
     extension: "png",
@@ -192,62 +192,41 @@ export class Unicorn extends React.Component {
         };
     }
 
-    render() {
-        return <img ref={this.imgRef} alt="" width="100%" />;
-    }
+    render() { return <img ref={this.imgRef} alt="" width="100%" />; }
 }
 
-export class UnicornFollowInput extends React.Component {
-    constructor() {
-        super();
-        
-        this.inputRef = React.createRef();
-        this.spanRef = React.createRef();
-        
-        this.updateText = () => {
-            this.spanRef.current.innerText = this.inputRef.current.value;
-            let width = this.spanRef.current.offsetWidth;
-            this.spanRef.current.innerText = "";
-            this.props.onChange(width / this.width);
-        }
-        
-        this.componentDidMount = () => {
-            this.width = this.inputRef.current?.offsetWidth ?? 1;
-        }
-    }
+export function UnicornFollowInput({ inputClassName, type, placeholder, onChange, onBlur, spanClassName }) {
+    const inputRef = useRef();
+    const spanRef = useRef();
+    const width = useRef();
+
+    const updateText = () => {
+        spanRef.current.innerText = inputRef.current.value;
+        const _width = spanRef.current.offsetWidth;
+        spanRef.current.innerText = "";
+        onChange(_width / width.current);
+    };
     
-    render() {
-        return (
-            <div className="unicorn-follow-input">
-                <input
-                    ref={this.inputRef}
-                    className={this.props.inputClassName ?? ""}
-                    type={this.props.type ?? ""}
-                    placeholder={this.props.placeholder ?? ""}
-                    onFocus={this.updateText}
-                    onChange={this.updateText}
-                    onBlur={this.props.onBlur}
-                />
-                <span
-                    ref={this.spanRef}
-                    className={this.props.spanClassName ?? ""}
-                    style={{ position: "absolute" }}
-                />
-            </div>
-        );
-    }
+    useEffect(() => { width.current = inputRef.current?.offsetWidth ?? 1; }, []);
+
+    return (
+        <div className="unicorn-follow-input">
+            <input
+                ref={inputRef} className={inputClassName ?? ""}
+                type={type ?? ""} placeholder={placeholder ?? ""}
+                onFocus={updateText} onChange={updateText} onBlur={onBlur}
+            />
+            <span ref={spanRef} className={spanClassName ?? ""} style={{ position: "absolute" }} />
+        </div>
+    );
 }
 
-export class UnicornShyInput extends React.Component {
-    render() {
-        return (
-            <input
-                className={`unicorn-shy-input ${this.props.inputClassName ?? ""}`}
-                type={this.props.type ?? ""}
-                placeholder={this.props.placeholder ?? ""}
-                onFocus={this.props.onFocus}
-                onBlur={this.props.onBlur}
-            />
-        );
-    }
+export function UnicornShyInput({ inputClassName, type, placeholder, onFocus, onBlur }) {
+    return (
+        <input
+            className={`unicorn-shy-input ${inputClassName ?? ""}`}
+            type={type ?? ""} placeholder={placeholder ?? ""}
+            onFocus={onFocus} onBlur={onBlur}
+        />
+    );
 }
