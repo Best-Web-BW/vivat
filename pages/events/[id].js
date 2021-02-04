@@ -4,10 +4,6 @@ import ContentHeader from "../../components/common/ContentHeader";
 import EventListProvider from "../../components/providers/EventListProvider";
 import EventSlider from "../../components/sliders/EventSlider";
 
-function reformatDate(rawDate) {
-    return new Date(rawDate).toLocaleString("ru", { day: "numeric", month: "numeric", year: "numeric" });
-}
-
 export default function EventPage() {
     const { id } = useRouter().query;
     const [event, setEvent] = useState({ });
@@ -18,8 +14,6 @@ export default function EventPage() {
             setEvent(event);
         }
     }, [id]);
-
-    console.log(event);
 
     return (
         <div>
@@ -37,8 +31,8 @@ export default function EventPage() {
                         Описание: { event.desc }<br />
                         Место проведения: { event.place }<br />
                         Категория: { event.category }<br />
-                        Дата начала: { event.dates && reformatDate(event.dates[0]) }<br />
-                        Дата окончания: { event.dates && reformatDate(event.dates[1]) }
+                        Дата начала: { event.dates && global.reformatDate(event.dates[0]) }<br />
+                        Дата окончания: { event.dates && global.reformatDate(event.dates[1]) }
                         {/* Lorem ipsum, dolor sit amet consectetur adipisicing elit. Perspiciatis voluptas in nisi et suscipit
                         ullam maiores expedita ut rem quidem saepe eveniet sit est accusamus dolor ea dolorem consequuntur,
                         iusto voluptatem beatae, cupiditate enim aliquid? Suscipit, nesciunt esse rem error dicta eveniet
