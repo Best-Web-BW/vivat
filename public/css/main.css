@@ -365,7 +365,7 @@ header {
     top: 1vh;
 }
 
-.modal-enter-wrapper.oppened {
+.modal-enter-wrapper.opened {
     top: 20vh;
 }
 
@@ -516,7 +516,7 @@ header {
     transition: 0.8s ease-in-out;
 }
 
-.search-wrapper.oppened {
+.search-wrapper.opened {
     top: 6vh;
 }
 
@@ -1162,7 +1162,7 @@ header {
         background-color: #131313de;
     }
 
-    .search-wrapper.oppened {
+    .search-wrapper.opened {
         bottom: 0;
         top: unset;
     }

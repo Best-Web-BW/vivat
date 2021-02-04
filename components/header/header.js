@@ -209,7 +209,7 @@ export default class Header extends React.Component {
                         </ul>
                     </div>
                 </div>
-                <div className={`modal-enter-wrapper ${this.state.isSignFormOpened ? "oppened" : ""}`}>
+                <div className={`modal-enter-wrapper ${this.state.isSignFormOpened ? "opened" : ""}`}>
                     <div className="unicorn-wrapper">
                         <div className="unicorn-content">
                             <Unicorn />
@@ -315,7 +315,7 @@ export default class Header extends React.Component {
                         </div>
                     </div>
                 </div>
-                <div className={`search-wrapper ${this.state.isSearchOpened ? "oppened" /*wtf*/ : ""}`}>
+                <div className={`search-wrapper ${this.state.isSearchOpened ? "opened" /*wtf*/ : ""}`}>
                     <div className="search-container">
                         <input type="text" className="search-input" placeholder="Введите поисковой запрос" />
                         <span className="search-icon" />
