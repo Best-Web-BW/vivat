@@ -53,7 +53,7 @@ export default function EventSlider({ containerClass }) {
         try { _events = await EventListProvider.getEventList(); }
         catch(e) {}
 
-        _events = _events.filter(event => event.dates[0] <= date && date <= event.dates[1]);
+        _events = _events.filter(event => event.dates && event.dates[0] <= date && date <= event.dates[1]);
         _events = _events.map(event => <EventBlock key={event.id} {...event} />);
 
         setEvents(_events);
