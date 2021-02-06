@@ -43,7 +43,9 @@ export default function Footer() {
                         </Link>
 					</li>
 					<li>
-						<a href="/privacy-policy">Политика конфиденциальности</a>
+                        <Link href="/privacy-policy">
+                            <a>Политика конфиденциальности</a>
+                        </Link>
 					</li>
 				</ul>
 			</div>

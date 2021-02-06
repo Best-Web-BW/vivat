@@ -20,7 +20,7 @@ const api = require('./routes/api.js');
 		
 		server.listen(port, (error) => {
 			if(error) throw error;
-			console.log(`> Ready on localhost:${port} - env '${process.env.NODE_ENV}'`);
+			console.log(`> Ready on localhost:${port}; raw env: '${process.env.NODE_ENV}'; server env: '${dev ? "development" : "production"}'`);
 		});
 	} catch(exception) {
 		console.error(exception.stack);

@@ -5,7 +5,7 @@ export default function DotSlider({ images, containerClass, slideClass }) {
     const [active, setActive] = useState(0);
 
     useEffect(() => {
-        const interval = setInterval(() => setActive(prev => Math.cycle(prev + 1, images.length)), 1000);
+        const interval = setInterval(() => setActive(prev => Math.cycle(prev + 1, images.length)), 8000);
         return () => clearInterval(interval);
     }, []);
 

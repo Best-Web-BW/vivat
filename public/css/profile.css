@@ -462,7 +462,7 @@
     padding: 2vh 0;
 }
 
-.my-evetns-element {
+.my-events-element {
     width: 100%;
     display: flex;
     flex-wrap: nowrap;
@@ -483,11 +483,11 @@
     padding: 1vh 0;
 }
 
-.my-evetns-element:hover {
+.my-events-element:hover {
     background-color: #313131;
 }
 
-.my-evetns-element:hover .my-events-programm-name, .my-evetns-element:hover .my-events-categories-name, .my-evetns-element:hover .my-events-type-name {
+.my-events-element:hover .my-events-programm-name, .my-events-element:hover .my-events-categories-name, .my-events-element:hover .my-events-type-name {
     color: #ff0a0a;
 }
 
