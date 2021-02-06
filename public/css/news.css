@@ -43,11 +43,11 @@
     margin: 0 auto;
 }
 
-.right-column {
+.blog-content .right-column {
     width: 30%;
 }
 
-.left-column {
+.blog-content .left-column {
     width: 70%;
     position: relative;
     padding: 0 2vh;
@@ -391,17 +391,17 @@
         flex-wrap: wrap;
     }
 
-    .left-column, .right-column {
+    .blog-content .left-column, .blog-content .right-column {
         width: 100%;
     }
     
-    .right-column {
+    .blog-content .right-column {
         position: absolute;
         top: 0;
         z-index: 1;
     }
 
-    .left-column {
+    .blog-content .left-column {
         padding-top: 7vh;
     }
 

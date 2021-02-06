@@ -34,9 +34,10 @@
 
 /* content */
 
-.left-column, .right-column {
+.contacts-content .left-column, .contacts-content .right-column {
     width: 50%;
     padding: 0 5vh;
+    position: relative;
 }
 
 .contacts-content {
@@ -185,9 +186,10 @@
         background-color: #131313;
     }
 
-    .left-column, .right-column {
+    .contacts-content .left-column, .contacts-content .right-column {
         width: 100%;
         padding: 0 1vh;
+        position: relative;
     }
 }
 
