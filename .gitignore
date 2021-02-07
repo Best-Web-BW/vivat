@@ -19,6 +19,7 @@
 .env.production.local
 .next
 _client
+ssl
 
 npm-debug.log*
 yarn-debug.log*
