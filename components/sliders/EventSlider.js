@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import EventListProvider from "../providers/EventListProvider";
+import EventListProvider from "../../utils/providers/EventListProvider";
 
 const daysOfWeek = ["ВС", "ПН", "ВТ", "СР", "ЧТ", "ПТ", "СБ"];
 

@@ -1,13 +1,13 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import ContentHeader from "../../components/common/ContentHeader";
-import AlbumListProvider from "../../components/providers/AlbumListProvider";
+import AlbumListProvider from "../../utils/providers/AlbumListProvider";
 import ModalImageSlider from "../../components/sliders/ModalImageSlider";
 
 function Image({ index, image, openSlider }) {
     return (
         <div className="album-element" onClick={() => openSlider(index)}>
-            <img src={`/images/gallery/album/${image}.jpg`} alt="" width="100%" />
+            <img src={`/images/gallery/album/webp/${image}.webp`} alt="" width="100%" />
         </div>
     );
 }
@@ -35,9 +35,7 @@ export default function AlbumPage() {
 
     return (
         <div>
-            <ContentHeader
-                pages={[["gallery", "Галерея"], [`gallery/${id}`, album.title]]}
-            >
+            <ContentHeader pages={[["gallery", "Галерея"], [`gallery/${id}`, album.title]]}>
                 <p>{ album.desc }</p>
             </ContentHeader>
             <div className="gallery-content-wrapper content-block">

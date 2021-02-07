@@ -22,7 +22,7 @@ export default function ModalImageSlider({ images, active, opened, switchSlide, 
             <span className="close-modal" onClick={closeSlider}>x</span>
             <div className="modal-gallery-slider">
                 <div className="modal-gallery-slide">
-                    { images && <img src={`/images/gallery/album/${images[active]}.jpg`} alt="" height="100%" /> }
+                    { images && <img src={`/images/gallery/album/webp/${images[active]}.webp`} alt="" height="100%" /> }
                 </div>
                 <div className="modal-gallery-navigation">
                     <div className="prev" onClick={scrollLeft}>

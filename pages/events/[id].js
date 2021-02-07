@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import ContentHeader from "../../components/common/ContentHeader";
-import EventListProvider from "../../components/providers/EventListProvider";
+import EventListProvider from "../../utils/providers/EventListProvider";
 import EventSlider from "../../components/sliders/EventSlider";
 
 export default function EventPage() {

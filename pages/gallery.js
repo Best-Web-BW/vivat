@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import ContentHeader from "../components/common/ContentHeader";
-import AlbumListProvider from "../components/providers/AlbumListProvider";
+import AlbumListProvider from "../utils/providers/AlbumListProvider";
 import Link from "next/link";
 
 function Album({ id, image, date, title }) {
     return (
         <Link href={`/gallery/${id}`}>
             <a className="album-list-element">
-                <img src={`/images/gallery/album/${image}.jpg`} alt="" width="100%" />
+                <img src={`/images/gallery/album/webp/${image}.webp`} alt="" width="100%" />
                 <div className="flex-row">
                     <div className="album-list-date">
                         <p>{ global.reformatDate(date) }</p>
