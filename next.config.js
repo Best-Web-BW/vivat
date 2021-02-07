@@ -6,6 +6,6 @@ module.exports = {
                 destination: "/home",
                 permanent: true
             }
-        ];
+        ]
     }
-};
+}
