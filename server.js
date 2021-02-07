@@ -1,27 +1,42 @@
-const express = require("express");
+const forceSSL = require("express-force-ssl");
+const server = require("express")();
+const https = require("https");
+const http = require("http");
 const next = require("next");
+const fs = require("fs");
 
-const dev = process.env.NODE_ENV !== "production";
-const app = next({ dev });
+const app = next({ dev: process.env.NODE_ENV !== "production" });
 const handle = app.getRequestHandler();
-const port = process.env.PORT || 3000;
+
+const HTTPS_PORT = process.env.HTTPS_PORT || 443;
+const HTTP_PORT = process.env.HTTP_PORT || 80;
 
 const api = require('./routes/api.js');
 
 (async () => {
 	try {
 		await app.prepare();
-        const server = express();
+
+        const options = {
+            key: fs.readFileSync("ssl/private.key"),
+            cert: fs.readFileSync("ssl/cert.crt"),
+            ca: fs.readFileSync("ssl/ca.crt")
+        }
+        
+        https.createServer(options, server).listen(HTTPS_PORT);
+        http.createServer(server).listen(HTTP_PORT);
+
+        server.use(forceSSL);
 		
 		server.use("/api", api);
 		server.get("*", (request, response) => handle(request, response));
-		
-		server.listen(port, (error) => {
-			if(error) throw error;
-			console.log(`> Ready on localhost:${port}; raw env: '${process.env.NODE_ENV}'; server env: '${dev ? "development" : "production"}'`);
-		});
-	} catch(exception) {
-		console.error(exception.stack);
+
+        console.log(`--> Process environment: '${process.env.NODE_ENV}'`);
+        console.log(`--> App environment: '${next.dev ? "development" : "production"}'`);
+        console.log(`-> Ready on port ${HTTP_PORT} for HTTP`);
+        console.log(`-> Ready on port ${HTTPS_PORT} for HTTPS`);
+	} catch(e) {
+		console.error(e.stack);
 		process.exit(1);
 	}
 })();
