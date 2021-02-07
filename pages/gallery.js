@@ -46,10 +46,12 @@ export default function Gallery() {
             <div className="gallery-content-wrapper content-block">
                 <div className="gallery block-title">
                     <h2>Альбомы</h2>
+                    {/* AMAZING BIG ADMIN BUTTON BELOW */}
                     <button className="add-gallery-button">
                         <p className="add-gallery-button-description">Добавить галерею</p>
                         <p className="add-gallery-button-icon">+</p>
                     </button>
+                    {/* AMAZING BIG ADMIN BUTTON ABOVE */}
                 </div>
                 {/* ONLY FOR ADMIN, IT"S AN ADMIN PANEL BELOW*/}
                 <div className="add-gallery-modal">
