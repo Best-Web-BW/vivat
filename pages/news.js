@@ -11,7 +11,7 @@ export function Tag({ name }) {
     );
 }
 
-function Post({ id, title, texts, images, tags }) {
+function Post({ id, title, paragraphs, tags }) {
     const [opened, setOpened] = useState(false);
     const narrow = () => setOpened(false);
     const expand = () => setOpened(true);
@@ -19,12 +19,12 @@ function Post({ id, title, texts, images, tags }) {
     return (
         <div className="blog-card">
             <div className="blog-img">
-                { images && <img src={`/images/news/${images[0]}.jpg`} alt="" width="100%" /> }
+                { paragraphs && <img src={`/images/news/${paragraphs[0].image}.jpg`} alt="" width="100%" /> }
             </div>
             <div className="blog-card-content" style={{ height: opened ? "max-content" : "40vh" }}>
                 <h2 className="blog-card-title">{ title }</h2>
                 <article className="blog-card-content-article">
-                    { texts && texts.map((text, index) => <p key={index}>{ text }</p>) }
+                    { paragraphs && paragraphs.map((paragraph, index) => <p key={index}>{ paragraph.text }</p>) }
                 </article>
             </div>
             <div className="blog-card-footer">
@@ -53,9 +53,15 @@ export default function News() {
         setPosts(posts);
     }, []);
 
-    const texts = [
-        "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Reprehenderit maxime hic repellat! Dolores culpa quae et debitis? Tenetur aut ut ab harum, repellendus et ducimus eos provident praesentium totam! Ullam enim sunt ipsum? Nam, dolor ex placeat dignissimos molestiae repellendus quaerat velit maxime aperiam vel voluptatum perspiciatis praesentium officiis quidem maiores minus consectetur nesciunt in deleniti ipsa quas ea! Incidunt, officia! Labore nostrum, dolor ut voluptatum adipisci, distinctio temporibus dignissimos, tempora praesentium architecto aut quia! Fuga atque nihil eius, cumque tenetur in quo quibusdam rerum repellendus, magnam veniam obcaecati consequuntur ipsam necessitatibus perspiciatis iure voluptatum asperiores debitis quasi fugiat delectus ullam ducimus? Quam repellendus reiciendis nisi corrupti error rerum ullam pariatur laborum eum assumenda repudiandae maiores beatae, velit libero tenetur perspiciatis, atque saepe est ut, id voluptas voluptatibus tempore commodi molestias. Inventore quam iusto obcaecati quibusdam, corrupti omnis ipsam consectetur dolorum non nesciunt possimus impedit suscipit amet accusamus, explicabo voluptates. Alias nostrum aperiam repellendus, numquam, quis quidem hic pariatur voluptatum omnis autem sit architecto optio dicta provident, officiis odio quisquam temporibus excepturi sunt voluptatem consectetur eos dolore harum animi. Voluptate, a delectus? Harum eius, expedita eos aut aliquam quis aspernatur exercitationem veritatis, dolorem sunt ducimus eveniet similique nam cum, culpa voluptatem consectetur voluptatum quisquam itaque distinctio consequatur. Repudiandae nihil deleniti ipsam vel aut consequatur odit reiciendis veniam ad autem voluptatum alias pariatur et quia, ab laborum consectetur earum, delectus voluptas. Perferendis neque ratione magni voluptatibus veniam debitis consequatur tempore eos autem nihil impedit magnam ipsa, molestias amet aspernatur facilis iste!",
-        "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Reprehenderit maxime hic repellat! Dolores culpa quae et debitis? Tenetur aut ut ab harum, repellendus et ducimus eos provident praesentium totam! Ullam enim sunt ipsum? Nam, dolor ex placeat dignissimos molestiae repellendus quaerat velit maxime aperiam vel voluptatum perspiciatis praesentium officiis quidem maiores minus consectetur nesciunt in deleniti ipsa quas ea! Incidunt, officia! Labore nostrum, dolor ut voluptatum adipisci, distinctio temporibus dignissimos, tempora praesentium architecto aut quia! Fuga atque nihil eius, cumque tenetur in quo quibusdam rerum repellendus, magnam veniam obcaecati consequuntur ipsam necessitatibus perspiciatis iure voluptatum asperiores debitis quasi fugiat delectus ullam ducimus? Quam repellendus reiciendis nisi corrupti error rerum ullam pariatur laborum eum assumenda repudiandae maiores beatae, velit libero tenetur perspiciatis, atque saepe est ut, id voluptas voluptatibus tempore commodi molestias. Inventore quam iusto obcaecati quibusdam, corrupti omnis ipsam consectetur dolorum non nesciunt possimus impedit suscipit amet accusamus, explicabo voluptates. Alias nostrum aperiam repellendus, numquam, quis quidem hic pariatur voluptatum omnis autem sit architecto optio dicta provident, officiis odio quisquam temporibus excepturi sunt voluptatem consectetur eos dolore harum animi. Voluptate, a delectus? Harum eius, expedita eos aut aliquam quis aspernatur exercitationem veritatis, dolorem sunt ducimus eveniet similique nam cum, culpa voluptatem consectetur voluptatum quisquam itaque distinctio consequatur. Repudiandae nihil deleniti ipsam vel aut consequatur odit reiciendis veniam ad autem voluptatum alias pariatur et quia, ab laborum consectetur earum, delectus voluptas. Perferendis neque ratione magni voluptatibus veniam debitis consequatur tempore eos autem nihil impedit magnam ipsa, molestias amet aspernatur facilis iste!"
+    const paragraphs = [
+        {
+            image: "yael-gonzalez-jd9UEc8Sc58-unsplash",
+            text: "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Reprehenderit maxime hic repellat! Dolores culpa quae et debitis? Tenetur aut ut ab harum, repellendus et ducimus eos provident praesentium totam! Ullam enim sunt ipsum? Nam, dolor ex placeat dignissimos molestiae repellendus quaerat velit maxime aperiam vel voluptatum perspiciatis praesentium officiis quidem maiores minus consectetur nesciunt in deleniti ipsa quas ea! Incidunt, officia! Labore nostrum, dolor ut voluptatum adipisci, distinctio temporibus dignissimos, tempora praesentium architecto aut quia! Fuga atque nihil eius, cumque tenetur in quo quibusdam rerum repellendus, magnam veniam obcaecati consequuntur ipsam necessitatibus perspiciatis iure voluptatum asperiores debitis quasi fugiat delectus ullam ducimus? Quam repellendus reiciendis nisi corrupti error rerum ullam pariatur laborum eum assumenda repudiandae maiores beatae, velit libero tenetur perspiciatis, atque saepe est ut, id voluptas voluptatibus tempore commodi molestias. Inventore quam iusto obcaecati quibusdam, corrupti omnis ipsam consectetur dolorum non nesciunt possimus impedit suscipit amet accusamus, explicabo voluptates. Alias nostrum aperiam repellendus, numquam, quis quidem hic pariatur voluptatum omnis autem sit architecto optio dicta provident, officiis odio quisquam temporibus excepturi sunt voluptatem consectetur eos dolore harum animi. Voluptate, a delectus? Harum eius, expedita eos aut aliquam quis aspernatur exercitationem veritatis, dolorem sunt ducimus eveniet similique nam cum, culpa voluptatem consectetur voluptatum quisquam itaque distinctio consequatur. Repudiandae nihil deleniti ipsam vel aut consequatur odit reiciendis veniam ad autem voluptatum alias pariatur et quia, ab laborum consectetur earum, delectus voluptas. Perferendis neque ratione magni voluptatibus veniam debitis consequatur tempore eos autem nihil impedit magnam ipsa, molestias amet aspernatur facilis iste!"
+        },
+        {
+            image: "yael-gonzalez-jd9UEc8Sc58-unsplash",
+            text: "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Reprehenderit maxime hic repellat! Dolores culpa quae et debitis? Tenetur aut ut ab harum, repellendus et ducimus eos provident praesentium totam! Ullam enim sunt ipsum? Nam, dolor ex placeat dignissimos molestiae repellendus quaerat velit maxime aperiam vel voluptatum perspiciatis praesentium officiis quidem maiores minus consectetur nesciunt in deleniti ipsa quas ea! Incidunt, officia! Labore nostrum, dolor ut voluptatum adipisci, distinctio temporibus dignissimos, tempora praesentium architecto aut quia! Fuga atque nihil eius, cumque tenetur in quo quibusdam rerum repellendus, magnam veniam obcaecati consequuntur ipsam necessitatibus perspiciatis iure voluptatum asperiores debitis quasi fugiat delectus ullam ducimus? Quam repellendus reiciendis nisi corrupti error rerum ullam pariatur laborum eum assumenda repudiandae maiores beatae, velit libero tenetur perspiciatis, atque saepe est ut, id voluptas voluptatibus tempore commodi molestias. Inventore quam iusto obcaecati quibusdam, corrupti omnis ipsam consectetur dolorum non nesciunt possimus impedit suscipit amet accusamus, explicabo voluptates. Alias nostrum aperiam repellendus, numquam, quis quidem hic pariatur voluptatum omnis autem sit architecto optio dicta provident, officiis odio quisquam temporibus excepturi sunt voluptatem consectetur eos dolore harum animi. Voluptate, a delectus? Harum eius, expedita eos aut aliquam quis aspernatur exercitationem veritatis, dolorem sunt ducimus eveniet similique nam cum, culpa voluptatem consectetur voluptatum quisquam itaque distinctio consequatur. Repudiandae nihil deleniti ipsam vel aut consequatur odit reiciendis veniam ad autem voluptatum alias pariatur et quia, ab laborum consectetur earum, delectus voluptas. Perferendis neque ratione magni voluptatibus veniam debitis consequatur tempore eos autem nihil impedit magnam ipsa, molestias amet aspernatur facilis iste!"
+        }
     ];
 
     return (
@@ -81,81 +87,7 @@ export default function News() {
                     </div>
                 </div>
                 <div className="left-column">
-                    { posts && posts.map(post => <Post key={post.id} { ...post } texts={texts} />) }
-                    {/* <div className="blog-card">
-                        <div className="blog-img">
-                            <img src="/images/news/yael-gonzalez-jd9UEc8Sc58-unsplash.jpg" alt="" width="100%" />
-                        </div>
-                        <div className="blog-card-content">
-                            <h2 className="blog-card-title">Название статьи</h2>
-                            <article className="blog-card-content-article">
-                                <p>
-                                    Lorem ipsum dolor sit, amet consectetur adipisicing elit. Reprehenderit maxime hic repellat!
-                                    Dolores culpa quae et debitis? Tenetur aut ut ab harum, repellendus et ducimus eos provident
-                                    praesentium totam! Ullam enim sunt ipsum? Nam, dolor ex placeat dignissimos molestiae
-                                    repellendus quaerat velit maxime aperiam vel voluptatum perspiciatis praesentium officiis
-                                    quidem maiores minus consectetur nesciunt in deleniti ipsa quas ea! Incidunt, officia!
-                                    Labore nostrum, dolor ut voluptatum adipisci, distinctio temporibus dignissimos, tempora
-                                    praesentium architecto aut quia! Fuga atque nihil eius, cumque tenetur in quo quibusdam
-                                    rerum repellendus, magnam veniam obcaecati consequuntur ipsam necessitatibus perspiciatis
-                                    iure voluptatum asperiores debitis quasi fugiat delectus ullam ducimus? Quam repellendus
-                                    reiciendis nisi corrupti error rerum ullam pariatur laborum eum assumenda repudiandae
-                                    maiores beatae, velit libero tenetur perspiciatis, atque saepe est ut, id voluptas
-                                    voluptatibus tempore commodi molestias. Inventore quam iusto obcaecati quibusdam, corrupti
-                                    omnis ipsam consectetur dolorum non nesciunt possimus impedit suscipit amet accusamus,
-                                    explicabo voluptates. Alias nostrum aperiam repellendus, numquam, quis quidem hic pariatur
-                                    voluptatum omnis autem sit architecto optio dicta provident, officiis odio quisquam
-                                    temporibus excepturi sunt voluptatem consectetur eos dolore harum animi. Voluptate, a
-                                    delectus? Harum eius, expedita eos aut aliquam quis aspernatur exercitationem veritatis,
-                                    dolorem sunt ducimus eveniet similique nam cum, culpa voluptatem consectetur voluptatum
-                                    quisquam itaque distinctio consequatur. Repudiandae nihil deleniti ipsam vel aut consequatur
-                                    odit reiciendis veniam ad autem voluptatum alias pariatur et quia, ab laborum consectetur
-                                    earum, delectus voluptas. Perferendis neque ratione magni voluptatibus veniam debitis
-                                    consequatur tempore eos autem nihil impedit magnam ipsa, molestias amet aspernatur facilis
-                                    iste!
-                                </p>
-                                <p>
-                                    Lorem ipsum dolor sit, amet consectetur adipisicing elit. Reprehenderit maxime hic repellat!
-                                    Dolores culpa quae et debitis? Tenetur aut ut ab harum, repellendus et ducimus eos provident
-                                    praesentium totam! Ullam enim sunt ipsum? Nam, dolor ex placeat dignissimos molestiae
-                                    repellendus quaerat velit maxime aperiam vel voluptatum perspiciatis praesentium officiis
-                                    quidem maiores minus consectetur nesciunt in deleniti ipsa quas ea! Incidunt, officia!
-                                    Labore nostrum, dolor ut voluptatum adipisci, distinctio temporibus dignissimos, tempora
-                                    praesentium architecto aut quia! Fuga atque nihil eius, cumque tenetur in quo quibusdam
-                                    rerum repellendus, magnam veniam obcaecati consequuntur ipsam necessitatibus perspiciatis
-                                    iure voluptatum asperiores debitis quasi fugiat delectus ullam ducimus? Quam repellendus
-                                    reiciendis nisi corrupti error rerum ullam pariatur laborum eum assumenda repudiandae
-                                    maiores beatae, velit libero tenetur perspiciatis, atque saepe est ut, id voluptas
-                                    voluptatibus tempore commodi molestias. Inventore quam iusto obcaecati quibusdam, corrupti
-                                    omnis ipsam consectetur dolorum non nesciunt possimus impedit suscipit amet accusamus,
-                                    explicabo voluptates. Alias nostrum aperiam repellendus, numquam, quis quidem hic pariatur
-                                    voluptatum omnis autem sit architecto optio dicta provident, officiis odio quisquam
-                                    temporibus excepturi sunt voluptatem consectetur eos dolore harum animi. Voluptate, a
-                                    delectus? Harum eius, expedita eos aut aliquam quis aspernatur exercitationem veritatis,
-                                    dolorem sunt ducimus eveniet similique nam cum, culpa voluptatem consectetur voluptatum
-                                    quisquam itaque distinctio consequatur. Repudiandae nihil deleniti ipsam vel aut consequatur
-                                    odit reiciendis veniam ad autem voluptatum alias pariatur et quia, ab laborum consectetur
-                                    earum, delectus voluptas. Perferendis neque ratione magni voluptatibus veniam debitis
-                                    consequatur tempore eos autem nihil impedit magnam ipsa, molestias amet aspernatur facilis
-                                    iste!
-                                </p>
-                            </article>
-                        </div>
-                        <div className="blog-card-footer">
-                            <div className="blog-card-keywords-wrapper">
-                                <a href="!!???" className="blog-page-keywords">Лошади</a>
-                                <a href="!!???" className="blog-page-keywords">Белые</a>
-                                <a href="!!???" className="blog-page-keywords">Скачки</a>
-                            </div>
-                            <div className="blog-card-button-wrapper">
-                                <button className="hide-blog">Скрыть</button>
-                                <button className="read-more">Показать полностью</button>
-                                <button className="read">
-                                    <a href="news/news-page.html">Читать далее</a>
-                                </button>
-                            </div>
-                        </div>
-                    </div> */}
+                    { posts && posts.map(post => <Post key={post.id} { ...post } paragraphs={paragraphs} />) }
                 </div>
                 <div className="right-column">
                     <div className="blog-menu-wrapper">
