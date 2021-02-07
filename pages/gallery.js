@@ -164,47 +164,33 @@ export default function Gallery() {
                         </div>
                         <div className="add-gallery-modal-choose-img-wrapper">
                             <button className="add-gallery-modal-choose-imgs">Выберите фотографии</button>
-                            {/* <div className="add-gallery-modal-imgs-list">
-                                <ul>
-                                    <li>
-                                        <img src="/images/gallery/album/webp/akshat-vats-l_GAWl6q7LI-unsplash.webp" alt="" width="100%"/>
-                                        <button className="delete">X</button>
-                                    </li>
-                                    <li>
-                                        <img src="/images/gallery/album/webp/akshat-vats-l_GAWl6q7LI-unsplash.webp" alt="" width="100%"/>
-                                        <button className="delete">X</button>
-                                    </li>
-                                    <li>
-                                        <img src="/images/gallery/album/webp/akshat-vats-l_GAWl6q7LI-unsplash.webp" alt="" width="100%"/>
-                                        <button className="delete">X</button>
-                                    </li>
-                                    <li>
-                                        <img src="/images/gallery/album/webp/akshat-vats-l_GAWl6q7LI-unsplash.webp" alt="" width="100%"/>
-                                        <button className="delete">X</button>
-                                    </li>
-                                    <li>
-                                        <img src="/images/gallery/album/webp/akshat-vats-l_GAWl6q7LI-unsplash.webp" alt="" width="100%"/>
-                                        <button className="delete">X</button>
-                                    </li>
-                                    <li>
-                                        <img src="/images/gallery/album/webp/akshat-vats-l_GAWl6q7LI-unsplash.webp" alt="" width="100%"/>
-                                        <button className="delete">X</button>
-                                    </li>
-                                    <li>
-                                        <img src="/images/gallery/album/webp/akshat-vats-l_GAWl6q7LI-unsplash.webp" alt="" width="100%"/>
-                                        <button className="delete">X</button>
-                                    </li>
-                                    <li>
-                                        <img src="/images/gallery/album/webp/akshat-vats-l_GAWl6q7LI-unsplash.webp" alt="" width="100%"/>
-                                        <button className="delete">X</button>
-                                    </li>
-                                </ul>
-                            </div> */}
                         </div>
                         <button className="edit-gallery-modal-save-button">Сохарнить</button>
                     </div>
                 </div>
                 {/* ABOVE ADMIN MAY CHANGE GALLERIES AND ALBOMS */}
+                {/* THESE ARE WARNINGS ABOUT DELETE AND SUCCESS */}
+                <div className="warning-delete-modal">
+                    <div className="warning-delete-modal-content">
+                        <p>Вы уверены, что хотите удалить этот альбом безвовзратно?</p>
+                        <button className="warning-delete-button">Да</button><button className="warning-delete-button-no">Нет</button>
+                    </div>
+                </div>
+                <div className="warning-success-modal">
+                    <div className="warning-success-modal-content">
+                        <span className="close-modal">X</span>
+                        <p>Альбом успешно создан!</p>
+                        <button className="warrning-success-modal-button">Ок</button>
+                    </div>
+                </div>
+                <div className="warning-success-modal">
+                    <div className="warning-success-modal-content">
+                        <span className="close-modal">X</span>
+                        <p>Альбом успешно изменен!</p>
+                        <button className="warrning-success-modal-button">Ок</button>
+                    </div>
+                </div>
+                {/* ABOVE ARE WARNINGS ABOUT DELETE AND SUCCESS */}
                 <div className="album-list-container">
                     { albums.map(album => <Album key={album.id} { ...album } />) }
                     
