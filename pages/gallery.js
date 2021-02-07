@@ -44,9 +44,71 @@ export default function Gallery() {
                 </p>
             </ContentHeader>
             <div className="gallery-content-wrapper content-block">
-                <div className="block-title">
+                <div className="gallery block-title">
                     <h2>Альбомы</h2>
+                    <button className="add-gallery-button">
+                        <p className="add-gallery-button-description">Добавить галерею</p>
+                        <p className="add-gallery-button-icon">+</p>
+                    </button>
                 </div>
+                {/* ONLY FOR ADMIN, IT"S AN ADMIN PANEL BELOW*/}
+                <div className="add-gallery-modal">
+                    <div className="add-gallery-modal-content">
+                        <span className="close-modal">X</span>
+                        <h2>Добавить альбом</h2>
+                        <div className="add-gallery-modal-nameinput">
+                            <label htmlFor="">Название</label>
+                            <input type="text" placeholder="Введите название"/>
+                        </div>
+                        <div className="add-gallery-modal-choose-cover-wrapper">
+                            <div className="add-gallery-modal-preview-cover">
+                                <img src="/images/gallery/album/webp/akshat-vats-l_GAWl6q7LI-unsplash.webp" alt="" width="100%"/>
+                            </div>
+                            <button className="add-gallery-modal-choose-cover">Выберите обложку альбома</button>
+                        </div>
+                        <div className="add-gallery-modal-choose-img-wrapper">
+                            <button className="add-gallery-modal-choose-imgs">Выберите фотографии</button>
+                            <div className="add-gallery-modal-imgs-list">
+                                <ul>
+                                    <li>
+                                        <img src="/images/gallery/album/webp/akshat-vats-l_GAWl6q7LI-unsplash.webp" alt="" width="100%"/>
+                                        <button className="delete">X</button>
+                                    </li>
+                                    <li>
+                                        <img src="/images/gallery/album/webp/akshat-vats-l_GAWl6q7LI-unsplash.webp" alt="" width="100%"/>
+                                        <button className="delete">X</button>
+                                    </li>
+                                    <li>
+                                        <img src="/images/gallery/album/webp/akshat-vats-l_GAWl6q7LI-unsplash.webp" alt="" width="100%"/>
+                                        <button className="delete">X</button>
+                                    </li>
+                                    <li>
+                                        <img src="/images/gallery/album/webp/akshat-vats-l_GAWl6q7LI-unsplash.webp" alt="" width="100%"/>
+                                        <button className="delete">X</button>
+                                    </li>
+                                    <li>
+                                        <img src="/images/gallery/album/webp/akshat-vats-l_GAWl6q7LI-unsplash.webp" alt="" width="100%"/>
+                                        <button className="delete">X</button>
+                                    </li>
+                                    <li>
+                                        <img src="/images/gallery/album/webp/akshat-vats-l_GAWl6q7LI-unsplash.webp" alt="" width="100%"/>
+                                        <button className="delete">X</button>
+                                    </li>
+                                    <li>
+                                        <img src="/images/gallery/album/webp/akshat-vats-l_GAWl6q7LI-unsplash.webp" alt="" width="100%"/>
+                                        <button className="delete">X</button>
+                                    </li>
+                                    <li>
+                                        <img src="/images/gallery/album/webp/akshat-vats-l_GAWl6q7LI-unsplash.webp" alt="" width="100%"/>
+                                        <button className="delete">X</button>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <button className="add-gallery-modal-save-button">Сохранить</button>
+                    </div>
+                </div>
+                {/* ONLY FOR ADMIN, IT"S AN ADMIN PANEL ABOVE*/}
                 <div className="album-list-container">
                     { albums.map(album => <Album key={album.id} { ...album } />) }
                 </div>

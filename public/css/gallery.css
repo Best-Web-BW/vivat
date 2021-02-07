@@ -37,6 +37,7 @@
 .gallery-content-wrapper {
     height: max-content;
     padding-bottom: 5vh;
+    position: relative;
 }
 
 .album-list-container {
@@ -227,6 +228,11 @@
 }
 
 /* modal-gallery-end */
+
+.gallery.block-title {
+    display: flex;
+    justify-content: space-between;
+}
 
 /* media style */
 

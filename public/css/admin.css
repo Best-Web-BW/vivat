@@ -1,0 +1,161 @@
+/* gallery admin */
+.add-gallery-button {
+    height: 4vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: transparent;
+    color: whitesmoke;
+    font-size: 100%
+}
+
+.add-gallery-button:hover {
+    color: #ff0a0a;
+    text-shadow: 0 0 10px #ff0a0a;
+}
+
+.add-gallery-button-description {
+    padding: 0 0.5vh;
+}
+
+.add-gallery-button-icon {
+    padding: 0 0.5vh;
+    font-size: 210%;
+}
+
+.add-gallery-modal {
+    position: fixed;
+    top: -100vh;
+    left: 50%;
+    background: #131313;
+    z-index: 1;
+    transform: translate(-50%, -50%);
+    border: 1px solid whitesmoke;
+    border-bottom: 1px solid whitesmoke;
+    width: 40vw;
+    padding: 2vh;
+    transition: 0.6s ease-in-out;
+}
+
+.add-gallery-modal.opened {
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.add-gallery-modal-content {
+    position: relative;
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.add-gallery-modal-nameinput, .add-gallery-modal-choose-cover-wrapper, .add-gallery-modal-choose-img-wrapper {
+    width: 100%;
+    display: flex;
+    flex-wrap: nowrap;
+    padding: 1vh 0;
+    align-items: center;
+}
+
+.add-gallery-modal-choose-img-wrapper {
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.add-gallery-modal-preview-cover {
+    width: 20%;
+    border: 1px solid whitesmoke;
+    height: max-content;
+}
+
+.add-gallery-modal-choose-cover, .add-gallery-modal-choose-imgs, .add-gallery-modal-save-button {
+    color: whitesmoke;
+    font-size: 100%;
+    background-color: transparent;
+    height: fit-content;
+    padding: 1vh;
+}
+
+.add-gallery-modal-imgs-list {
+    width: 100%;
+}
+
+.delete {
+    margin: 0 2vh;
+    font-size: 100%;
+    background-color: transparent;
+    color: whitesmoke;
+}
+
+.add-gallery-modal .close-modal {
+    top: 0;
+    right: 0;
+}
+
+.add-gallery-modal h2 {
+    width: 100%;
+    color: whitesmoke;
+    text-align: center;
+    margin-bottom: 2vh;
+}
+
+.add-gallery-modal-nameinput label {
+    color: whitesmoke;
+    font-size: 100%;
+    margin-right: 1vh;
+}
+
+.add-gallery-modal-nameinput input {
+    width: 100%;
+    background-color: transparent;
+    border: 1px solid whitesmoke;
+    color: whitesmoke;
+    font-size: 100%;
+    padding: 1vh 0;
+    padding-left: 1vh;
+}
+
+.add-gallery-modal-nameinput input::placeholder {
+    color: whitesmoke;
+}
+
+.add-gallery-modal-choose-cover:hover, .add-gallery-modal-choose-imgs:hover, .add-gallery-modal-nameinput input:hover, .delete:hover, .add-gallery-modal-save-button:hover {
+    color: #ff0a0a;
+    border-color: #ff0a0a;
+    text-shadow: 0 0 10px #ff0a0a;
+}
+
+.add-gallery-modal-nameinput input:hover {
+    box-shadow: 0 0 10px 1px #ff0a0a;
+}
+
+.add-gallery-modal-nameinput input:hover::placeholder {
+    color: #ff0a0a;
+}
+
+.add-gallery-modal-save-button {
+
+}
+
+.delete {
+    position: absolute;
+    margin: 0;
+    top: 1vh;
+    right: 1vh;
+    font-weight: bold;
+    font-size: 140%;
+}
+
+.add-gallery-modal-imgs-list ul{
+    display: grid;
+    grid-template-columns: repeat(4, 25%);
+    grid-template-rows: auto;
+    grid-gap: 1vh;
+    width: calc(100% - 3vh);
+}
+
+.add-gallery-modal-imgs-list li {
+    position: relative;
+}
+
+/* gallery admin end */
