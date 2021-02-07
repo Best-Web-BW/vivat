@@ -1,11 +1,14 @@
 {
   "name": "vivat",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
-    "dev": "node server.js",
+    "dev": "nodemon server.js",
     "build": "next build",
-    "start": "NODE_ENV=production node server.js"
+    "start": "node server.js"
+  },
+  "nodemonConfig": {
+      "watch": ["server.js", "routes/"]
   },
   "keywords": [],
   "author": "",
@@ -17,7 +20,9 @@
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
+    "mongodb": "^3.6.4",
     "next": "^10.0.6",
+    "nodemon": "^2.0.7",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "save": "^2.4.0"
