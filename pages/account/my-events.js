@@ -1,4 +1,36 @@
 import ProfileMenu from "../../components/common/ProfileMenu";
+import Select from 'react-select';
+
+const categoryOptions = [
+    { value: 'chocolate', label: 'По расписанию' },
+    { value: 'strawberry', label: 'Сначала прошедшие' },
+    { value: 'vanilla', label: 'Сначала будущие' },
+]
+
+const groupStyles = {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  };
+  const groupBadgeStyles = {
+    backgroundColor: '#EBECF0',
+    borderRadius: '2em',
+    color: '#172B4D',
+    display: 'inline-block',
+    fontSize: 12,
+    fontWeight: 'normal',
+    lineHeight: '1',
+    minWidth: 1,
+    padding: '0.16666666666667em 0.5em',
+    textAlign: 'center',
+  };
+  
+  const formatGroupLabel = data => (
+    <div style={groupStyles}>
+      <span>{data.label}</span>
+      <span style={groupBadgeStyles}>{data.options.length}</span>
+    </div>
+  );
 
 export default function MyEvents() {
     return (
@@ -15,7 +47,7 @@ export default function MyEvents() {
                 </div>
                 <div className="my-events-container">
                     <div className="my-events-sorting-container">
-                        <select className="sorting-events">
+                        {/* <select className="sorting-events">
                             <option value="1" selected>
                                 <p>По расписанию</p>
                             </option>
@@ -25,7 +57,21 @@ export default function MyEvents() {
                             <option value="3">
                                 <p>Сначала будущие</p>
                             </option>
-                        </select>
+                        </select> */}
+                        <Select
+                                    defaultValue={categoryOptions[0]}
+                                    options={categoryOptions}
+                                    formatGroupLabel={formatGroupLabel}
+                                    theme={theme => ({
+                                        ...theme,
+                                        borderRadius: 0,
+                                        colors: {
+                                          ...theme.colors,
+                                          primary: '',
+                                        },
+                                      })}
+                                      placeholder='Выберите из списка'
+                                />
                     </div>
                     <div className="my-events-element-container">
                         <a className="my-events-element">

@@ -334,6 +334,14 @@
 
 /* n-select end */
 
+.registration-element .css-2b097c-container {
+    width: 50%;
+}
+
+.registration-element .css-e56m7-control, .registration-element .css-g90ezd-control, .registration-element .css-i0syzg-menu  {
+    border: 1px solid gray;
+}
+
 .registration-content {
     display: flex;
     flex-wrap: nowrap;
@@ -490,6 +498,10 @@
 
 .my-events-element:hover .my-events-programm-name, .my-events-element:hover .my-events-categories-name, .my-events-element:hover .my-events-type-name {
     color: #ff0a0a;
+}
+
+.my-events-sorting-container .css-2b097c-container {
+    width: 20%;
 }
 
 /* my events end */
