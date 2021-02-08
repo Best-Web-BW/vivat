@@ -21,6 +21,7 @@ export default function ProfileMenu({ active }) {
                     <ProfileMenuItem active={active} name="profile" title="Профиль" />
                     <ProfileMenuItem active={active} name="registration" title="Регистрация на событие" />
                     <ProfileMenuItem active={active} name="my-events" title="Мои события" />
+                    <ProfileMenuItem active={active} name="manage-event" title="Управление событиями" />
                 </ul>
             </div>
             <div className="profile-menu-button" onClick={() => toggle(prev => !prev)}>

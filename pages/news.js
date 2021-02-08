@@ -1,7 +1,53 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import Select from 'react-select';
+import makeAnimated from 'react-select/animated';
 import ContentHeader from "../components/common/ContentHeader";
 import PostListProvider from "../utils/providers/PostListProvider";
+import { css, cx } from '@emotion/css'
+
+const options = [
+    { value: 'chocolate', label: 'Лошади' },
+    { value: 'strawberry', label: 'Белые' },
+    { value: 'vanilla', label: 'Призы' },
+    { value: 'vanilla', label: 'Результаты' },
+    { value: 'vanilla', label: 'Полезное питание' },
+]
+
+const categoryOptions = [
+    { value: 'chocolate', label: 'Лошади' },
+    { value: 'strawberry', label: 'Eзда' },
+    { value: 'vanilla', label: 'Конкур' },
+    { value: 'vanilla', label: 'Соревнования' },
+    { value: 'vanilla', label: 'Пони' },
+]
+
+const groupStyles = {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  };
+  const groupBadgeStyles = {
+    backgroundColor: '#EBECF0',
+    borderRadius: '2em',
+    color: '#172B4D',
+    display: 'inline-block',
+    fontSize: 12,
+    fontWeight: 'normal',
+    lineHeight: '1',
+    minWidth: 1,
+    padding: '0.16666666666667em 0.5em',
+    textAlign: 'center',
+  };
+  
+  const formatGroupLabel = data => (
+    <div style={groupStyles}>
+      <span>{data.label}</span>
+      <span style={groupBadgeStyles}>{data.options.length}</span>
+    </div>
+  );
+
+const animatedComponents = makeAnimated();
 
 export function Tag({ name }) {
     return (
@@ -18,6 +64,10 @@ function Post({ id, title, paragraphs, tags }) {
 
     return (
         <div className="blog-card">
+            <div className ="article-edit-wrapper">
+                <span className="edit"></span>  
+                <button className="delete">X</button>
+            </div>
             <div className="blog-img">
                 { paragraphs && <img src={`/images/news/${paragraphs[0].image}.jpg`} alt="" width="100%" /> }
             </div>
@@ -63,6 +113,8 @@ export default function News() {
             text: "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Reprehenderit maxime hic repellat! Dolores culpa quae et debitis? Tenetur aut ut ab harum, repellendus et ducimus eos provident praesentium totam! Ullam enim sunt ipsum? Nam, dolor ex placeat dignissimos molestiae repellendus quaerat velit maxime aperiam vel voluptatum perspiciatis praesentium officiis quidem maiores minus consectetur nesciunt in deleniti ipsa quas ea! Incidunt, officia! Labore nostrum, dolor ut voluptatum adipisci, distinctio temporibus dignissimos, tempora praesentium architecto aut quia! Fuga atque nihil eius, cumque tenetur in quo quibusdam rerum repellendus, magnam veniam obcaecati consequuntur ipsam necessitatibus perspiciatis iure voluptatum asperiores debitis quasi fugiat delectus ullam ducimus? Quam repellendus reiciendis nisi corrupti error rerum ullam pariatur laborum eum assumenda repudiandae maiores beatae, velit libero tenetur perspiciatis, atque saepe est ut, id voluptas voluptatibus tempore commodi molestias. Inventore quam iusto obcaecati quibusdam, corrupti omnis ipsam consectetur dolorum non nesciunt possimus impedit suscipit amet accusamus, explicabo voluptates. Alias nostrum aperiam repellendus, numquam, quis quidem hic pariatur voluptatum omnis autem sit architecto optio dicta provident, officiis odio quisquam temporibus excepturi sunt voluptatem consectetur eos dolore harum animi. Voluptate, a delectus? Harum eius, expedita eos aut aliquam quis aspernatur exercitationem veritatis, dolorem sunt ducimus eveniet similique nam cum, culpa voluptatem consectetur voluptatum quisquam itaque distinctio consequatur. Repudiandae nihil deleniti ipsam vel aut consequatur odit reiciendis veniam ad autem voluptatum alias pariatur et quia, ab laborum consectetur earum, delectus voluptas. Perferendis neque ratione magni voluptatibus veniam debitis consequatur tempore eos autem nihil impedit magnam ipsa, molestias amet aspernatur facilis iste!"
         }
     ];
+
+    
 
     return (
         <div>
@@ -133,6 +185,81 @@ export default function News() {
                                         <span>Полезное питание</span>
                                     </label>
                                 </form>
+                            </div>
+                        </div>
+                        <div className="blog-menu-section admin">
+                            <button className="blog-menu-section-add-article-button">Создать новость</button>
+                        </div>
+                    </div>
+                </div>
+                <div className="add-article-modal">
+                    <div className="add-article-modal-content">
+                        <div className="add-article-modal-header">
+                            <h2>Создать новость/изменить{/* Создать/изменить выбирается исходя из того, что делает пользователь - изменяет статью или создает новую */}</h2>
+                        </div>
+                        <div className="add-article-modal-body">
+                            <div className="add-article-modal-text-editor-wrapper">
+                                <textarea name="" id="" cols="30" rows="10" placeholder="введите что-нибудь интересное"></textarea>
+                            </div>
+                        </div>
+                        <div className="add-article-modal-footer">
+                            <div className="col-1-3">
+                                <p>Выберите категорию</p>
+                                <Select
+                                    // defaultValue={colourOptions[1]}
+                                    options={categoryOptions}
+                                    formatGroupLabel={formatGroupLabel}
+                                    theme={theme => ({
+                                        ...theme,
+                                        borderRadius: 0,
+                                        colors: {
+                                          ...theme.colors,
+                                          primary: '',
+                                        },
+                                      })}
+                                      placeholder='Выберите из списка'
+                                />
+                                <div className="add-article-add-new-category"> 
+                                    <input type="text" placeholder="Добавить категорию"/>
+                                    <button className="add-article-add-new-category-button">Добавить</button>
+                                </div>
+                            </div>
+                            <div className="col-1-3">
+                                <p>Выберите ключевые слова</p>
+                                    <Select 
+                                    closeMenuOnSelect={false}
+                                    components={animatedComponents}
+                                    isMulti
+                                    options={options}
+                                    // styles={customStyles}
+                                    theme={theme => ({
+                                        ...theme,
+                                        borderRadius: 0,
+                                        colors: {
+                                          ...theme.colors,
+                                          primary: '',
+                                        },
+                                      })}
+                                      placeholder='Выберите из списка'
+                                    />
+                                    <div className="add-article-add-new-keyword"> 
+                                        <input type="text" placeholder="Добавить ключевое слово"/>
+                                        <button className="add-article-add-new-keyword-button">Добавить</button>
+                                    </div>
+                            </div>
+                            <div className="col-1-3">
+                                <div className="col-1-2" style={{"display" : "none"}}>
+                                    <div className="add-article-choose-visibility">
+                                        <p>Видимость</p>
+                                        <label htmlFor="chooseVisibility-yes">Видимый</label>
+                                        <input type="radio" name="chooseVisibility" id="chooseVisibility-yes"/>
+                                        <input type="radio" name="chooseVisibility" id="chooseVisibility-no"/>
+                                        <label htmlFor="chooseVisibility-no">Скрытый</label>
+                                    </div>
+                                </div>
+                                <div className="col-1-2">
+                                    <button className="add-article-save-button">Сохранить</button>
+                                </div>
                             </div>
                         </div>
                     </div>

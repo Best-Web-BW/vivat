@@ -35,6 +35,10 @@ export default function PostPage() {
                 <p>{ post.desc }</p>
             </ContentHeader>
             <div className="news-content content-block">
+                <div className ="article-edit-wrapper">
+                    <span className="edit"></span>  
+                    <button className="delete">X</button>
+                </div>
                 <div className="news-navigation-row">
                     <Link href="/news">
                         <a>Назад</a>
