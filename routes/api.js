@@ -41,10 +41,40 @@ router.get("/albums/:id", async (req, res) => {
     res.json({ ...result, full: true });
 });
 
-router.get("/posts", async (_, res) => {
-    const projection = { _id: false };
-    const result = await posts.find({ }, { projection }).sort({ id: 1 }).toArray();
+router.get("/posts", async (req, res) => {
+    const { categories, tags, search } = req.query;
+    const query = { };
+
+    console.log(categories, tags, search);
+    
+    if(categories) query.category = { $in: JSON.parse(categories) };
+    if(tags) query.tags = { $all: JSON.parse(tags) };
+    if(search) {
+        const words = JSON.parse(search).replace(/[^\w\dа-яё ]/gi, "").toLowerCase().split(" ");
+        const condition = { $regex: new RegExp(words.join("|"), "gi") }
+        query.$or = [
+            { title: condition },
+            { desc: condition },
+            { paragraphs: { $elemMatch: { text: condition } } }
+        ];
+    }
+
+    console.log(query, query.$or);
+
+    const result = await posts.find(query, { projection: { _id: false } }).sort({ id: 1 }).toArray();
     res.json(result);
+});
+
+router.get("/posts/stats", async (_, res) => {
+    const result = await posts.find({ }, { projection: { _id: false, tags: true, category: true } }).toArray();
+    
+    const uniqueTags = new Set();
+    const counts = result.reduce((acc, { tags, category }) => {
+        for(let tag of tags) uniqueTags.add(tag);
+        return { ...acc, [category]: acc[category] ?? 0 + 1 };
+    }, { });
+
+    res.json({ tags: [...uniqueTags], counts })
 });
 
 router.get("/posts/:id", async (req, res) => {
