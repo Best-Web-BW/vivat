@@ -38,9 +38,9 @@ export default function Home() {
             </Head>
             <div className="header-content-wrapper content-block">
                 <div className="video-background">
-                    {/* <video preload="auto" autoPlay loop muted>
+                    <video preload="auto" autoPlay loop muted>
                         <source src="/images/horse.mp4" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"' />
-                    </video> */}
+                    </video>
                 </div>
                 <div>
                     <div className="header-bg" />

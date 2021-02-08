@@ -31,7 +31,7 @@ export default function PostPage() {
 
     return (
         <>
-            <ContentHeader pages={[["news", "Новости"], [`news/${post.id}`, post.title]]}>
+            <ContentHeader class="news" pages={[["news", "Новости"], [`news/${post.id}`, post.title]]}>
                 <p>{ post.desc }</p>
             </ContentHeader>
             <div className="news-content content-block">
