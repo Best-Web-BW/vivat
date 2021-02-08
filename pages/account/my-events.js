@@ -15,16 +15,10 @@ export default function MyEvents() {
                 </div>
                 <div className="my-events-container">
                     <div className="my-events-sorting-container">
-                        <select className="sorting-events">
-                            <option value="1" selected>
-                                <p>По расписанию</p>
-                            </option>
-                            <option value="2">
-                                <p>Сначала прошедшие</p>
-                            </option>
-                            <option value="3">
-                                <p>Сначала будущие</p>
-                            </option>
+                        <select className="sorting-events" defaultValue={1}>
+                            <option value={1}>По расписанию</option>
+                            <option value={2}>Сначала прошедшие</option>
+                            <option value={3}>Сначала будущие</option>
                         </select>
                     </div>
                     <div className="my-events-element-container">

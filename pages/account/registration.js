@@ -12,11 +12,11 @@ export default function Registration() {
                     <div className="registration-element">
                         <span className="required">*</span>
                         <p className="registration-element-title">Выбор события</p>
-                        <select className="select-event" defaultValue="1">
-                            <option value="1">Скачки белых лошадей</option>
-                            <option value="2">Гарцующий пони</option>
-                            <option value="3">Самые быстрые скакуны</option>
-                            <option value="4">Самая длинная грива</option>
+                        <select className="select-event" defaultValue={1}>
+                            <option value={1}>Скачки белых лошадей</option>
+                            <option value={2}>Гарцующий пони</option>
+                            <option value={3}>Самые быстрые скакуны</option>
+                            <option value={4}>Самая длинная грива</option>
                         </select>
                     </div>
                     <div className="registration-element">

@@ -5,7 +5,8 @@ const http = require("http");
 const next = require("next");
 const fs = require("fs");
 
-const app = next({ dev: process.env.NODE_ENV !== "production" });
+const dev = process.env.NODE_ENV !== "production";
+const app = next({ dev });
 const handle = app.getRequestHandler();
 
 const HTTPS_PORT = process.env.HTTPS_PORT || 443;
@@ -32,7 +33,7 @@ const api = require('./routes/api.js');
 		server.get("*", (request, response) => handle(request, response));
 
         console.log(`--> Process environment: '${process.env.NODE_ENV}'`);
-        console.log(`--> App environment: '${next.dev ? "development" : "production"}'`);
+        console.log(`--> App environment: '${dev ? "development" : "production"}'`);
         console.log(`-> Ready on port ${HTTP_PORT} for HTTP`);
         console.log(`-> Ready on port ${HTTPS_PORT} for HTTPS`);
 	} catch(e) {
