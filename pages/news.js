@@ -75,7 +75,7 @@ function Post({ id, title, paragraphs, tags, edit, remove }) {
                 </div>
             </AdminVariableComponent>}
             <div className="blog-img">
-                { paragraphs && <img src={`/images/news/${paragraphs[0].image}.jpg`} alt="" width="100%" /> }
+                { paragraphs && <img src={`/images/news/${paragraphs[0].image.name}.jpg`} alt="" width="100%" /> }
             </div>
             <div className="blog-card-content" style={{ height: opened ? "max-content" : "40vh" }}>
                 <h2 className="blog-card-title">{ title }</h2>
@@ -234,7 +234,7 @@ function News({ query: { categories: _categories, tags: _tags, search: _search }
                     </div>
                 </div>
                 <div className="left-column">
-                    { posts.map(post => <Post key={post.id} { ...post } paragraphs={paragraphs} edit={editPost} remove={removePost} />) }
+                    { posts.map(post => <Post key={post.id} { ...post } edit={editPost} remove={removePost} />) }
                 </div>
                 <div className="right-column">
                     <div className="blog-menu-wrapper">
