@@ -1,5 +1,5 @@
 /* gallery admin */
-.add-gallery-button {
+.add-gallery-button, .add-article-save-button, .edit-event-add-document-button, .edit-event-save-button {
     height: 4vh;
     display: flex;
     justify-content: center;
@@ -9,7 +9,7 @@
     font-size: 100%
 }
 
-.add-gallery-button:hover {
+.add-gallery-button:hover, .add-article-save-button:hover, .edit-event-add-document-button:hover, .edit-event-save-button:hover {
     color: #ff0a0a;
     text-shadow: 0 0 10px #ff0a0a;
 }
@@ -167,13 +167,13 @@
     content: '\e839';
 }
 
-.gallery-edit-wrapper .delete {
+.gallery-edit-wrapper .delete, .article-edit-wrapper .delete, .events-edit-wrapper .delete {
     position: relative;
     top: 0;
     right: 0;
 }
 
-.gallery-edit-wrapper {
+.gallery-edit-wrapper, .article-edit-wrapper, .events-edit-wrapper {
     z-index: 1;
     position: absolute;
     top: 1vh;
@@ -218,8 +218,6 @@
 
 /* gallery admin end */
 
-<<<<<<< Updated upstream
-=======
 /* news admin */
 
 .blog-menu-section-add-article-button {
@@ -273,7 +271,7 @@
 }
 
 .add-article-modal-text-editor-wrapper {
-    height: calc(100% - 4vh);
+    height: 100%;
 }
 
 .add-article-modal-text-editor-wrapper textarea {
@@ -582,13 +580,9 @@
     justify-content: center;
     align-items: center;
     flex-wrap: nowrap;
-} 
-
-.edit-event-modal-name label {
-    color: whitesmoke;
 }
 
-.edit-event-modal-body input, .edit-event-modal-name input{
+.edit-event-modal-body input {
     height: 3vh;
     color: whitesmoke;
     background-color: transparent;
@@ -650,7 +644,6 @@
 
 /* events edmin end */
 
->>>>>>> Stashed changes
 /* warning modals */
 
 .warning-delete-modal, .warning-success-modal {

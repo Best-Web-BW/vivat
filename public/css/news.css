@@ -178,6 +178,7 @@
     margin: 0 auto;
     margin-bottom: 5vh;
     padding-bottom: 1vh;
+    position: relative;
 }
 
 .blog-img {
@@ -317,6 +318,7 @@
     height: max-content;
     padding: 2vh 5vh;
     margin-bottom: 5vh;
+    position: relative;
 }
 
 .news-navigation-row {

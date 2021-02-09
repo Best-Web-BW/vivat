@@ -1,3 +1,4 @@
+import { sleep } from "../common";
 import DBProvider from "./DBProvider";
 
 export function encode(text) {
@@ -58,11 +59,20 @@ export default class PostListProvider {
         return new Promise(async (resolve, reject) => {
             try {
                 if(!this.posts.has(id)) {
-                    const post = await DBProvider.getPostDetails(id);
-                    this.posts.set(post.id, post);
+                    const response = await DBProvider.getPostDetails(id);
+                    if(response.success) this.posts.set(response.result.id, response.result);
                 }
                 resolve(this.posts.get(id));
             } catch(e) { reject({ }) };
+        });
+    }
+
+    static removePost(id) {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const json = await DBProvider.removePost(id);
+                resolve(json);
+            } catch(e) { reject(); }
         });
     }
 }

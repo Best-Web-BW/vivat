@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import EventListProvider from "../../utils/providers/EventListProvider";
+import { reformatDate } from "../../utils/common";
 
 const daysOfWeek = ["ВС", "ПН", "ВТ", "СР", "ЧТ", "ПТ", "СБ"];
 
 function convertDate(rawDate) {
     const date = new Date(rawDate);
-    return `${daysOfWeek[date.getUTCDay()]}. ${global.reformatDate(date)}`;
+    return `${daysOfWeek[date.getUTCDay()]}. ${reformatDate(date)}`;
 }
 
 function EventBlock({ id, title, dates }) {

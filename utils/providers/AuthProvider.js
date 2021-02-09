@@ -93,24 +93,28 @@ export default class AuthProvider {
     }
 }
 
-export function AuthVariableComponent({ forUser, forGuest }) {
-    const [component, setComponent] = useState(null);
+export function AuthVariableComponent({ children }) {
+    // First child for users, second for guests
+    const [content, setContent] = useState();
     useEffect(() => {
-        const authHandler = () => setComponent(AuthProvider.userData ? forUser : forGuest);
+        const authHandler = async () => setContent(AuthProvider.userData ? children[0] : children[1]);
+        authHandler();
         window.addEventListener("onauth", authHandler);
         return () => window.removeEventListener("onauth", authHandler);
-    }, []);
+    }, [children]);
 
-    return component;
+    return content ?? null;
 }
 
-export function AdminVariableComponent({ forCommon, forAdmin }) {
-    const [component, setComponent] = useState(null);
+export function AdminVariableComponent({ children }) {
+    // Children for admins, null for commons
+    const [content, setContent] = useState();
     useEffect(() => {
-        const adminHandler = () => setComponent(AuthProvider.userData?.admin === true ? forAdmin : forCommon);
+        const adminHandler = async () => setContent(AuthProvider.userData?.admin === true && children);
+        adminHandler();
         window.addEventListener("onauth", adminHandler);
         return () => window.removeEventListener("onauth", adminHandler);
-    });
+    }, [children]);
 
-    return component;
+    return /* content ?? */ null;
 }

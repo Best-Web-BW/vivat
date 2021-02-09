@@ -2,6 +2,7 @@ import EventSlider from "../components/sliders/EventSlider";
 import ServicesList from "../components/common/ServicesList";
 import Translator from "../components/common/Translator";
 import Head from "next/head";
+import EventCalendar from "../components/common/EventCalendar";
 
 let translator = new Translator({
     ru: {
@@ -38,9 +39,9 @@ export default function Home() {
             </Head>
             <div className="header-content-wrapper content-block">
                 <div className="video-background">
-                    {/* <video preload="auto" autoPlay loop muted>
+                    <video preload="auto" autoPlay loop muted>
                         <source src="/images/horse.mp4" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"' />
-                    </video> */}
+                    </video>
                 </div>
                 <div>
                     <div className="header-bg" />
@@ -57,11 +58,11 @@ export default function Home() {
                 </div>
                 <EventSlider containerClass="events-wrapper" />
             </div>
-            <div className="calendar-wrapper content-block">
+            <div className="calendar-wrapper content-block" style={{ height: "50vh" }}>
                 <div className="block-title">
                     <h2>{translator.get("calendar_title")}</h2>
                 </div>
-                <div id="calendar">CALENDAR</div>
+                <EventCalendar />
             </div>
             <ServicesList containerClass="services-wrapper" />
         </div>

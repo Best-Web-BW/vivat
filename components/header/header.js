@@ -171,16 +171,12 @@ export default class Header extends React.Component {
                             <button className="search-button" onClick={this.toggleSearch}>
                                 <span className="search-icon" />
                             </button>
-                            {
-                                <AuthVariableComponent
-                                    forGuest={<button id="open-enter-form" className="login-button" onClick={this.toggleSignForm}>Войти</button>}
-                                    forUser={
-                                        <button className="profile-button" onMouseEnter={this.openProfileMenu} onMouseLeave={this.closeProfileMenu}>
-                                            <span className="profile-icon" />
-                                        </button>
-                                    }
-                                />
-                            }
+                            {<AuthVariableComponent>
+                                <button className="profile-button" onMouseEnter={this.openProfileMenu} onMouseLeave={this.closeProfileMenu}>
+                                    <span className="profile-icon" />
+                                </button>
+                                <button id="open-enter-form" className="login-button" onClick={this.toggleSignForm}>Войти</button>
+                            </AuthVariableComponent>}
                             <div
                                 className={`profile-preview-wrapper ${this.state.isProfileMenuShowed ? "showed" : ""}`}
                                 style={{ display: this.state.isProfileMenuOpened ? "block" : "none" }}
