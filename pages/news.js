@@ -1,51 +1,54 @@
+import Router, { useRouter } from "next/router"
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import Select from 'react-select';
-import makeAnimated from 'react-select/animated';
+import { useEffect, useRef, useState } from "react";
+import Select from "react-select";
+import makeAnimated from "react-select/animated";
 import ContentHeader from "../components/common/ContentHeader";
+import DBProvider from "../utils/providers/DBProvider";
 import PostListProvider from "../utils/providers/PostListProvider";
-import { css, cx } from '@emotion/css'
+// import { css, cx } from "@emotion/css"
 
 const options = [
-    { value: 'chocolate', label: 'Лошади' },
-    { value: 'strawberry', label: 'Белые' },
-    { value: 'vanilla', label: 'Призы' },
-    { value: 'vanilla', label: 'Результаты' },
-    { value: 'vanilla', label: 'Полезное питание' },
+    { value: "chocolate", label: "Лошади" },
+    { value: "strawberry", label: "Белые" },
+    { value: "vanilla", label: "Призы" },
+    { value: "vanilla", label: "Результаты" },
+    { value: "vanilla", label: "Полезное питание" }
 ]
 
 const categoryOptions = [
-    { value: 'chocolate', label: 'Лошади' },
-    { value: 'strawberry', label: 'Eзда' },
-    { value: 'vanilla', label: 'Конкур' },
-    { value: 'vanilla', label: 'Соревнования' },
-    { value: 'vanilla', label: 'Пони' },
+    { value: "chocolate", label: "Лошади" },
+    { value: "strawberry", label: "Eзда" },
+    { value: "vanilla", label: "Конкур" },
+    { value: "vanilla", label: "Соревнования" },
+    { value: "vanilla", label: "Пони" }
 ]
 
 const groupStyles = {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  };
-  const groupBadgeStyles = {
-    backgroundColor: '#EBECF0',
-    borderRadius: '2em',
-    color: '#172B4D',
-    display: 'inline-block',
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+};
+
+const groupBadgeStyles = {
+    backgroundColor: "#EBECF0",
+    borderRadius: "2em",
+    color: "#172B4D",
+    display: "inline-block",
     fontSize: 12,
-    fontWeight: 'normal',
-    lineHeight: '1',
+    fontWeight: "normal",
+    lineHeight: "1",
     minWidth: 1,
-    padding: '0.16666666666667em 0.5em',
-    textAlign: 'center',
-  };
+    padding: "0.16666666666667em 0.5em",
+    textAlign: "center"
+};
   
-  const formatGroupLabel = data => (
+const formatGroupLabel = data => (
     <div style={groupStyles}>
-      <span>{data.label}</span>
-      <span style={groupBadgeStyles}>{data.options.length}</span>
+        <span>{data.label}</span>
+        <span style={groupBadgeStyles}>{data.options.length}</span>
     </div>
-  );
+);
 
 const animatedComponents = makeAnimated();
 
@@ -95,14 +98,86 @@ function Post({ id, title, paragraphs, tags }) {
     );
 }
 
-export default function News() {
+function CategoryButton({ text, count, turn, defaultActive }) {
+    const [active, setActive] = useState(defaultActive);
+    const toggle = () => setActive(prev => (turn(!prev, text), !prev));
+
+    return (
+        <button className={`blog-categories-button ${active && "active"}`} onClick={toggle}>
+            { text }&nbsp;(<span className="news-count">{ count }</span>)
+        </button>
+    );
+}
+
+function TagButton({ text, turn, defaultActive }) {
+    const [active, setActive] = useState(defaultActive);
+    const toggle = () => setActive(prev => (turn(!prev, text), !prev));
+
+    return <span className={`${active && "active"}`} onClick={toggle}>{ text }</span>;
+}
+
+const parseURL = (raw, defaultValue) => {
+    try { return raw.split(","); }
+    catch(e) { return defaultValue; }
+};
+
+const stringifyURL = raw => {
+    try { return raw.join(","); }
+    catch(e) { return raw; }
+};
+
+const switchInArray = (array, state, value) => {
+    const newArray = array.filter(entry => entry !== value);
+    return state ? [...newArray, value] : newArray;
+};
+
+function News({ query: { categories: _categories, tags: _tags, search: _search } }) {
+    const searchRef = useRef();
     const [posts, setPosts] = useState([]);
+    
+    const updateQueryParams = params => updateQuery({ categories, tags, search, ...params });
+
+    const [categories, setCategories] = useState([]);
+    const updateCategory = (state, name) => updateQueryParams({ categories: switchInArray(categories, state, name) });
+
+    const [tags, setTags] = useState([]);
+    const updateTag = (state, name) => updateQueryParams({ tags: switchInArray(tags, state, name) });
+
+    const [search, setSearch] = useState("");
+    const updateSearch = (search) => updateQueryParams({ search });
+    
+    const updateQuery = ({ categories, tags, search }) => {
+        const query = {};
+        if(categories && categories.length) query.categories = stringifyURL(categories);
+        if(tags && tags.length) query.tags = stringifyURL(tags);
+        if(search && search.length > 3) query.search = search;
+
+        Router.push({ pathname: "/news", query }, undefined, { shallow: true });
+    };
+    
+    const setStateFromURL = ({ categories, tags, search }) => {
+        setCategories(parseURL(categories, []));
+        setTags(parseURL(tags, []));
+        setSearch(search ?? "");
+        searchRef.current.value = search ?? "";
+    }
+    
+    const router = useRouter();
+    useEffect(() => setStateFromURL(router.query), [_categories, _tags, _search, router.query]);
 
     useEffect(async () => {
-        const posts = await PostListProvider.getPostList();
+        const posts = await PostListProvider.getPostList(categories, tags, search);
         setPosts(posts);
-    }, []);
+    }, [categories, tags, search]);
 
+    const [uniqueTags, setUniqueTags] = useState([]);
+    const [counts, setCounts] = useState([]);
+    useEffect(async () => {
+        const { tags, counts } = await DBProvider.getPostStats();
+        setUniqueTags(tags);
+        setCounts(Object.entries(counts));
+    }, []);
+    
     const paragraphs = [
         {
             image: "yael-gonzalez-jd9UEc8Sc58-unsplash",
@@ -113,9 +188,7 @@ export default function News() {
             text: "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Reprehenderit maxime hic repellat! Dolores culpa quae et debitis? Tenetur aut ut ab harum, repellendus et ducimus eos provident praesentium totam! Ullam enim sunt ipsum? Nam, dolor ex placeat dignissimos molestiae repellendus quaerat velit maxime aperiam vel voluptatum perspiciatis praesentium officiis quidem maiores minus consectetur nesciunt in deleniti ipsa quas ea! Incidunt, officia! Labore nostrum, dolor ut voluptatum adipisci, distinctio temporibus dignissimos, tempora praesentium architecto aut quia! Fuga atque nihil eius, cumque tenetur in quo quibusdam rerum repellendus, magnam veniam obcaecati consequuntur ipsam necessitatibus perspiciatis iure voluptatum asperiores debitis quasi fugiat delectus ullam ducimus? Quam repellendus reiciendis nisi corrupti error rerum ullam pariatur laborum eum assumenda repudiandae maiores beatae, velit libero tenetur perspiciatis, atque saepe est ut, id voluptas voluptatibus tempore commodi molestias. Inventore quam iusto obcaecati quibusdam, corrupti omnis ipsam consectetur dolorum non nesciunt possimus impedit suscipit amet accusamus, explicabo voluptates. Alias nostrum aperiam repellendus, numquam, quis quidem hic pariatur voluptatum omnis autem sit architecto optio dicta provident, officiis odio quisquam temporibus excepturi sunt voluptatem consectetur eos dolore harum animi. Voluptate, a delectus? Harum eius, expedita eos aut aliquam quis aspernatur exercitationem veritatis, dolorem sunt ducimus eveniet similique nam cum, culpa voluptatem consectetur voluptatum quisquam itaque distinctio consequatur. Repudiandae nihil deleniti ipsam vel aut consequatur odit reiciendis veniam ad autem voluptatum alias pariatur et quia, ab laborum consectetur earum, delectus voluptas. Perferendis neque ratione magni voluptatibus veniam debitis consequatur tempore eos autem nihil impedit magnam ipsa, molestias amet aspernatur facilis iste!"
         }
     ];
-
     
-
     return (
         <div>
             <ContentHeader class="news" pages={[["news", "Новости"]]}>
@@ -139,52 +212,29 @@ export default function News() {
                     </div>
                 </div>
                 <div className="left-column">
-                    { posts && posts.map(post => <Post key={post.id} { ...post } paragraphs={paragraphs} />) }
+                    { posts.map(post => <Post key={post.id} { ...post } paragraphs={paragraphs} />) }
                 </div>
                 <div className="right-column">
                     <div className="blog-menu-wrapper">
                         <div className="blog-menu-section">
-                            <form className="blog-form-search" action="">
+                            <div className="blog-form-search">
                                 <div className="blog-search-input-container">
-                                    <input type="text" className="blog-search" placeholder="Поиск" />
+                                    <input ref={searchRef} type="text" className="blog-search" placeholder="Поиск" />
                                 </div>
-                                <button className="blog-search-button">Поиск</button>
-                            </form>
+                                <button className="blog-search-button" onClick={() => updateSearch(searchRef.current.value)}>Поиск</button>
+                            </div>
                         </div>
                         <div className="blog-menu-section">
                             <div className="blog-categories-wrapper">
                                 <h2>Категории</h2>
-                                <button className="blog-categories-button">Лошади&nbsp;(<span className="news-count">0</span>)</button>
-                                <button className="blog-categories-button">Езда&nbsp;(<span className="news-count">0</span>)</button>
-                                <button className="blog-categories-button">Конкур&nbsp;(<span className="news-count">0</span>)</button>
-                                <button className="blog-categories-button">Соревнования&nbsp;(<span className="news-count">0</span>)</button>
-                                <button className="blog-categories-button">Пони&nbsp;(<span className="news-count">0</span>)</button>
+                                { counts.map(([text, count]) => <CategoryButton key={text} text={text} count={count} turn={updateCategory} defaultActive={categories.includes(text)} />) }
                             </div>
                         </div>
                         <div className="blog-menu-section">
                             <div className="blog-keywords-wrapper">
-                                <form action="" className="flex wrap">
-                                    <label className="blog-keywords-button">
-                                        <input type="checkbox" />
-                                        <span>Лошади</span>
-                                    </label>
-                                    <label className="blog-keywords-button">
-                                        <input type="checkbox" />
-                                        <span>Белые</span>
-                                    </label>
-                                    <label className="blog-keywords-button">
-                                        <input type="checkbox" />
-                                        <span>Призы</span>
-                                    </label>
-                                    <label className="blog-keywords-button">
-                                        <input type="checkbox" />
-                                        <span>Результаты</span>
-                                    </label>
-                                    <label className="blog-keywords-button">
-                                        <input type="checkbox" />
-                                        <span>Полезное питание</span>
-                                    </label>
-                                </form>
+                                <div className="flex wrap">
+                                    { uniqueTags.map(tag => <TagButton key={tag} text={tag} turn={updateTag} defaultActive={tags.includes(tag)} />) }
+                                </div>
                             </div>
                         </div>
                         <div className="blog-menu-section admin">
@@ -209,15 +259,8 @@ export default function News() {
                                     // defaultValue={colourOptions[1]}
                                     options={categoryOptions}
                                     formatGroupLabel={formatGroupLabel}
-                                    theme={theme => ({
-                                        ...theme,
-                                        borderRadius: 0,
-                                        colors: {
-                                          ...theme.colors,
-                                          primary: '',
-                                        },
-                                      })}
-                                      placeholder='Выберите из списка'
+                                    theme={theme => ({ ...theme, borderRadius: 0, colors: { ...theme.colors, primary: "" } })}
+                                    placeholder="Выберите из списка"
                                 />
                                 <div className="add-article-add-new-category"> 
                                     <input type="text" placeholder="Добавить категорию"/>
@@ -226,26 +269,19 @@ export default function News() {
                             </div>
                             <div className="col-1-3">
                                 <p>Выберите ключевые слова</p>
-                                    <Select 
+                                <Select 
                                     closeMenuOnSelect={false}
                                     components={animatedComponents}
-                                    isMulti
+                                    isMulti={true}
                                     options={options}
                                     // styles={customStyles}
-                                    theme={theme => ({
-                                        ...theme,
-                                        borderRadius: 0,
-                                        colors: {
-                                          ...theme.colors,
-                                          primary: '',
-                                        },
-                                      })}
-                                      placeholder='Выберите из списка'
-                                    />
-                                    <div className="add-article-add-new-keyword"> 
-                                        <input type="text" placeholder="Добавить ключевое слово"/>
-                                        <button className="add-article-add-new-keyword-button">Добавить</button>
-                                    </div>
+                                    theme={theme => ({ ...theme, borderRadius: 0, colors: { ...theme.colors, primary: "" } })}
+                                    placeholder="Выберите из списка"
+                                />
+                                <div className="add-article-add-new-keyword"> 
+                                    <input type="text" placeholder="Добавить ключевое слово"/>
+                                    <button className="add-article-add-new-keyword-button">Добавить</button>
+                                </div>
                             </div>
                             <div className="col-1-3">
                                 <div className="col-1-2" style={{"display" : "none"}}>
@@ -268,3 +304,7 @@ export default function News() {
         </div>
     );
 }
+
+News.getInitialProps = ({ query }) => ({ query });
+
+export default News;

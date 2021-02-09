@@ -1,10 +1,7 @@
 import React from "react";
 import Link from "next/link";
-import {
-    Unicorn,
-    UnicornFollowInput,
-    UnicornShyInput
- } from "../common/Unicorn";
+import Unicorn, { UnicornFollowInput, UnicornShyInput } from "../common/Unicorn";
+import AuthProvider, { AuthVariableComponent } from "../../utils/providers/AuthProvider";
 
 export default class Header extends React.Component {
     constructor(props) {
@@ -16,7 +13,8 @@ export default class Header extends React.Component {
             isSearchOpened: false,
             isSignFormOpened: false,
             isLoginFormOpened: false,
-            isRegisterFormOpened: false
+            isRegisterFormOpened: false,
+            profilePreviewName: ""
         };
         global.header = this;
 
@@ -87,9 +85,75 @@ export default class Header extends React.Component {
                 }, doTimeout ? 200 : 0);
             }
         };
+
+        // Aw shit, here we go again...
+        this.authRefs = {
+            login: {
+                email: React.createRef(),
+                password: React.createRef()
+            },
+            register: {
+                email: React.createRef(),
+                name: {
+                    first: React.createRef(),
+                    second: React.createRef(),
+                    middle: React.createRef()
+                },
+                birthdate: React.createRef()
+            }
+        };
+
+        this.doLogin = async () => {
+            const email = this.authRefs.login.email.current.value;
+            const password = this.authRefs.login.password.current.value;
+
+            if(!/@/.test(email)) alert("Некорректный email");
+            else if(!password.length) alert("Некорректный пароль");
+            else {
+                const [success, reason] = await AuthProvider.authenticate(email, password);
+
+                if(success) (this.toggleSignForm(), alert("Успешный вход!"));
+                else if(reason === "invalid_email") alert("Пользователь с таким email не зарегистрирован");
+                else if(reason === "invalid_password") alert("Неверный пароль");
+                else alert("Произошла ошибка, попробуйте позже");
+            }
+        };
+
+        this.doLogout = () => {
+            AuthProvider.deauthenticate();
+            this.closeProfileMenu();
+        }
+
+        this.doRegister = async () => {
+            const email = this.authRefs.register.email.current.value;
+            const firstName = this.authRefs.register.name.first.current.value;
+            const secondName = this.authRefs.register.name.second.current.value;
+            const middleName = this.authRefs.register.name.middle.current.value;
+            const birthdate = this.authRefs.register.birthdate.current.value;
+            const errorMap = {
+                invalid_email: "Некорректный email",
+                invalid_first_name: "Некорректное имя",
+                invalid_second_name: "Некорректная фамилия",
+                invalid_middle_name: "Некорректное отчество",
+                invalid_birthdate: "Некорректная дата рождения"
+            };
+
+            if(!/@/.test(email)) alert(errorMap.invalid_email);
+            else if(!/^[a-zа-яё]{2,}$/gi.test(firstName)) alert(errorMap.invalid_first_name);
+            else if(!/^[a-zа-яё]{2,}$/gi.test(secondName)) alert(errorMap.invalid_second_name);
+            else if(!/^[a-zа-яё]{2,}$/gi.test(middleName)) alert(errorMap.invalid_middle_name);
+            else if(!/./.test(birthdate)) alert(errorMap.invalid_birthdate);
+            else {
+                const [success, reasons] = await AuthProvider.register(email, { first: firstName, second: secondName, middle: middleName }, birthdate);
+
+                if(success) (this.toggleSignForm(), alert("Успешная регистрация!"));
+                else alert(reasons.map((reason, index) => `${index}. ${errorMap[reason]}`));
+            }
+        };
     }
 
     render() {
+        const profilePreviewName = AuthProvider.userData ? (({ second, first, middle }) => `${second} ${first} ${middle}`)(AuthProvider.userData.name) : "";
         return (
             <header>
                 <div className="header-container">
@@ -107,14 +171,16 @@ export default class Header extends React.Component {
                             <button className="search-button" onClick={this.toggleSearch}>
                                 <span className="search-icon" />
                             </button>
-                            <button
-                                className="profile-button"
-                                onMouseEnter={this.openProfileMenu}
-                                onMouseLeave={this.closeProfileMenu}
-                            >
-                                <span className="profile-icon" />
-                            </button>
-                            <button id="open-enter-form" className="login-button" onClick={this.toggleSignForm}>Войти</button>
+                            {
+                                <AuthVariableComponent
+                                    forGuest={<button id="open-enter-form" className="login-button" onClick={this.toggleSignForm}>Войти</button>}
+                                    forUser={
+                                        <button className="profile-button" onMouseEnter={this.openProfileMenu} onMouseLeave={this.closeProfileMenu}>
+                                            <span className="profile-icon" />
+                                        </button>
+                                    }
+                                />
+                            }
                             <div
                                 className={`profile-preview-wrapper ${this.state.isProfileMenuShowed ? "showed" : ""}`}
                                 style={{ display: this.state.isProfileMenuOpened ? "block" : "none" }}
@@ -127,18 +193,18 @@ export default class Header extends React.Component {
                                     </div>
                                     <div className="profile-preview-data">
                                         <div className="profile-preview-name">
-                                            <p>Иванов Иван Иванович</p>
+                                            <p>{ profilePreviewName }</p>
                                         </div>
                                         <div className="profile-preview-address">RU | Moscow</div>
                                     </div>
                                 </div>
                                 <div className="profile-preview-row" style={{ flexWrap: "wrap" }}>
-                                    <a href="Pages/profile/profile.html">
-                                        <button className="profiel-preview-button">В профиль</button>
-                                    </a>
-                                    <a href="!!exit">
-                                        <button className="profiel-preview-button">Выйти</button>
-                                    </a>
+                                    <Link href="/account/profile">
+                                        <a>
+                                            <button className="profile-preview-button">В профиль</button>
+                                        </a>
+                                    </Link>
+                                    <button className="profile-preview-button" onClick={this.doLogout}>Выйти</button>
                                 </div>
                             </div>
                         </div>
@@ -236,25 +302,30 @@ export default class Header extends React.Component {
                             <label className="login-label">
                                 Логин/email
                                 <UnicornFollowInput
+                                    inputRef={this.authRefs.login.email}
                                     onChange={this.unicorn.onFollow}
                                     onBlur={this.unicorn.onBlur}
                                     inputClassName="login-input"
-                                    type="text"
+                                    type="email"
+                                    name="email"
                                     placeholder="example@gmail.com"
                                 />
                             </label>
                             <label className="password-label">Пароль
                                 <UnicornShyInput
+                                    inputRef={this.authRefs.login.password}
                                     onFocus={this.unicorn.onShy}
                                     onBlur={this.unicorn.onBlur}
                                     inputClassName="password-input"
-                                    type="text"
+                                    type="password"
+                                    name="password"
+                                    autoComplete="current-password"
                                 />
                             </label>
                             <div className="forgot-password-wrapper">
                                 <a href="!!forgot" className="forgot-password">Забыли пароль?</a>
                             </div>
-                            <button className="login-button">Войти</button>
+                            <button className="login-button" onClick={this.doLogin}>Войти</button>
                         </div>
                         <div
                             ref={this.registerFormRef}
@@ -266,10 +337,12 @@ export default class Header extends React.Component {
                                 Имя
                                 <span className="required">*</span>
                                 <UnicornFollowInput
+                                    inputRef={this.authRefs.register.name.first}
                                     onChange={this.unicorn.onFollow}
                                     onBlur={this.unicorn.onBlur}
                                     inputClassName="surname-input"
                                     type="text"
+                                    name="firstname"
                                     placeholder="Иванов"
                                 />
                             </label>
@@ -277,10 +350,12 @@ export default class Header extends React.Component {
                                 Фамилия
                                 <span className="required">*</span>
                                 <UnicornFollowInput
+                                    inputRef={this.authRefs.register.name.second}
                                     onChange={this.unicorn.onFollow}
                                     onBlur={this.unicorn.onBlur}
                                     inputClassName="name-input"
                                     type="text"
+                                    name="surname"
                                     placeholder="Иван"
                                 />
                             </label>
@@ -288,30 +363,34 @@ export default class Header extends React.Component {
                                 Отчество
                                 <span className="required">*</span>
                                 <UnicornFollowInput
+                                    inputRef={this.authRefs.register.name.middle}
                                     onChange={this.unicorn.onFollow}
                                     onBlur={this.unicorn.onBlur}
                                     inputClassName="middle-name-input"
                                     type="text"
+                                    name="middlename"
                                     placeholder="Иванович"
                                 />
                             </label>
                             <label className="birth-date-label">
                                 Дата рождения
                                 <span className="required">*</span>
-                                <input type="text" className="datepicker-here" />
+                                <input ref={this.authRefs.register.birthdate} type="date" name="birthdate" className="datepicker-here" />
                             </label>
                             <label className="email-label">
                                 Адрес электронной почты
                                 <span className="required">*</span>
                                 <UnicornFollowInput
+                                    inputRef={this.authRefs.register.email}
                                     onChange={this.unicorn.onFollow}
                                     onBlur={this.unicorn.onBlur}
                                     inputClassName="email-input"
-                                    type="text"
+                                    type="email"
+                                    name="email"
                                     placeholder="example@gmail.com"
                                 />
                             </label>
-                            <button className="login-button">Регистрация</button>
+                            <button className="login-button" onClick={this.doRegister}>Регистрация</button>
                         </div>
                     </div>
                 </div>

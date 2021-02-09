@@ -12,7 +12,9 @@ export default class DBProvider {
     static getArrayPromise = address => this.createPromise(`/api/${address}`, []);
     static getAlbumList = () => this.getArrayPromise("albums");
     static getEventList = () => this.getArrayPromise("events");
-    static getPostList = () => this.getArrayPromise("posts");
+    static getPostList = (params = "") => this.getArrayPromise(`posts${params}`);
+    static getPostCounts = () => this.getObjectPromise(`posts/counts`);
+    static getPostStats = () => this.getObjectPromise(`posts/stats`);
 
     static getObjectPromise = address => this.createPromise(`/api/${address}`, {});
     static getAlbumDetails = id => this.getObjectPromise(`albums/${id}`);

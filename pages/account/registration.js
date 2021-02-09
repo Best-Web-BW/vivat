@@ -1,39 +1,40 @@
 import ProfileMenu from "../../components/common/ProfileMenu";
-import Select from 'react-select';
-import makeAnimated from 'react-select/animated';
-import { css, cx } from '@emotion/css';
+import Select from "react-select";
+// import makeAnimated from "react-select/animated";
+// import { css, cx } from "@emotion/css";
 
 const categoryOptions = [
-    { value: 'chocolate', label: 'Скачки белых лошадей' },
-    { value: 'strawberry', label: 'Гарцующий пони' },
-    { value: 'vanilla', label: 'Самые быстрые скакуны' },
-    { value: 'vanilla', label: 'Самая длинная грива' }
+    { value: "chocolate", label: "Скачки белых лошадей" },
+    { value: "strawberry", label: "Гарцующий пони" },
+    { value: "vanilla", label: "Самые быстрые скакуны" },
+    { value: "vanilla", label: "Самая длинная грива" }
 ]
 
 const groupStyles = {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  };
-  const groupBadgeStyles = {
-    backgroundColor: '#EBECF0',
-    borderRadius: '2em',
-    color: '#172B4D',
-    display: 'inline-block',
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between"
+};
+
+const groupBadgeStyles = {
+    backgroundColor: "#EBECF0",
+    borderRadius: "2em",
+    color: "#172B4D",
+    display: "inline-block",
     fontSize: 12,
-    fontWeight: 'normal',
-    lineHeight: '1',
+    fontWeight: "normal",
+    lineHeight: "1",
     minWidth: 1,
-    padding: '0.16666666666667em 0.5em',
-    textAlign: 'center',
-  };
+    padding: "0.16666666666667em 0.5em",
+    textAlign: "center"
+};
   
-  const formatGroupLabel = data => (
+const formatGroupLabel = data => (
     <div style={groupStyles}>
-      <span>{data.label}</span>
-      <span style={groupBadgeStyles}>{data.options.length}</span>
+        <span>{data.label}</span>
+        <span style={groupBadgeStyles}>{data.options.length}</span>
     </div>
-  );
+);
 
 
 export default function Registration() {
@@ -48,26 +49,13 @@ export default function Registration() {
                     <div className="registration-element">
                         <span className="required">*</span>
                         <p className="registration-element-title">Выбор события</p>
-                        {/* <select className="select-event" defaultValue="1">
-                            <option value="1">Скачки белых лошадей</option>
-                            <option value="2">Гарцующий пони</option>
-                            <option value="3">Самые быстрые скакуны</option>
-                            <option value="4">Самая длинная грива</option>
-                        </select> */}
                         <Select
-                                    // defaultValue={colourOptions[1]}
-                                    options={categoryOptions}
-                                    formatGroupLabel={formatGroupLabel}
-                                    theme={theme => ({
-                                        ...theme,
-                                        borderRadius: 0,
-                                        colors: {
-                                          ...theme.colors,
-                                          primary: '',
-                                        },
-                                      })}
-                                      placeholder='Выберите из списка'
-                                />
+                            // defaultValue={colourOptions[1]}
+                            options={categoryOptions}
+                            formatGroupLabel={formatGroupLabel}
+                            theme={theme => ({ ...theme, borderRadius: 0, colors: { ...theme.colors, primary: "" } })}
+                            placeholder="Выберите из списка"
+                        />
                     </div>
                     <div className="registration-element">
                         <span className="required">*</span>
