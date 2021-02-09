@@ -1,22 +1,24 @@
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import ContentHeader from "../components/common/ContentHeader";
 import AlbumListProvider from "../utils/providers/AlbumListProvider";
-import Link from "next/link";
+import { AdminVariableComponent } from "../utils/providers/AuthProvider";
+import { reformatDate } from "../utils/common";
 
 function Album({ id, image, date, title }) {
     return (
         <Link href={`/gallery/${id}`}>
             <a className="album-list-element">
-                {/* THIS IS AMAZING ADMIN BUTTONS FOR ADMIN DEALS */}
-                <div className ="gallery-edit-wrapper">
-                    <span className="edit"></span>  
-                    <button className="delete">X</button>
-                </div>
-                {/* ABOVE IS AMAZING ADMIN BUTTONS FOR ADMIN DEALS */}
+                {<AdminVariableComponent>
+                    <div className ="gallery-edit-wrapper">
+                        <span className="edit"></span>  
+                        <button className="delete">X</button>
+                    </div>    
+                </AdminVariableComponent>}
                 <img src={`/images/gallery/album/webp/${image}.webp`} alt="" width="100%" />
                 <div className="flex-row">
                     <div className="album-list-date">
-                        <p>{ global.reformatDate(date) }</p>
+                        <p>{ reformatDate(date) }</p>
                     </div>
                     <div className="album-list-title">
                         <p>{ title }</p>
@@ -52,56 +54,56 @@ export default function Gallery() {
             <div className="gallery-content-wrapper content-block">
                 <div className="gallery block-title">
                     <h2>Альбомы</h2>
-                    {/* AMAZING BIG ADMIN BUTTON BELOW */}
-                    <button className="add-gallery-button">
-                        <p className="add-gallery-button-description">Добавить галерею</p>
-                        <p className="add-gallery-button-icon">+</p>
-                    </button>
-                    {/* AMAZING BIG ADMIN BUTTON ABOVE */}
+                    {<AdminVariableComponent>
+                        <button className="add-gallery-button">
+                            <p className="add-gallery-button-description">Добавить галерею</p>
+                            <p className="add-gallery-button-icon">+</p>
+                        </button>
+                    </AdminVariableComponent>}
                 </div>
-                {/* ONLY FOR ADMIN, IT"S AN ADMIN PANEL BELOW*/}
-                <div className="add-gallery-modal">
-                    <div className="add-gallery-modal-content">
-                        <span className="close-modal">X</span>
-                        <h2>Добавить альбом</h2>
-                        <div className="add-gallery-modal-nameinput">
-                            <label htmlFor="">Название</label>
-                            <input type="text" placeholder="Введите название"/>
-                        </div>
-                        <div className="add-gallery-modal-choose-cover-wrapper">
-                            <div className="add-gallery-modal-preview-cover">
-                                <img src="/images/gallery/album/webp/akshat-vats-l_GAWl6q7LI-unsplash.webp" alt="" width="100%"/>
+                {<AdminVariableComponent>
+                    <div className="add-gallery-modal">
+                        <div className="add-gallery-modal-content">
+                            <span className="close-modal">X</span>
+                            <h2>Добавить альбом</h2>
+                            <div className="add-gallery-modal-nameinput">
+                                <label htmlFor="">Название</label>
+                                <input type="text" placeholder="Введите название"/>
                             </div>
-                            <button className="add-gallery-modal-choose-cover">Выберите обложку альбома</button>
+                            <div className="add-gallery-modal-choose-cover-wrapper">
+                                <div className="add-gallery-modal-preview-cover">
+                                    <img src="/images/gallery/album/webp/akshat-vats-l_GAWl6q7LI-unsplash.webp" alt="" width="100%"/>
+                                </div>
+                                <button className="add-gallery-modal-choose-cover">Выберите обложку альбома</button>
+                            </div>
+                            <div className="add-gallery-modal-choose-img-wrapper">
+                                <button className="add-gallery-modal-choose-imgs">Выберите фотографии</button>
+                                <div className="add-gallery-modal-imgs-list">
+                                    <ul>
+                                        <li>
+                                            <img src="/images/gallery/album/webp/akshat-vats-l_GAWl6q7LI-unsplash.webp" alt="" width="100%"/>
+                                            <button className="delete">X</button>
+                                        </li>
+                                        <li>
+                                            <img src="/images/gallery/album/webp/akshat-vats-l_GAWl6q7LI-unsplash.webp" alt="" width="100%"/>
+                                            <button className="delete">X</button>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <button className="add-gallery-modal-save-button">Сохранить</button>
                         </div>
-                        <div className="add-gallery-modal-choose-img-wrapper">
-                            <button className="add-gallery-modal-choose-imgs">Выберите фотографии</button>
-                            <div className="add-gallery-modal-imgs-list">
+                    </div>
+                    <div className="edit-gallery-modal">
+                        <div className="edit-gallery-modal-content">
+                            <span className="close-modal">X</span>
+                            <h2>Изменить альбом</h2>
+                            <div className="edit-gallery-modal-name-wrapper">
+                                <label htmlFor="">Название:</label>
+                                <input type="text" placeholder="Альбом с лошадьми, красивыми"/>
+                            </div>
+                            <div className="edit-gallery-modal-imgs-wrapper">
                                 <ul>
-                                    <li>
-                                        <img src="/images/gallery/album/webp/akshat-vats-l_GAWl6q7LI-unsplash.webp" alt="" width="100%"/>
-                                        <button className="delete">X</button>
-                                    </li>
-                                    <li>
-                                        <img src="/images/gallery/album/webp/akshat-vats-l_GAWl6q7LI-unsplash.webp" alt="" width="100%"/>
-                                        <button className="delete">X</button>
-                                    </li>
-                                    <li>
-                                        <img src="/images/gallery/album/webp/akshat-vats-l_GAWl6q7LI-unsplash.webp" alt="" width="100%"/>
-                                        <button className="delete">X</button>
-                                    </li>
-                                    <li>
-                                        <img src="/images/gallery/album/webp/akshat-vats-l_GAWl6q7LI-unsplash.webp" alt="" width="100%"/>
-                                        <button className="delete">X</button>
-                                    </li>
-                                    <li>
-                                        <img src="/images/gallery/album/webp/akshat-vats-l_GAWl6q7LI-unsplash.webp" alt="" width="100%"/>
-                                        <button className="delete">X</button>
-                                    </li>
-                                    <li>
-                                        <img src="/images/gallery/album/webp/akshat-vats-l_GAWl6q7LI-unsplash.webp" alt="" width="100%"/>
-                                        <button className="delete">X</button>
-                                    </li>
                                     <li>
                                         <img src="/images/gallery/album/webp/akshat-vats-l_GAWl6q7LI-unsplash.webp" alt="" width="100%"/>
                                         <button className="delete">X</button>
@@ -112,88 +114,35 @@ export default function Gallery() {
                                     </li>
                                 </ul>
                             </div>
+                            <div className="add-gallery-modal-choose-img-wrapper">
+                                <button className="add-gallery-modal-choose-imgs">Выберите фотографии</button>
+                            </div>
+                            <button className="edit-gallery-modal-save-button">Сохарнить</button>
                         </div>
-                        <button className="add-gallery-modal-save-button">Сохранить</button>
                     </div>
-                </div>
-                {/* ONLY FOR ADMIN, IT"S AN ADMIN PANEL ABOVE*/}
-                {/* HERE ADMIN MAY CHANGE GALLERIES AND ALBOMS */}
-                <div className="edit-gallery-modal">
-                    <div className="edit-gallery-modal-content">
-                        <span className="close-modal">X</span>
-                        <h2>Изменить альбом</h2>
-                        <div className="edit-gallery-modal-name-wrapper">
-                            <label htmlFor="">Название:</label>
-                            <input type="text" placeholder="Альбом с лошадьми, красивыми"/>
+                    <div className="warning-delete-modal">
+                        <div className="warning-delete-modal-content">
+                            <p>Вы уверены, что хотите удалить этот альбом безвовзратно?</p>
+                            <button className="warning-delete-button">Да</button><button className="warning-delete-button-no">Нет</button>
                         </div>
-                        <div className="edit-gallery-modal-imgs-wrapper">
-                            <ul>
-                                <li>
-                                    <img src="/images/gallery/album/webp/akshat-vats-l_GAWl6q7LI-unsplash.webp" alt="" width="100%"/>
-                                    <button className="delete">X</button>
-                                </li>
-                                <li>
-                                    <img src="/images/gallery/album/webp/akshat-vats-l_GAWl6q7LI-unsplash.webp" alt="" width="100%"/>
-                                    <button className="delete">X</button>
-                                </li>
-                                <li>
-                                    <img src="/images/gallery/album/webp/akshat-vats-l_GAWl6q7LI-unsplash.webp" alt="" width="100%"/>
-                                    <button className="delete">X</button>
-                                </li>
-                                <li>
-                                    <img src="/images/gallery/album/webp/akshat-vats-l_GAWl6q7LI-unsplash.webp" alt="" width="100%"/>
-                                    <button className="delete">X</button>
-                                </li>
-                                <li>
-                                    <img src="/images/gallery/album/webp/akshat-vats-l_GAWl6q7LI-unsplash.webp" alt="" width="100%"/>
-                                    <button className="delete">X</button>
-                                </li>
-                                <li>
-                                    <img src="/images/gallery/album/webp/akshat-vats-l_GAWl6q7LI-unsplash.webp" alt="" width="100%"/>
-                                    <button className="delete">X</button>
-                                </li>
-                                <li>
-                                    <img src="/images/gallery/album/webp/akshat-vats-l_GAWl6q7LI-unsplash.webp" alt="" width="100%"/>
-                                    <button className="delete">X</button>
-                                </li>
-                                <li>
-                                    <img src="/images/gallery/album/webp/akshat-vats-l_GAWl6q7LI-unsplash.webp" alt="" width="100%"/>
-                                    <button className="delete">X</button>
-                                </li>
-                            </ul>
+                    </div>
+                    <div className="warning-success-modal">
+                        <div className="warning-success-modal-content">
+                            <span className="close-modal">X</span>
+                            <p>Альбом успешно создан!</p>
+                            <button className="warrning-success-modal-button">Ок</button>
                         </div>
-                        <div className="add-gallery-modal-choose-img-wrapper">
-                            <button className="add-gallery-modal-choose-imgs">Выберите фотографии</button>
+                    </div>
+                    <div className="warning-success-modal">
+                        <div className="warning-success-modal-content">
+                            <span className="close-modal">X</span>
+                            <p>Альбом успешно изменен!</p>
+                            <button className="warrning-success-modal-button">Ок</button>
                         </div>
-                        <button className="edit-gallery-modal-save-button">Сохарнить</button>
                     </div>
-                </div>
-                {/* ABOVE ADMIN MAY CHANGE GALLERIES AND ALBOMS */}
-                {/* THESE ARE WARNINGS ABOUT DELETE AND SUCCESS */}
-                <div className="warning-delete-modal">
-                    <div className="warning-delete-modal-content">
-                        <p>Вы уверены, что хотите удалить этот альбом безвовзратно?</p>
-                        <button className="warning-delete-button">Да</button><button className="warning-delete-button-no">Нет</button>
-                    </div>
-                </div>
-                <div className="warning-success-modal">
-                    <div className="warning-success-modal-content">
-                        <span className="close-modal">X</span>
-                        <p>Альбом успешно создан!</p>
-                        <button className="warrning-success-modal-button">Ок</button>
-                    </div>
-                </div>
-                <div className="warning-success-modal">
-                    <div className="warning-success-modal-content">
-                        <span className="close-modal">X</span>
-                        <p>Альбом успешно изменен!</p>
-                        <button className="warrning-success-modal-button">Ок</button>
-                    </div>
-                </div>
-                {/* ABOVE ARE WARNINGS ABOUT DELETE AND SUCCESS */}
+                </AdminVariableComponent>}
                 <div className="album-list-container">
                     { albums.map(album => <Album key={album.id} { ...album } />) }
-                    
                 </div>
             </div>
         </div>

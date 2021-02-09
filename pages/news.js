@@ -6,6 +6,7 @@ import makeAnimated from "react-select/animated";
 import ContentHeader from "../components/common/ContentHeader";
 import DBProvider from "../utils/providers/DBProvider";
 import PostListProvider from "../utils/providers/PostListProvider";
+import AuthProvider, { AdminVariableComponent } from "../utils/providers/AuthProvider";
 // import { css, cx } from "@emotion/css"
 
 const options = [
@@ -60,17 +61,19 @@ export function Tag({ name }) {
     );
 }
 
-function Post({ id, title, paragraphs, tags }) {
+function Post({ id, title, paragraphs, tags, edit, remove }) {
     const [opened, setOpened] = useState(false);
     const narrow = () => setOpened(false);
     const expand = () => setOpened(true);
 
     return (
         <div className="blog-card">
-            <div className ="article-edit-wrapper">
-                <span className="edit"></span>  
-                <button className="delete">X</button>
-            </div>
+            {<AdminVariableComponent>
+                <div className ="article-edit-wrapper">
+                    <span className="edit" onClick={() => edit(id)}></span>  
+                    <button className="delete" onClick={() => remove(id)}>X</button>
+                </div>
+            </AdminVariableComponent>}
             <div className="blog-img">
                 { paragraphs && <img src={`/images/news/${paragraphs[0].image}.jpg`} alt="" width="100%" /> }
             </div>
@@ -188,6 +191,25 @@ function News({ query: { categories: _categories, tags: _tags, search: _search }
             text: "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Reprehenderit maxime hic repellat! Dolores culpa quae et debitis? Tenetur aut ut ab harum, repellendus et ducimus eos provident praesentium totam! Ullam enim sunt ipsum? Nam, dolor ex placeat dignissimos molestiae repellendus quaerat velit maxime aperiam vel voluptatum perspiciatis praesentium officiis quidem maiores minus consectetur nesciunt in deleniti ipsa quas ea! Incidunt, officia! Labore nostrum, dolor ut voluptatum adipisci, distinctio temporibus dignissimos, tempora praesentium architecto aut quia! Fuga atque nihil eius, cumque tenetur in quo quibusdam rerum repellendus, magnam veniam obcaecati consequuntur ipsam necessitatibus perspiciatis iure voluptatum asperiores debitis quasi fugiat delectus ullam ducimus? Quam repellendus reiciendis nisi corrupti error rerum ullam pariatur laborum eum assumenda repudiandae maiores beatae, velit libero tenetur perspiciatis, atque saepe est ut, id voluptas voluptatibus tempore commodi molestias. Inventore quam iusto obcaecati quibusdam, corrupti omnis ipsam consectetur dolorum non nesciunt possimus impedit suscipit amet accusamus, explicabo voluptates. Alias nostrum aperiam repellendus, numquam, quis quidem hic pariatur voluptatum omnis autem sit architecto optio dicta provident, officiis odio quisquam temporibus excepturi sunt voluptatem consectetur eos dolore harum animi. Voluptate, a delectus? Harum eius, expedita eos aut aliquam quis aspernatur exercitationem veritatis, dolorem sunt ducimus eveniet similique nam cum, culpa voluptatem consectetur voluptatum quisquam itaque distinctio consequatur. Repudiandae nihil deleniti ipsam vel aut consequatur odit reiciendis veniam ad autem voluptatum alias pariatur et quia, ab laborum consectetur earum, delectus voluptas. Perferendis neque ratione magni voluptatibus veniam debitis consequatur tempore eos autem nihil impedit magnam ipsa, molestias amet aspernatur facilis iste!"
         }
     ];
+
+    const [isPostEditorOpened, setIsPostEditorOpened] = useState(false);
+    const [postEditorAction, setPostEditorAction] = useState("create");
+    const [postEditorData, setPostEditorData] = useState();
+    const switchPostEditor = (opened, action, data) => {
+        setIsPostEditorOpened(opened);
+        setPostEditorAction(action);
+        setPostEditorData(data);
+    }
+
+    const editPost = id => {
+        const p = posts.find(post => post.id === id);
+        console.log(id, p);
+        switchPostEditor(true, "edit", p);
+    }
+    const removePost = async id => {
+        const response = await PostListProvider.removePost(id);
+        alert(response.success ? "Новость успешно удалена" : response.reason);
+    }
     
     return (
         <div>
@@ -212,7 +234,7 @@ function News({ query: { categories: _categories, tags: _tags, search: _search }
                     </div>
                 </div>
                 <div className="left-column">
-                    { posts.map(post => <Post key={post.id} { ...post } paragraphs={paragraphs} />) }
+                    { posts.map(post => <Post key={post.id} { ...post } paragraphs={paragraphs} edit={editPost} remove={removePost} />) }
                 </div>
                 <div className="right-column">
                     <div className="blog-menu-wrapper">
@@ -237,69 +259,16 @@ function News({ query: { categories: _categories, tags: _tags, search: _search }
                                 </div>
                             </div>
                         </div>
-                        <div className="blog-menu-section admin">
-                            <button className="blog-menu-section-add-article-button">Создать новость</button>
-                        </div>
+                        {<AdminVariableComponent>
+                            <div className="blog-menu-section admin">
+                                <button className="blog-menu-section-add-article-button" onClick={() => switchPostEditor(true, "create")}>Создать новость</button>
+                            </div>
+                        </AdminVariableComponent>}
                     </div>
                 </div>
-                <div className="add-article-modal">
-                    <div className="add-article-modal-content">
-                        <div className="add-article-modal-header">
-                            <h2>Создать новость/изменить{/* Создать/изменить выбирается исходя из того, что делает пользователь - изменяет статью или создает новую */}</h2>
-                        </div>
-                        <div className="add-article-modal-body">
-                            <div className="add-article-modal-text-editor-wrapper">
-                                <textarea name="" id="" cols="30" rows="10" placeholder="введите что-нибудь интересное"></textarea>
-                            </div>
-                        </div>
-                        <div className="add-article-modal-footer">
-                            <div className="col-1-3">
-                                <p>Выберите категорию</p>
-                                <Select
-                                    // defaultValue={colourOptions[1]}
-                                    options={categoryOptions}
-                                    formatGroupLabel={formatGroupLabel}
-                                    theme={theme => ({ ...theme, borderRadius: 0, colors: { ...theme.colors, primary: "" } })}
-                                    placeholder="Выберите из списка"
-                                />
-                                <div className="add-article-add-new-category"> 
-                                    <input type="text" placeholder="Добавить категорию"/>
-                                    <button className="add-article-add-new-category-button">Добавить</button>
-                                </div>
-                            </div>
-                            <div className="col-1-3">
-                                <p>Выберите ключевые слова</p>
-                                <Select 
-                                    closeMenuOnSelect={false}
-                                    components={animatedComponents}
-                                    isMulti={true}
-                                    options={options}
-                                    // styles={customStyles}
-                                    theme={theme => ({ ...theme, borderRadius: 0, colors: { ...theme.colors, primary: "" } })}
-                                    placeholder="Выберите из списка"
-                                />
-                                <div className="add-article-add-new-keyword"> 
-                                    <input type="text" placeholder="Добавить ключевое слово"/>
-                                    <button className="add-article-add-new-keyword-button">Добавить</button>
-                                </div>
-                            </div>
-                            <div className="col-1-3">
-                                <div className="col-1-2" style={{"display" : "none"}}>
-                                    <div className="add-article-choose-visibility">
-                                        <p>Видимость</p>
-                                        <label htmlFor="chooseVisibility-yes">Видимый</label>
-                                        <input type="radio" name="chooseVisibility" id="chooseVisibility-yes"/>
-                                        <input type="radio" name="chooseVisibility" id="chooseVisibility-no"/>
-                                        <label htmlFor="chooseVisibility-no">Скрытый</label>
-                                    </div>
-                                </div>
-                                <div className="col-1-2">
-                                    <button className="add-article-save-button">Сохранить</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                {<AdminVariableComponent>
+                    <PostEditor opened={isPostEditorOpened} action={postEditorAction} postData={postEditorData} close={() => setIsPostEditorOpened(false)} />
+                </AdminVariableComponent>}
             </div>
         </div>
     );
@@ -308,3 +277,93 @@ function News({ query: { categories: _categories, tags: _tags, search: _search }
 News.getInitialProps = ({ query }) => ({ query });
 
 export default News;
+
+export function PostEditor({ opened, action, postData, close }) {
+    const [actionMap] = useState({ "create": ["Создать", () => setPost(undefined)], "edit": ["Изменить", (data) => setPost(data)] });
+    const [post, setPost] = useState();
+    
+    useEffect(() => opened && actionMap[action][1](postData), [opened]);
+
+    const crawl = () => console.log("Data crawled");
+    const createPost = () => console.log("Post created");
+
+    return (
+        <div className={`add-article-modal ${opened && "opened"}`}>
+            <div className="add-article-modal-content">
+                <div className ="article-edit-wrapper">
+                    <button className="delete" onClick={close}>X</button>
+                </div>
+                <div className="add-article-modal-header">
+                    <h2>{actionMap[action][0]} новость</h2>
+                </div>
+                <div className="add-article-modal-body">
+                    <div className="edit-event-modal-name">
+                        <label>
+                            Название события
+                            <input type="text" placeholder="Введите название события" defaultValue={post ? post.title : ""} />
+                        </label>
+                    </div>
+                    <div className="add-article-modal-text-editor-wrapper">
+                        <textarea cols="30" rows="10" placeholder="введите что-нибудь интересное" />
+                    </div>
+                </div>
+                <div className="add-article-modal-footer">
+                    <div className="col-1-3">
+                        <p>Введите категорию</p>
+                        {/* <p>Выберите категорию</p> */}
+                        {/* <Select
+                            // defaultValue={colourOptions[1]}
+                            options={categoryOptions}
+                            formatGroupLabel={formatGroupLabel}
+                            theme={theme => ({ ...theme, borderRadius: 0, colors: { ...theme.colors, primary: "" } })}
+                            placeholder="Выберите из списка"
+                        /> */}
+                        <div className="add-article-add-new-category"> 
+                            <input type="text" placeholder="Категория" defaultValue={post ? post.category : ""} />
+                            {/* <input type="text" placeholder="Добавить категорию"/>
+                            <button className="add-article-add-new-category-button">Добавить</button> */}
+                        </div>
+                    </div>
+                    <div className="col-1-3">
+                        <p>Выберите ключевые слова</p>
+                        <Select 
+                            closeMenuOnSelect={false}
+                            components={animatedComponents}
+                            isMulti={true}
+                            options={options}
+                            // styles={customStyles}
+                            theme={theme => ({ ...theme, borderRadius: 0, colors: { ...theme.colors, primary: "" } })}
+                            placeholder="Выберите из списка"
+                        />
+                        <div className="add-article-add-new-keyword"> 
+                            <input type="text" placeholder="Добавить ключевое слово"/>
+                            <button className="add-article-add-new-keyword-button">Добавить</button>
+                        </div>
+                    </div>
+                    <div className="col-1-3">
+                        <div className="col-1-2" style={{"display" : "none"}}>
+                            <div className="add-article-choose-visibility">
+                                <p>Видимость</p>
+                                {/* <label>
+                                    Видимый&nbsp;
+                                    <input name="visibility" type="radio" />
+                                </label>
+                                <label>
+                                    <input name="visibility" type="radio" />
+                                    &nbsp;Скрытый
+                                </label> */}
+                                {/* <label htmlFor="chooseVisibility-yes">Видимый</label>
+                                <input type="radio" name="chooseVisibility" id="chooseVisibility-yes"/>
+                                <input type="radio" name="chooseVisibility" id="chooseVisibility-no"/>
+                                <label htmlFor="chooseVisibility-no">Скрытый</label> */}
+                            </div>
+                        </div>
+                        <div className="col-1-2">
+                            <button className="add-article-save-button" onClick={() => createPost(crawl())}>Сохранить</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+}
