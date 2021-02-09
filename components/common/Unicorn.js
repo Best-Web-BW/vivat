@@ -77,7 +77,7 @@ let config = {
     }
 };
 
-export class Unicorn extends React.Component {
+export default class Unicorn extends React.Component {
     constructor() {
         super();
         global.unicorn = this;
@@ -195,8 +195,7 @@ export class Unicorn extends React.Component {
     render() { return <img ref={this.imgRef} alt="" width="100%" />; }
 }
 
-export function UnicornFollowInput({ inputClassName, type, placeholder, onChange, onBlur, spanClassName }) {
-    const inputRef = useRef();
+export function UnicornFollowInput({ inputRef, inputClassName, type, name, placeholder, onChange, onBlur, spanClassName }) {
     const spanRef = useRef();
     const width = useRef();
 
@@ -212,21 +211,19 @@ export function UnicornFollowInput({ inputClassName, type, placeholder, onChange
     return (
         <div className="unicorn-follow-input">
             <input
-                ref={inputRef} className={inputClassName ?? ""}
-                type={type ?? ""} placeholder={placeholder ?? ""}
-                onFocus={updateText} onChange={updateText} onBlur={onBlur}
+                ref={inputRef} className={inputClassName}
+                {...{ type, name, placeholder, onChange: updateText, onFocus: updateText, onBlur}}
             />
-            <span ref={spanRef} className={spanClassName ?? ""} style={{ position: "absolute" }} />
+            <span ref={spanRef} className={spanClassName} style={{ position: "absolute" }} />
         </div>
     );
 }
 
-export function UnicornShyInput({ inputClassName, type, placeholder, onFocus, onBlur }) {
+export function UnicornShyInput({ inputRef, inputClassName, type, name, placeholder, onFocus, onBlur }) {
     return (
         <input
-            className={`unicorn-shy-input ${inputClassName ?? ""}`}
-            type={type ?? ""} placeholder={placeholder ?? ""}
-            onFocus={onFocus} onBlur={onBlur}
+            ref={inputRef} className={`unicorn-shy-input ${inputClassName}`}
+            {...{ name, type, placeholder, onFocus, onBlur }}
         />
     );
 }

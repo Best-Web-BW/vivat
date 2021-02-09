@@ -737,7 +737,7 @@ header {
     font-size: 90%;
 }
 
-.profiel-preview-button {
+.profile-preview-button {
     font-size: 100%;
     color: whitesmoke;
     background-color: transparent;
@@ -748,7 +748,7 @@ header {
     padding: 1vh;
 }
 
-.profiel-preview-button:hover {
+.profile-preview-button:hover {
     color       : #ff0a0a;
     border-color: #ff0a0a;
     box-shadow: 0 0 10px 1px #ff0a0a;
