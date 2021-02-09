@@ -73,7 +73,7 @@ export default function EventSlider({ containerClass }) {
     return (
         <div className={containerClass}>
             <div className="day-events-title">
-                <p><span>События на</span>&nbsp;<span style={{ color: "#797878d1" }}>{ global.reformatDate && global.reformatDate(new Date())  }</span></p>
+                <p><span>События на</span>&nbsp;<span style={{ color: "#797878d1" }}>{ reformatDate(new Date())  }</span></p>
             </div>
             <div className="events-navigation">
                 <div className="prev" onClick={scrollLeft}>

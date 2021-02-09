@@ -1,5 +1,6 @@
 import ContentHeader from "../components/common/ContentHeader";
 import EventSlider from "../components/sliders/EventSlider";
+import EventCalendar from "../components/common/EventCalendar";
 
 export default function Events() {
     return (
@@ -20,7 +21,9 @@ export default function Events() {
                 <div className="block-title">
                     <h2>Календарь событий</h2>
                 </div>
-                <div id="calendar">CALENDAR</div>
+                <div className="event-calendar-wrapper">
+                    <EventCalendar />
+                </div>
             </div>
             <div className="day-events-content-wrapper content-block">
                 <EventSlider containerClass="day-events-container" />

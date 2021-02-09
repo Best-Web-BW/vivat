@@ -55,7 +55,7 @@ const animatedComponents = makeAnimated();
 
 export function Tag({ name }) {
     return (
-        <Link href={`/news/${name}`}>
+        <Link href={`/news?tags=${name}`}>
             <a className="blog-page-keywords">{ name }</a>
         </Link>
     );
