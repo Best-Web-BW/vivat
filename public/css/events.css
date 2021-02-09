@@ -29,7 +29,9 @@
 }
 
 .calendar-wrapper {
-    height: auto;
+    height: 94vhs;
+    display: flex;
+    flex-wrap: wrap;
 }
 
 #calendar {

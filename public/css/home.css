@@ -133,7 +133,9 @@
 /* second section */
 
 .calendar-wrapper {
-    height: auto;
+    height: 94vh;
+    display: flex;
+    flex-wrap: wrap;
 }
 
 #calendar {
@@ -141,7 +143,29 @@
     margin: 0 auto;
 }
 
-.fc .fc-toolbar.fc-header-toolbar {
+.event-calendar-wrapper {
+    height: 80%;
+    width: 80%;
+    margin: 0 auto;
+}
+
+.rbc-calendar {
+    color: whitesmoke;
+}
+
+.rbc-toolbar button {
+    color: whitesmoke !important;
+}
+
+.rbc-off-range-bg {
+    background: #ff0a0a2e !important;
+}
+
+.rbc-today {
+    background: transparent !important;
+}
+
+/* .fc .fc-toolbar.fc-header-toolbar {
     color: whitesmoke;
 }
 
@@ -219,7 +243,7 @@
 .fc-theme-standard td, .fc-theme-standard th {
     border: 3px solid #4040406b;
     border-right-width: 0;
-}
+} */
 
 /* second section end */
 

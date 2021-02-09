@@ -58,11 +58,13 @@ export default function Home() {
                 </div>
                 <EventSlider containerClass="events-wrapper" />
             </div>
-            <div className="calendar-wrapper content-block" style={{ height: "50vh" }}>
+            <div className="calendar-wrapper content-block">
                 <div className="block-title">
                     <h2>{translator.get("calendar_title")}</h2>
                 </div>
-                <EventCalendar />
+                <div className="event-calendar-wrapper">
+                    <EventCalendar />
+                </div>
             </div>
             <ServicesList containerClass="services-wrapper" />
         </div>
