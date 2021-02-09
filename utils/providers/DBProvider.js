@@ -20,4 +20,5 @@ export default class DBProvider {
     static getAlbumDetails = id => this.getObjectPromise(`albums/${id}`);
     static getEventDetails = id => this.getObjectPromise(`events/${id}`);
     static getPostDetails = id => this.getObjectPromise(`posts/${id}`);
+    static removePost = id => this.getObjectPromise(`posts/${id}?remove=1`);
 }

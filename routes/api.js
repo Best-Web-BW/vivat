@@ -78,8 +78,20 @@ router.get("/posts/stats", async (_, res) => {
 });
 
 router.get("/posts/:id", async (req, res) => {
-    const result = await posts.findOne({ id: +req.params.id }, { projection: { _id: false } });
-    res.json(result);
+    const { id } = req.params;
+    const { remove } = req.query;
+    let result;
+
+    try { result = await posts.findOne({ id: +id }); }
+    catch(e) { return res.json({ success: false, reason: "no_post_found" }); }
+
+    if(!remove) res.json({ success: true, result: { ...result, _id: undefined } });
+    else {
+        try {
+            //result = await posts.remove({ _id: result._id });
+            res.json({ success: true });
+        } catch(e) { res.json({ success: false, reason: "unknown_error" }); }
+    }
 });
 
 router.get("/cat", (_, res) => {
