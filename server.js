@@ -1,4 +1,6 @@
 const forceSSL = require("express-force-ssl");
+const cookieParser = require("cookie-parser");
+const bodyParser = require("body-parser");
 const server = require("express")();
 const https = require("https");
 const http = require("http");
@@ -12,23 +14,28 @@ const handle = app.getRequestHandler();
 const HTTPS_PORT = process.env.HTTPS_PORT || 443;
 const HTTP_PORT = process.env.HTTP_PORT || 80;
 
-const api = require('./routes/api.js');
+const api = require("./routes/api.js");
+const auth = require("./routes/auth.js");
 
 (async () => {
 	try {
 		await app.prepare();
 
         const options = {
-            key: fs.readFileSync("ssl/private.key"),
+            ca: fs.readFileSync("ssl/ca.crt"),
             cert: fs.readFileSync("ssl/cert.crt"),
-            ca: fs.readFileSync("ssl/ca.crt")
+            key: fs.readFileSync("ssl/private.key")
         }
         
-        https.createServer(options, server).listen(HTTPS_PORT);
         http.createServer(server).listen(HTTP_PORT);
+        https.createServer(options, server).listen(HTTPS_PORT);
 
         server.use(forceSSL);
+        server.use(cookieParser());
+        server.use(bodyParser.json());
+        server.use(bodyParser.urlencoded({ extended: false }));
 		
+        server.use("/api/auth", auth);
 		server.use("/api", api);
 		server.get("*", (request, response) => handle(request, response));
 

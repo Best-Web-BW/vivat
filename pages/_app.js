@@ -1,5 +1,6 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Layout from "../components/layout";
+import AuthProvider from "../utils/providers/AuthProvider";
 
 export default function MyApp({ Component, pageProps }) {
     useEffect(() => {
@@ -8,6 +9,24 @@ export default function MyApp({ Component, pageProps }) {
         global.sleep = (delay) => new Promise(resolve => setTimeout(resolve, delay));
         global.reformatDate = (rawDate) => new Date(rawDate).toLocaleString("ru", { day: "numeric", month: "numeric", year: "numeric" });
     }, []);
+
+    const [auth, setAuth] = useState(false);
+    global.auth = () => setAuth(prev => !prev);
+
+    useEffect(() => {
+        console.log("Updated");
+        global.register = (email, name, birthdate) => AuthProvider.register(email, name, birthdate);
+        global.authenticate = (email, password) => AuthProvider.authenticate(email, password);
+        global.deauthenticate = () => AuthProvider.deauthenticate();
+        global.authorize = () => AuthProvider.authorize();
+        global.refreshTokens = () => AuthProvider.refreshTokens();
+        global.user = AuthProvider.userData;
+        global.accessKeyLifetime = AuthProvider.accessKeyLifetime;
+        global.refreshInterval = AuthProvider.refreshInterval;
+        global.refreshPreemption = AuthProvider.REFRESH_PREEMPTION;
+    }, [auth]);
+
+    useEffect(() => AuthProvider.refreshTokens(), []);
     
 	return (
 		<Layout>
