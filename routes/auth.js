@@ -130,4 +130,27 @@ router.post("/deauthenticate", async (req, res) => {
     users.updateOne({ _id: user._id }, { $set: { sessions } });
 });
 
+router.post("/change", async (req, res) => {
+    const { user_id: userID } = req.cookies;
+    console.log({ userID });
+
+    const { name: { first, second, middle }, birthdate, email, phone, address, sex } = req.body;
+    const updater = { name: { first, second, middle }, birthdate, email, phone, address, sex };
+
+    console.log("Updater", updater);
+
+    try {
+        const user = await users.findOne({ _id: new ObjectID(userID) });
+        console.log("User", user);
+
+        await users.updateOne({ _id: user._id }, { $set: updater });
+
+        const _user = { ...user, ...updater, sessions: undefined, password_hash: undefined };
+
+        console.log("New user", _user);
+
+        res.json({ status: "success", user: _user });
+    } catch(e) { res.json({ status: "error", reason: "unknown_error" }); }
+});
+
 module.exports = router;
