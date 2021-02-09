@@ -145,7 +145,7 @@
 
 .event-calendar-wrapper {
     height: 80%;
-    width: 80%;
+    width: 70%;
     margin: 0 auto;
 }
 
@@ -158,11 +158,23 @@
 }
 
 .rbc-off-range-bg {
-    background: #ff0a0a2e !important;
+    background: #8888882e !important;
 }
 
 .rbc-today {
     background: transparent !important;
+}
+
+.calendar-wrapper  .block-title{
+    width: 100%;
+}
+
+.rbc-row-segment {
+    max-width: 14.24% !important;
+}
+
+.rbc-event, .rbc-day-slot .rbc-background-event {
+    background-color: #800018 !important;
 }
 
 /* .fc .fc-toolbar.fc-header-toolbar {
