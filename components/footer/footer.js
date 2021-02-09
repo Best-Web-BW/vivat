@@ -1,9 +1,14 @@
 import Link from "next/link";
+import { YMaps, Map } from "react-yandex-maps";
 
 export default function Footer() {
 	return (
 		<footer className="footer-container">
-			<div id="map" className="footer-map-block">MAP</div>
+			<div id="map" className="footer-map-block">
+                <YMaps>
+                    <Map width="100%" height="100%" defaultState={{ center: [55.544469, 37.862529], zoom: 17 }} />
+                </YMaps>
+            </div>
 			<div className="footer-navigation-block">
 				<p className="footer-title">Навигация</p>
 				<ul className="footer-menu-list">
