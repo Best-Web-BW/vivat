@@ -1,5 +1,6 @@
 import ProfileMenu from "../../components/common/ProfileMenu";
 import Select from "react-select";
+import { AuthVariableComponent } from "../../utils/providers/AuthProvider";
 
 const categoryOptions = [
     { value: "chocolate", label: "По расписанию" },
@@ -35,135 +36,139 @@ const formatGroupLabel = data => (
 
 export default function MyEvents() {
     return (
-        <div className="profile-content content-block">
-            <ProfileMenu active="my-events" />
-            <div className="block-title">
-                <h2>Мои события</h2>
-            </div>
-            <div className="my-events-wrapper">
-                <div className="choose-date-my-events">
-                    <a className="choose-date-element active">21.03.2020</a>
-                    <a className="choose-date-element">03.03.2020</a>
-                    <a className="choose-date-element">01.02.2020</a>
+        <AuthVariableComponent>
+
+            <div className="profile-content content-block">
+                <ProfileMenu active="my-events" />
+                <div className="block-title">
+                    <h2>Мои события</h2>
                 </div>
-                <div className="my-events-container">
-                    <div className="my-events-sorting-container">
-                        <Select
-                            defaultValue={categoryOptions[0]}
-                            options={categoryOptions}
-                            formatGroupLabel={formatGroupLabel}
-                            theme={theme => ({ ...theme, borderRadius: 0, colors: { ...theme.colors, primary: "" } })}
-                            placeholder="Выберите из списка"
-                        />
+                <div className="my-events-wrapper">
+                    <div className="choose-date-my-events">
+                        <a className="choose-date-element active">21.03.2020</a>
+                        <a className="choose-date-element">03.03.2020</a>
+                        <a className="choose-date-element">01.02.2020</a>
                     </div>
-                    <div className="my-events-element-container">
-                        <a className="my-events-element">
-                            <div className="my-events-programm">
-                                <div className="my-events-programm-title">
-                                    <p>Программа</p>
+                    <div className="my-events-container">
+                        <div className="my-events-sorting-container">
+                            <Select
+                                defaultValue={categoryOptions[0]}
+                                options={categoryOptions}
+                                formatGroupLabel={formatGroupLabel}
+                                theme={theme => ({ ...theme, borderRadius: 0, colors: { ...theme.colors, primary: "" } })}
+                                placeholder="Выберите из списка"
+                            />
+                        </div>
+                        <div className="my-events-element-container">
+                            <a className="my-events-element">
+                                <div className="my-events-programm">
+                                    <div className="my-events-programm-title">
+                                        <p>Программа</p>
+                                    </div>
+                                    <div className="my-events-programm-name">
+                                        <p>Лошади и лошадки</p>
+                                    </div>
                                 </div>
-                                <div className="my-events-programm-name">
-                                    <p>Лошади и лошадки</p>
+                                <div className="my-events-categories">
+                                    <div className="my-events-categories-title">
+                                        <p>Категория</p>
+                                    </div>
+                                    <div className="my-events-categories-name">
+                                        <p>Юноши</p>
+                                    </div>
                                 </div>
-                            </div>
-                            <div className="my-events-categories">
-                                <div className="my-events-categories-title">
-                                    <p>Категория</p>
+                                <div className="my-events-type">
+                                    <div className="my-events-type-title">
+                                        <p>Тип</p>
+                                    </div>
+                                    <div className="my-events-type-name">
+                                        <p>Соревнование лошадей</p>
+                                    </div>
                                 </div>
-                                <div className="my-events-categories-name">
-                                    <p>Юноши</p>
+                            </a>
+                            <a className="my-events-element">
+                                <div className="my-events-programm">
+                                    <div className="my-events-programm-title">
+                                        <p>Программа</p>
+                                    </div>
+                                    <div className="my-events-programm-name">
+                                        <p>Лошади и лошадки</p>
+                                    </div>
                                 </div>
-                            </div>
-                            <div className="my-events-type">
-                                <div className="my-events-type-title">
-                                    <p>Тип</p>
+                                <div className="my-events-categories">
+                                    <div className="my-events-categories-title">
+                                        <p>Категория</p>
+                                    </div>
+                                    <div className="my-events-categories-name">
+                                        <p>Юноши</p>
+                                    </div>
                                 </div>
-                                <div className="my-events-type-name">
-                                    <p>Соревнование лошадей</p>
+                                <div className="my-events-type">
+                                    <div className="my-events-type-title">
+                                        <p>Тип</p>
+                                    </div>
+                                    <div className="my-events-type-name">
+                                        <p>Соревнование лошадей</p>
+                                    </div>
                                 </div>
-                            </div>
-                        </a>
-                        <a className="my-events-element">
-                            <div className="my-events-programm">
-                                <div className="my-events-programm-title">
-                                    <p>Программа</p>
+                            </a>
+                            <a className="my-events-element">
+                                <div className="my-events-programm">
+                                    <div className="my-events-programm-title">
+                                        <p>Программа</p>
+                                    </div>
+                                    <div className="my-events-programm-name">
+                                        <p>Лошади и лошадки</p>
+                                    </div>
                                 </div>
-                                <div className="my-events-programm-name">
-                                    <p>Лошади и лошадки</p>
+                                <div className="my-events-categories">
+                                    <div className="my-events-categories-title">
+                                        <p>Категория</p>
+                                    </div>
+                                    <div className="my-events-categories-name">
+                                        <p>Юноши</p>
+                                    </div>
                                 </div>
-                            </div>
-                            <div className="my-events-categories">
-                                <div className="my-events-categories-title">
-                                    <p>Категория</p>
+                                <div className="my-events-type">
+                                    <div className="my-events-type-title">
+                                        <p>Тип</p>
+                                    </div>
+                                    <div className="my-events-type-name">
+                                        <p>Соревнование лошадей</p>
+                                    </div>
                                 </div>
-                                <div className="my-events-categories-name">
-                                    <p>Юноши</p>
+                            </a>
+                            <a className="my-events-element">
+                                <div className="my-events-programm">
+                                    <div className="my-events-programm-title">
+                                        <p>Программа</p>
+                                    </div>
+                                    <div className="my-events-programm-name">
+                                        <p>Лошади и лошадки</p>
+                                    </div>
                                 </div>
-                            </div>
-                            <div className="my-events-type">
-                                <div className="my-events-type-title">
-                                    <p>Тип</p>
+                                <div className="my-events-categories">
+                                    <div className="my-events-categories-title">
+                                        <p>Категория</p>
+                                    </div>
+                                    <div className="my-events-categories-name">
+                                        <p>Юноши</p>
+                                    </div>
                                 </div>
-                                <div className="my-events-type-name">
-                                    <p>Соревнование лошадей</p>
+                                <div className="my-events-type">
+                                    <div className="my-events-type-title">
+                                        <p>Тип</p>
+                                    </div>
+                                    <div className="my-events-type-name">
+                                        <p>Соревнование лошадей</p>
+                                    </div>
                                 </div>
-                            </div>
-                        </a>
-                        <a className="my-events-element">
-                            <div className="my-events-programm">
-                                <div className="my-events-programm-title">
-                                    <p>Программа</p>
-                                </div>
-                                <div className="my-events-programm-name">
-                                    <p>Лошади и лошадки</p>
-                                </div>
-                            </div>
-                            <div className="my-events-categories">
-                                <div className="my-events-categories-title">
-                                    <p>Категория</p>
-                                </div>
-                                <div className="my-events-categories-name">
-                                    <p>Юноши</p>
-                                </div>
-                            </div>
-                            <div className="my-events-type">
-                                <div className="my-events-type-title">
-                                    <p>Тип</p>
-                                </div>
-                                <div className="my-events-type-name">
-                                    <p>Соревнование лошадей</p>
-                                </div>
-                            </div>
-                        </a>
-                        <a className="my-events-element">
-                            <div className="my-events-programm">
-                                <div className="my-events-programm-title">
-                                    <p>Программа</p>
-                                </div>
-                                <div className="my-events-programm-name">
-                                    <p>Лошади и лошадки</p>
-                                </div>
-                            </div>
-                            <div className="my-events-categories">
-                                <div className="my-events-categories-title">
-                                    <p>Категория</p>
-                                </div>
-                                <div className="my-events-categories-name">
-                                    <p>Юноши</p>
-                                </div>
-                            </div>
-                            <div className="my-events-type">
-                                <div className="my-events-type-title">
-                                    <p>Тип</p>
-                                </div>
-                                <div className="my-events-type-name">
-                                    <p>Соревнование лошадей</p>
-                                </div>
-                            </div>
-                        </a>
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+            <div />
+        </AuthVariableComponent>
     );
 }
