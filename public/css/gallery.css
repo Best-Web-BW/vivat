@@ -278,6 +278,10 @@
     .album-element {
         height: 120px;
     }
+
+    .album-list-element {
+        height: 25vh;
+    }
 }
 
 /* ipad */

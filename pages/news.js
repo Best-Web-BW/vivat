@@ -181,8 +181,111 @@ function News({ query: { categories: _categories, tags: _tags, search: _search }
                         </div>
                         <div className="blog-menu-section">
                             <div className="blog-keywords-wrapper">
+<<<<<<< Updated upstream
                                 <div className="flex wrap">
                                     { uniqueTags.map(tag => <TagButton key={tag} text={tag} turn={updateTag} defaultActive={tags.includes(tag)} />) }
+=======
+                                <form action="" className="flex wrap">
+                                    <label className="blog-keywords-button">
+                                        <input type="checkbox" />
+                                        <span>Лошади</span>
+                                    </label>
+                                    <label className="blog-keywords-button">
+                                        <input type="checkbox" />
+                                        <span>Белые</span>
+                                    </label>
+                                    <label className="blog-keywords-button">
+                                        <input type="checkbox" />
+                                        <span>Призы</span>
+                                    </label>
+                                    <label className="blog-keywords-button">
+                                        <input type="checkbox" />
+                                        <span>Результаты</span>
+                                    </label>
+                                    <label className="blog-keywords-button">
+                                        <input type="checkbox" />
+                                        <span>Полезное питание</span>
+                                    </label>
+                                </form>
+                            </div>
+                        </div>
+                        <div className="blog-menu-section admin">
+                            <button className="blog-menu-section-add-article-button">Создать новость</button>
+                        </div>
+                    </div>
+                </div>
+                <div className="add-article-modal">
+                    <div className="add-article-modal-content">
+                        <div className="add-article-modal-header">
+                            <h2>Создать новость/изменить{/* Создать/изменить выбирается исходя из того, что делает пользователь - изменяет статью или создает новую */}</h2>
+                        </div>
+                        <div className="add-article-modal-body">
+                            <div className="edit-event-modal-name">
+                                <label htmlFor="">Название события</label>
+                                <input type="text" placeholder="Введите название собыия"/>
+                            </div>
+                            <div className="add-article-modal-text-editor-wrapper">
+                                <textarea name="" id="" cols="30" rows="10" placeholder="введите что-нибудь интересное"></textarea>
+                            </div>
+                        </div>
+                        <div className="add-article-modal-footer">
+                            <div className="col-1-3">
+                                <p>Выберите категорию</p>
+                                <Select
+                                    // defaultValue={colourOptions[1]}
+                                    options={categoryOptions}
+                                    formatGroupLabel={formatGroupLabel}
+                                    theme={theme => ({
+                                        ...theme,
+                                        borderRadius: 0,
+                                        colors: {
+                                          ...theme.colors,
+                                          primary: '',
+                                        },
+                                      })}
+                                      placeholder='Выберите из списка'
+                                />
+                                <div className="add-article-add-new-category"> 
+                                    <input type="text" placeholder="Добавить категорию"/>
+                                    <button className="add-article-add-new-category-button">Добавить</button>
+                                </div>
+                            </div>
+                            <div className="col-1-3">
+                                <p>Выберите ключевые слова</p>
+                                    <Select 
+                                    closeMenuOnSelect={false}
+                                    components={animatedComponents}
+                                    isMulti
+                                    options={options}
+                                    // styles={customStyles}
+                                    theme={theme => ({
+                                        ...theme,
+                                        borderRadius: 0,
+                                        colors: {
+                                          ...theme.colors,
+                                          primary: '',
+                                        },
+                                      })}
+                                      placeholder='Выберите из списка'
+                                    />
+                                    <div className="add-article-add-new-keyword"> 
+                                        <input type="text" placeholder="Добавить ключевое слово"/>
+                                        <button className="add-article-add-new-keyword-button">Добавить</button>
+                                    </div>
+                            </div>
+                            <div className="col-1-3">
+                                <div className="col-1-2" style={{"display" : "none"}}>
+                                    <div className="add-article-choose-visibility">
+                                        <p>Видимость</p>
+                                        <label htmlFor="chooseVisibility-yes">Видимый</label>
+                                        <input type="radio" name="chooseVisibility" id="chooseVisibility-yes"/>
+                                        <input type="radio" name="chooseVisibility" id="chooseVisibility-no"/>
+                                        <label htmlFor="chooseVisibility-no">Скрытый</label>
+                                    </div>
+                                </div>
+                                <div className="col-1-2">
+                                    <button className="add-article-save-button">Сохранить</button>
+>>>>>>> Stashed changes
                                 </div>
                             </div>
                         </div>
