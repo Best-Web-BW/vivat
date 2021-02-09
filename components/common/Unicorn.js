@@ -219,11 +219,11 @@ export function UnicornFollowInput({ inputRef, inputClassName, type, name, place
     );
 }
 
-export function UnicornShyInput({ inputRef, inputClassName, type, name, placeholder, onFocus, onBlur }) {
+export function UnicornShyInput({ inputRef, inputClassName, type, name, placeholder, autoComplete, onFocus, onBlur }) {
     return (
         <input
             ref={inputRef} className={`unicorn-shy-input ${inputClassName}`}
-            {...{ name, type, placeholder, onFocus, onBlur }}
+            {...{ name, type, placeholder, autoComplete, onFocus, onBlur }}
         />
     );
 }
