@@ -1,4 +1,9 @@
+import Router from "next/router";
 import { useState, useEffect } from "react";
+
+export function useAuth() {
+    return AuthProvider.userData;
+}
 
 export default class AuthProvider {
     static userData;
@@ -90,6 +95,25 @@ export default class AuthProvider {
     static deauthenticate() {
         fetch("/api/auth/deauthenticate", { method: "POST" });
         this.clearUser();
+        if(/^\/account/.test(Router.pathname)) Router.push("/home");
+    }
+
+    static async change(newData) {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const response = await fetch("/api/auth/change", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json;charset=utf-8" },
+                    body: JSON.stringify(newData)
+                });
+                const json = await response.json();
+                if(json.status === "success") {
+                    this.userData = json.user;
+                    window.dispatchEvent(new CustomEvent("onauth"));
+                    resolve({ success: 1 });
+                } else resolve({ success: 0, reason: json.reason });
+            } catch(e) { reject(); }
+        })
     }
 }
 
