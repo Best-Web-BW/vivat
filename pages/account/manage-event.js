@@ -1,120 +1,49 @@
 import ProfileMenu from "../../components/common/ProfileMenu";
 import Link from "next/link";
-import Select from 'react-select';
+import Select from "react-select";
 
 const categoryOptions = [
-    { value: 'chocolate', label: 'Лошади' },
-    { value: 'strawberry', label: 'Eзда' },
-    { value: 'vanilla', label: 'Конкур' },
-    { value: 'vanilla', label: 'Соревнования' },
-    { value: 'vanilla', label: 'Пони' },
+    { value: "chocolate", label: "Лошади" },
+    { value: "strawberry", label: "Eзда" },
+    { value: "vanilla", label: "Конкур" },
+    { value: "vanilla", label: "Соревнования" },
+    { value: "vanilla", label: "Пони" }
 ]
 
 const groupStyles = {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  };
-  const groupBadgeStyles = {
-    backgroundColor: '#EBECF0',
-    borderRadius: '2em',
-    color: '#172B4D',
-    display: 'inline-block',
-    fontSize: 12,
-    fontWeight: 'normal',
-    lineHeight: '1',
-    minWidth: 1,
-    padding: '0.16666666666667em 0.5em',
-    textAlign: 'center',
-  };
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between"
+};
 
-  const formatGroupLabel = data => (
+const groupBadgeStyles = {
+    backgroundColor: "#EBECF0",
+    borderRadius: "2em",
+    color: "#172B4D",
+    display: "inline-block",
+    fontSize: 12,
+    fontWeight: "normal",
+    lineHeight: "1",
+    minWidth: 1,
+    padding: "0.16666666666667em 0.5em",
+    textAlign: "center"
+};
+
+const formatGroupLabel = data => (
     <div style={groupStyles}>
-      <span>{data.label}</span>
-      <span style={groupBadgeStyles}>{data.options.length}</span>
+        <span>{data.label}</span>
+        <span style={groupBadgeStyles}>{data.options.length}</span>
     </div>
-  );
+);
 
 export default function ManageEvents() {
     return (
         <div className="profile-content content-block">
-            <ProfileMenu active="change" />
+            <ProfileMenu active="manage-events" />
             <div className="admin-events-list">
                 <h2>Управление событиями</h2>
                 <div className="add-event-button-container">
                     <button className="add-event-button">Создать событие</button>
-                </div>
-                <div className="events-block">
-                    <div className="events-title">
-                        <a href="#">Мероприятие 1</a>
-                    </div>
-                    <div className="events-date">
-                        <a>СБ. 06.02.2021</a>
-                    </div>
-                    <div className ="events-edit-wrapper">
-                        <span className="edit"></span>  
-                        <button className="delete">X</button>
-                    </div>
-                </div>
-                <div className="events-block">
-                    <div className="events-title">
-                        <a href="#">Мероприятие 1</a>
-                    </div>
-                    <div className="events-date">
-                        <a>СБ. 06.02.2021</a>
-                    </div>
-                    <div className ="events-edit-wrapper">
-                        <span className="edit"></span>  
-                        <button className="delete">X</button>
-                    </div>
-                </div>
-                <div className="events-block">
-                    <div className="events-title">
-                        <a href="#">Мероприятие 1</a>
-                    </div>
-                    <div className="events-date">
-                        <a>СБ. 06.02.2021</a>
-                    </div>
-                    <div className ="events-edit-wrapper">
-                        <span className="edit"></span>  
-                        <button className="delete">X</button>
-                    </div>
-                </div>
-                <div className="events-block">
-                    <div className="events-title">
-                        <a href="#">Мероприятие 1</a>
-                    </div>
-                    <div className="events-date">
-                        <a>СБ. 06.02.2021</a>
-                    </div>
-                    <div className ="events-edit-wrapper">
-                        <span className="edit"></span>  
-                        <button className="delete">X</button>
-                    </div>
-                </div>
-                <div className="events-block">
-                    <div className="events-title">
-                        <a href="#">Мероприятие 1</a>
-                    </div>
-                    <div className="events-date">
-                        <a>СБ. 06.02.2021</a>
-                    </div>
-                    <div className ="events-edit-wrapper">
-                        <span className="edit"></span>  
-                        <button className="delete">X</button>
-                    </div>
-                </div>
-                <div className="events-block">
-                    <div className="events-title">
-                        <a href="#">Мероприятие 1</a>
-                    </div>
-                    <div className="events-date">
-                        <a>СБ. 06.02.2021</a>
-                    </div>
-                    <div className ="events-edit-wrapper">
-                        <span className="edit"></span>  
-                        <button className="delete">X</button>
-                    </div>
                 </div>
                 <div className="events-block">
                     <div className="events-title">
@@ -172,24 +101,17 @@ export default function ManageEvents() {
                     <div className="edit-event-modal-footer">
                         <div className="col-1-3">
                             <p>Выберите категорию</p>
-                                    <Select
-                                        // defaultValue={colourOptions[1]}
-                                        options={categoryOptions}
-                                        formatGroupLabel={formatGroupLabel}
-                                        theme={theme => ({
-                                            ...theme,
-                                            borderRadius: 0,
-                                            colors: {
-                                            ...theme.colors,
-                                            primary: '',
-                                            },
-                                        })}
-                                        placeholder='Выберите из списка'
-                                    />
-                                <div className="add-article-add-new-category"> 
-                                    <input type="text" placeholder="Добавить категорию"/>
-                                    <button className="add-article-add-new-category-button">Добавить</button>
-                                </div>
+                            <Select
+                                // defaultValue={colourOptions[1]}
+                                options={categoryOptions}
+                                formatGroupLabel={formatGroupLabel}
+                                theme={theme => ({ ...theme, borderRadius: 0, colors: { ...theme.colors, primary: "" } })}
+                                placeholder="Выберите из списка"
+                            />
+                            <div className="add-article-add-new-category"> 
+                                <input type="text" placeholder="Добавить категорию"/>
+                                <button className="add-article-add-new-category-button">Добавить</button>
+                            </div>
                         </div>
                         <div className="col-1-3">
                             <div className="edit-event-add-document">
