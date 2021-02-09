@@ -1,6 +1,27 @@
+import { useRef } from "react";
 import ContentHeader from "../components/common/ContentHeader";
 
 export default function Contacts() {
+    const nameRef = useRef();
+    const emailRef = useRef();
+    const phoneRef = useRef();
+    const textRef = useRef();
+    const submit = () => {
+        const name = nameRef.current.value;
+        const email = emailRef.current.value;
+        const phone = phoneRef.current.value;
+        const text = textRef.current.value;
+
+        if(/^[a-zа-яё]+$/gi.test(name) && /@/.test(email) && /(^\+7|8)\d{10}$/.test(phone) && /.+/.test(text)) {
+            alert("Мы с вами свяжемся");
+            nameRef.current.value = "";
+            emailRef.current.value = "";
+            phoneRef.current.value = "";
+            textRef.current.value = ""
+        }
+        else alert("Неверно введено одно из полей")
+    }
+
     return (
         <div>
             <ContentHeader class="contacts" pages={[["contacts", "Контакты"]]}>
@@ -44,13 +65,13 @@ export default function Contacts() {
                         <h2>или задать вопрос здесь:</h2>
                     </div>
                     <div className="contact-form-wrapper">
-                        <form action="" className="contact-form">
-                            <input name="name" type="text" className="contact-form-input" placeholder="Ваше имя" />
-                            <input name="email" type="text" className="contact-form-input" placeholder="Ваш email" />
-                            <input name="phone" type="text" className="contact-form-input" placeholder="Ваш номер телефона" />
-                            <textarea cols="30" rows="10" className="contact-from-textarea" placeholder="Ваш вопрос"></textarea>
-                        </form>
-                        <button className="contact-form-submit">Заказать звонок</button>
+                        <div action="" className="contact-form">
+                            <input ref={nameRef} name="name" type="text" className="contact-form-input" placeholder="Ваше имя" />
+                            <input ref={emailRef} name="email" type="text" className="contact-form-input" placeholder="Ваш email" />
+                            <input ref={phoneRef} name="phone" type="text" className="contact-form-input" placeholder="Ваш номер телефона" />
+                            <textarea ref={textRef} cols="30" rows="10" className="contact-from-textarea" placeholder="Ваш вопрос" />
+                        </div>
+                        <button className="contact-form-submit" onClick={submit}>Заказать звонок</button>
                     </div>
                 </div>
             </div>
