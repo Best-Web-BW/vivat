@@ -5,7 +5,7 @@ export default function Footer() {
 	return (
 		<footer className="footer-container">
 			<div id="map" className="footer-map-block">
-                <YMaps>
+                <YMaps query={{ apikey: "cab32a71-7231-49e3-a077-3623c1468b74" }}>
                     <Map width="100%" height="100%" defaultState={{ center: [55.544469, 37.862529], zoom: 17 }} />
                 </YMaps>
             </div>
