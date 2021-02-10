@@ -16,7 +16,7 @@ export default function EventCalendar() {
         const config = {
             localizer,
             views: ["month"],
-            events: json.filter(({ dates: [,end] }) => date <= end).map(({ id, title, dates: [start, end] }) => ({ id, title, start, end })),
+            events: json.map(({ id, title, dates: [start, end] }) => ({ id, title, start, end })),
             startAccessor: event => moment.utc(event.start).toDate(),
             endAccessor: event => moment.utc(event.end).toDate(),
             onSelectEvent: event => Router.push(`/events/${event.id}`)
