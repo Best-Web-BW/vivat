@@ -18,13 +18,22 @@ async function getMaxID(collection) {
     return max;
 }
 
-
-
 router.get("/", (_, res) => res.end("Are you my adminny?"));
+
+router.post("/load_image", async (req, res) => {
+    console.log(req.files);
+
+    res.json({
+        success: 1,
+        file: {
+            url: "/images/news/yael-gonzalez-jd9UEc8Sc58-unsplash.jpg"
+        }
+    });
+});
 
 router.post("/event/:action", async (req, res) => {
     const { action } = req.params;
-    const { data } = req.event;
+    const { data } = req.body;
     console.log(`--- Admin (event): ${action}`, data);
     const SUCCESS = { status: "success" };
     const DB_ERROR = { status: "error", error: "db_error" };
@@ -64,7 +73,7 @@ router.post("/event/:action", async (req, res) => {
 
 router.post("/album/:action", async (req, res) => {
     const { action } = req.params;
-    const { data } = req.album;
+    const { data } = req.body;
     console.log(`--- Admin (album): ${action}`, data);
     const SUCCESS = { status: "success" };
     const DB_ERROR = { status: "error", error: "db_error" };
@@ -104,7 +113,7 @@ router.post("/album/:action", async (req, res) => {
 
 router.post("/post/:action", async (req, res) => {
     const { action } = req.params;
-    const { data } = req.post;
+    const { data } = req.body;
     console.log(`--- Admin (post): ${action}`, data);
     const SUCCESS = { status: "success" };
     const DB_ERROR = { status: "error", error: "db_error" };
