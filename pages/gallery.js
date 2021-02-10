@@ -8,23 +8,25 @@ import { reformatDate } from "../utils/common";
 function Album({ id, image, date, title }) {
     return (
         <Link href={`/gallery/${id}`}>
-            <a className="album-list-element">
-                {<AdminVariableComponent>
-                    <div className ="gallery-edit-wrapper">
-                        <span className="edit"></span>  
-                        <button className="delete">X</button>
-                    </div>    
-                </AdminVariableComponent>}
-                <img src={`/images/gallery/album/webp/${image}.webp`} alt="" width="100%" />
-                <div className="flex-row">
-                    <div className="album-list-date">
-                        <p>{ reformatDate(date) }</p>
+            <div className="album-list-element">
+                    {<AdminVariableComponent>
+                        <div className ="gallery-edit-wrapper">
+                            <span className="edit"></span>  
+                            <button className="delete">X</button>
+                        </div>    
+                    </AdminVariableComponent>}
+                <a className="album-list-link">
+                    <img src={`/images/gallery/album/webp/${image}.webp`} alt="" width="100%" />
+                    <div className="flex-row">
+                        <div className="album-list-date">
+                            <p>{ reformatDate(date) }</p>
+                        </div>
+                        <div className="album-list-title">
+                            <p>{ title }</p>
+                        </div>
                     </div>
-                    <div className="album-list-title">
-                        <p>{ title }</p>
-                    </div>
-                </div>
-            </a>
+                </a>
+            </div>
         </Link>
     );
 }
