@@ -1,5 +1,7 @@
 import ContentHeader from "../../components/common/ContentHeader";
+import Rent from "../../components/common/Rent";
 import SimpleDotSlider from "../../components/sliders/SimpleDotSlider";
+import { AuthVariableComponent } from "../../utils/providers/AuthProvider";
 
 export default function RentMain() {
     return (
@@ -29,32 +31,10 @@ export default function RentMain() {
                     rerum consequatur. Quibusdam quod sapiente debitis nulla, ad omnis ratione minima.
                 </p>
             </ContentHeader>
-            <div className="order-service-wrapper content-block">
-                <div className="order-service-block">
-                    <div className="order-service-title-wrapper">
-                        <h2 className="order-service-title">Аренда основной конюшни</h2>
-                    </div>
-                    <div className="order-service-price-wrapper">
-                        <div className="order-service-price-title">Стоимость</div>
-                        <div className="order-service-price-amount">5000р/ч</div>
-                    </div>
-                    <div className="order-service-time-wrapper">
-                        <div className="order-service-time-title">Выбор времени</div>
-                        <button className="order-service-time-button">09:00 - 12:00</button>
-                        <button className="order-service-time-button">10:00 - 12:00</button>
-                        <button className="order-service-time-button active">13:00 - 15:00</button>
-                        <button className="order-service-time-button">15:00 - 18:00</button>
-                        <button className="order-service-time-button">17:00 - 20:00</button>
-                    </div>
-                    <div className="order-service-mintime-wrapper">
-                        <div className="order-service-mintime-title">Минимальное время аренды</div>
-                        <div className="order-service-mintime-time">2 часа</div>
-                    </div>
-                    <div className="order-service-button-wrapper">
-                        <button className="order-service-button">Заказать</button>
-                    </div>
-                </div>
-            </div>
+            <AuthVariableComponent>
+                <Rent text="Аренда основной конюшни" cost={5000} minHours={2} hoursText="часа" />
+                <div />
+            </AuthVariableComponent>
         </div>
     );
 }
