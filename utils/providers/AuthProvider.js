@@ -61,7 +61,7 @@ export default class AuthProvider {
                     body: JSON.stringify({ email, password })
                 });
                 const json = await response.json();
-                console.log(json);
+                // console.log(json);
                 const success = json.status === "success";
                 
                 if(success) this.setUser(json);
@@ -75,7 +75,7 @@ export default class AuthProvider {
             try {
                 const response = await fetch("/api/auth/authorize", { method: "POST" });
                 const json = await response.json();
-                console.log(json);
+                // console.log(json);
                 resolve(json.status === "success");
             } catch(e) { reject(); }
             
@@ -86,7 +86,7 @@ export default class AuthProvider {
         try {
             const response = await fetch("/api/auth/refresh_tokens", { method: "POST" });
             const json = await response.json();
-            console.log(json);
+            // console.log(json);
             if(json.status === "success") this.setUser(json);
             else this.clearUser();
         } catch(e) { }
@@ -114,6 +114,23 @@ export default class AuthProvider {
                 } else resolve({ success: 0, reason: json.reason });
             } catch(e) { reject(); }
         })
+    }
+
+    static async registerToEvent(participantData) {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const response = await fetch("/api/auth/register_to_event", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json;charset=utf-8" },
+                    body: JSON.stringify(participantData)
+                });
+                const json = await response.json();
+                if(json.status === "success") {
+                    this.userData.events = json.events;
+                    resolve({ success: 1 });
+                } else resolve({ success: 0, reason: json.reason });
+            } catch(e) { reject(); }
+        });
     }
 }
 

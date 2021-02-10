@@ -1,6 +1,10 @@
 import ProfileMenu from "../../components/common/ProfileMenu";
 import Select from "react-select";
-import { AuthVariableComponent } from "../../utils/providers/AuthProvider";
+import Link from "next/link";
+import { AuthVariableComponent, useAuth } from "../../utils/providers/AuthProvider";
+import { useEffect, useMemo, useState } from "react";
+import EventListProvider from "../../utils/providers/EventListProvider";
+import { currentISODate } from "../../utils/common";
 
 const categoryOptions = [
     { value: "chocolate", label: "По расписанию" },
@@ -34,139 +38,98 @@ const formatGroupLabel = data => (
     </div>
 );
 
+function EventEntry({ id, title, category, type }) {
+    return (
+        <Link href={`/events/${id}`}>
+            <a className="my-events-element">
+                <div className="my-events-programm">
+                    <div className="my-events-programm-title">
+                        <p>Программа</p>
+                    </div>
+                    <div className="my-events-programm-name">
+                        <p>{ title }</p>
+                    </div>
+                </div>
+                <div className="my-events-categories">
+                    <div className="my-events-categories-title">
+                        <p>Категория</p>
+                    </div>
+                    <div className="my-events-categories-name">
+                        <p>{ category }</p>
+                    </div>
+                </div>
+                <div className="my-events-type">
+                    <div className="my-events-type-title">
+                        <p>Тип</p>
+                    </div>
+                    <div className="my-events-type-name">
+                        <p>{ type }</p>
+                    </div>
+                </div>
+            </a>
+        </Link>
+    );
+}
+
+// function TagButton({ text, turn, defaultActive }) {
+//     const [active, setActive] = useState(defaultActive);
+//     const toggle = () => setActive(prev => (turn(!prev, text), !prev));
+
+//     return <span className={`${active && "active"}`} onClick={toggle}>{ text }</span>;
+// }
+
+const DateButton = ({ date, turn, active }) => <a className={`choose-date-element ${active && "active"}`} onClick={turn}>{ date }</a>;
+
+function EventEntryContainer() {
+    const [events, setEvents] = useState([]);
+    const [dates, setDates] = useState([]);
+    const [selectedDate, setSelectedDate] = useState();
+    const currentDate = useMemo(currentISODate, []);
+    const user = useAuth();
+    
+    useEffect(async () => {
+        if(!user) return;
+
+        const events = await Promise.all(user.events.map(({ event_id }) => EventListProvider.getEventDetails(event_id)));
+        const dates = [...new Set(events.map(event => event.dates[0]))];
+
+        setEvents(events);
+        setDates(dates);
+        if(dates.includes(currentDate)) setSelectedDate(currentDate);
+    }, [user]);
+
+    return (
+        <div className="my-events-wrapper">
+            <div className="choose-date-my-events">
+                { dates.map(date => <DateButton key={date} date={date} turn={() => setSelectedDate(date)} active={date === selectedDate} />) }
+            </div>
+            <div className="my-events-container">
+                <div className="my-events-sorting-container">
+                    <Select
+                        defaultValue={categoryOptions[0]}
+                        options={categoryOptions}
+                        formatGroupLabel={formatGroupLabel}
+                        theme={theme => ({ ...theme, borderRadius: 0, colors: { ...theme.colors, primary: "" } })}
+                        placeholder="Выберите из списка"
+                    />
+                </div>
+                <div className="my-events-element-container">{
+                    events.filter(event => event.dates[0] === selectedDate).map(event => <EventEntry key={event.id} {...event} />)
+                }</div>
+            </div>
+        </div>
+    );
+}
+
 export default function MyEvents() {
     return (
         <AuthVariableComponent>
-
             <div className="profile-content content-block">
                 <ProfileMenu active="my-events" />
                 <div className="block-title">
                     <h2>Мои события</h2>
                 </div>
-                <div className="my-events-wrapper">
-                    <div className="choose-date-my-events">
-                        <a className="choose-date-element active">21.03.2020</a>
-                        <a className="choose-date-element">03.03.2020</a>
-                        <a className="choose-date-element">01.02.2020</a>
-                    </div>
-                    <div className="my-events-container">
-                        <div className="my-events-sorting-container">
-                            <Select
-                                defaultValue={categoryOptions[0]}
-                                options={categoryOptions}
-                                formatGroupLabel={formatGroupLabel}
-                                theme={theme => ({ ...theme, borderRadius: 0, colors: { ...theme.colors, primary: "" } })}
-                                placeholder="Выберите из списка"
-                            />
-                        </div>
-                        <div className="my-events-element-container">
-                            <a className="my-events-element">
-                                <div className="my-events-programm">
-                                    <div className="my-events-programm-title">
-                                        <p>Программа</p>
-                                    </div>
-                                    <div className="my-events-programm-name">
-                                        <p>Лошади и лошадки</p>
-                                    </div>
-                                </div>
-                                <div className="my-events-categories">
-                                    <div className="my-events-categories-title">
-                                        <p>Категория</p>
-                                    </div>
-                                    <div className="my-events-categories-name">
-                                        <p>Юноши</p>
-                                    </div>
-                                </div>
-                                <div className="my-events-type">
-                                    <div className="my-events-type-title">
-                                        <p>Тип</p>
-                                    </div>
-                                    <div className="my-events-type-name">
-                                        <p>Соревнование лошадей</p>
-                                    </div>
-                                </div>
-                            </a>
-                            <a className="my-events-element">
-                                <div className="my-events-programm">
-                                    <div className="my-events-programm-title">
-                                        <p>Программа</p>
-                                    </div>
-                                    <div className="my-events-programm-name">
-                                        <p>Лошади и лошадки</p>
-                                    </div>
-                                </div>
-                                <div className="my-events-categories">
-                                    <div className="my-events-categories-title">
-                                        <p>Категория</p>
-                                    </div>
-                                    <div className="my-events-categories-name">
-                                        <p>Юноши</p>
-                                    </div>
-                                </div>
-                                <div className="my-events-type">
-                                    <div className="my-events-type-title">
-                                        <p>Тип</p>
-                                    </div>
-                                    <div className="my-events-type-name">
-                                        <p>Соревнование лошадей</p>
-                                    </div>
-                                </div>
-                            </a>
-                            <a className="my-events-element">
-                                <div className="my-events-programm">
-                                    <div className="my-events-programm-title">
-                                        <p>Программа</p>
-                                    </div>
-                                    <div className="my-events-programm-name">
-                                        <p>Лошади и лошадки</p>
-                                    </div>
-                                </div>
-                                <div className="my-events-categories">
-                                    <div className="my-events-categories-title">
-                                        <p>Категория</p>
-                                    </div>
-                                    <div className="my-events-categories-name">
-                                        <p>Юноши</p>
-                                    </div>
-                                </div>
-                                <div className="my-events-type">
-                                    <div className="my-events-type-title">
-                                        <p>Тип</p>
-                                    </div>
-                                    <div className="my-events-type-name">
-                                        <p>Соревнование лошадей</p>
-                                    </div>
-                                </div>
-                            </a>
-                            <a className="my-events-element">
-                                <div className="my-events-programm">
-                                    <div className="my-events-programm-title">
-                                        <p>Программа</p>
-                                    </div>
-                                    <div className="my-events-programm-name">
-                                        <p>Лошади и лошадки</p>
-                                    </div>
-                                </div>
-                                <div className="my-events-categories">
-                                    <div className="my-events-categories-title">
-                                        <p>Категория</p>
-                                    </div>
-                                    <div className="my-events-categories-name">
-                                        <p>Юноши</p>
-                                    </div>
-                                </div>
-                                <div className="my-events-type">
-                                    <div className="my-events-type-title">
-                                        <p>Тип</p>
-                                    </div>
-                                    <div className="my-events-type-name">
-                                        <p>Соревнование лошадей</p>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-                    </div>
-                </div>
+                <EventEntryContainer />
             </div>
             <div />
         </AuthVariableComponent>

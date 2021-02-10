@@ -10,10 +10,13 @@ const ACCESS_KEY_MAX_AGE = 1000 * 60 * 15; // 15 minutes in ms
 const REFRESH_KEY_MAX_AGE = 1000 * 60 * 60 * 24 * 30; // 30 days in ms
 const COOKIE_CONFIG = { path: "/api/auth", secure: true, httpOnly: true, sameSite: "Strict" };
 
-let users;
+let users/*, events*/;
 new require("mongodb").MongoClient("mongodb://localhost:27017", { useUnifiedTopology: true, useNewUrlParser: true }).connect((err, client) => {
     if(err) return console.error(err);
-    users = client.db("vivat").collection("users");
+
+    const db = client.db("vivat");
+    users = db.collection("users");
+    // events = db.collection("events");
 });
 
 router.get("/", (_, res) => {
@@ -22,7 +25,7 @@ router.get("/", (_, res) => {
 
 router.post("/register", async (req, res) => {
     const { email, name: { first, second, middle }, birthdate } = req.body;
-    console.log({ email, first, second, middle, birthdate });
+    console.log("Register", { email, name: { first, second, middle }, birthdate });
     
     const emailRegex = /@/;
     const nameRegex = /^[a-zа-яё]{2,}$/gi;
@@ -38,7 +41,7 @@ router.post("/register", async (req, res) => {
     if(errors.length) return res.json({ status: "error_regex", errors });
     
     const password = SHA1(`${email}${Math.random()}${birthdate}`).toString().slice(-16);
-    const passwordHash = hmacSHA512(password, email + PRIVATE_KEY).toString();
+    const passwordHash = hmacSHA512(password, PRIVATE_KEY).toString();
     
     const session = { access_key: UUID(), refresh_key: UUID() };
     const user = { email, name: { first, second, middle }, birthdate, password, password_hash: passwordHash, sessions: [session] };
@@ -50,19 +53,21 @@ router.post("/register", async (req, res) => {
     res.cookie("refresh_key", session.refresh_key, { maxAge: REFRESH_KEY_MAX_AGE, ...COOKIE_CONFIG });
     const _user = { ...user, sessions: undefined, password_hash: undefined };
     res.json({ status: "success", accessKeyLifetime: ACCESS_KEY_MAX_AGE, user: _user });
-    console.log(password);
+    console.log(" - Password", password);
 });
 
 router.post("/authenticate", async (req, res) => {
     const { email, password } = req.body;
     const user = await users.findOne({ email });
+
+    console.log("Authenticate", { email, password });
     
     if(!user) return res.json({ status: "error", reason: "invalid_email" });
 
-    const requestSHA = hmacSHA512(password, user.email + PRIVATE_KEY).toString();
+    const requestSHA = hmacSHA512(password, PRIVATE_KEY).toString();
     const currentSHA = user.password_hash;
-    console.log(`Requested with email ${email} and password ${password}`);
-    console.log(`Are they equal: ${requestSHA === currentSHA}`);
+    // console.log(`Requested with email ${email} and password ${password}`);
+    // console.log(`Are they equal: ${requestSHA === currentSHA}`);
 
     if(requestSHA !== currentSHA) return res.json({ status: "error", reason: "invalid_password" });
     
@@ -81,7 +86,7 @@ router.post("/authenticate", async (req, res) => {
 
 router.post("/authorize", async (req, res) => {
     const { user_id: userID, access_key: accessKey } = req.cookies;
-    console.log({ userID, accessKey });
+    console.log("Authorize", { userID, accessKey });
 
     const user = await users.findOne({ _id: new ObjectID(userID) }, { projection: { sessions: 1 } });
 
@@ -94,7 +99,7 @@ router.post("/authorize", async (req, res) => {
 
 router.post("/refresh_tokens", async (req, res) => {
     const { user_id: userID, refresh_key: refreshKey } = req.cookies;
-    console.log({ userID, refreshKey });
+    console.log("Refresh tokens", { userID, refreshKey });
 
     const user = await users.findOne({ _id: new ObjectID(userID) });
 
@@ -116,7 +121,7 @@ router.post("/refresh_tokens", async (req, res) => {
 
 router.post("/deauthenticate", async (req, res) => {
     const { user_id: userID, refresh_key: refreshKey } = req.cookies;
-    console.log({ userID, refreshKey });
+    console.log("Deauthenticate", { userID, refreshKey });
 
     const user = await users.findOne({ _id: new ObjectID(userID) }, { rejection: { sessions: 1 } });
     const sessions = user.sessions.filter(session => session.refresh_key !== refreshKey);
@@ -132,25 +137,39 @@ router.post("/deauthenticate", async (req, res) => {
 
 router.post("/change", async (req, res) => {
     const { user_id: userID } = req.cookies;
-    console.log({ userID });
+    console.log("Change user settings", { userID });
 
     const { name: { first, second, middle }, birthdate, email, phone, address, sex } = req.body;
     const updater = { name: { first, second, middle }, birthdate, email, phone, address, sex };
 
-    console.log("Updater", updater);
+    console.log(" - Modified", { ...updater });
 
     try {
         const user = await users.findOne({ _id: new ObjectID(userID) });
-        console.log("User", user);
 
         await users.updateOne({ _id: user._id }, { $set: updater });
 
         const _user = { ...user, ...updater, sessions: undefined, password_hash: undefined };
 
-        console.log("New user", _user);
-
         res.json({ status: "success", user: _user });
     } catch(e) { res.json({ status: "error", reason: "unknown_error" }); }
+});
+
+router.post("/register_to_event", async (req, res) => {
+    const { user_id: userID } = req.cookies;
+    console.log("Register to event", { userID });
+
+    const { event_id, rider: { name, birthdate }, region, trainer_name, delegate_phone, horse: { nickname, birthyear, sex }, fskr: { passport, number }, wait_needed } = req.body;
+    const participant = { event_id, rider: { name, birthdate }, region, trainer_name, delegate_phone, horse: { nickname, birthyear, sex }, fskr: { passport, number }, wait_needed };
+
+    try {
+        const user = await users.findOne({ _id: new ObjectID(userID) });
+        user.events.push({ event_id, participant });
+
+        await users.updateOne({ _id: user._id }, { $set: { events: user.events } });
+
+        res.json({ status: "success", events: user.events });
+    } catch(e) { console.log(e); res.json({ status: "error", reason: "unknown_error" }); }
 });
 
 module.exports = router;
