@@ -1,4 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { registerLocale, setDefaultLocale } from "react-datepicker";
+import ru from "date-fns/locale/ru";
 import Layout from "../components/layout";
 import AuthProvider from "../utils/providers/AuthProvider";
 
@@ -9,6 +11,9 @@ export default function MyApp({ Component, pageProps }) {
     }, []);
 
     useEffect(() => AuthProvider.refreshTokens(), []);
+
+    registerLocale("ru", ru);
+    setDefaultLocale("ru");
     
 	return (
 		<Layout>
