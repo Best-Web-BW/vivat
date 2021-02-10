@@ -1,3 +1,4 @@
+const fileUpload = require("express-fileupload");
 const forceSSL = require("express-force-ssl");
 const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
@@ -16,6 +17,7 @@ const HTTP_PORT = process.env.HTTP_PORT || 80;
 
 const api = require("./routes/api.js");
 const auth = require("./routes/auth.js");
+const admin = require("./routes/admin.js");
 
 (async () => {
 	try {
@@ -31,10 +33,12 @@ const auth = require("./routes/auth.js");
         https.createServer(options, server).listen(HTTPS_PORT);
 
         server.use(forceSSL);
+        server.use(fileUpload({}));
         server.use(cookieParser());
         server.use(bodyParser.json());
         server.use(bodyParser.urlencoded({ extended: false }));
 		
+        server.use("/api/admin", admin);
         server.use("/api/auth", auth);
 		server.use("/api", api);
 		server.get("*", (request, response) => handle(request, response));

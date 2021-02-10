@@ -27,6 +27,7 @@
     "crypto-js": "^4.0.0",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
+    "express-fileupload": "^1.2.1",
     "express-force-ssl": "^0.3.2",
     "moment": "^2.29.1",
     "mongodb": "^3.6.4",
@@ -36,10 +37,18 @@
     "react-big-calendar": "^0.31.0",
     "react-datepicker": "^3.4.1",
     "react-dom": "^17.0.1",
+    "react-images-upload": "^1.2.8",
     "react-select": "^4.1.0",
     "react-yandex-maps": "^4.6.0",
     "save": "^2.4.0",
     "scrollmagic": "^2.0.8",
-    "uuid": "^8.3.2"
+    "uuid": "^8.3.2",
+    "webp-converter": "^2.3.1"
+  },
+  "devDependencies": {
+    "@editorjs/editorjs": "^2.19.1",
+    "@editorjs/image": "^2.6.0",
+    "@editorjs/paragraph": "^2.8.0",
+    "react-editor-js": "^1.9.0"
   }
 }

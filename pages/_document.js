@@ -30,6 +30,7 @@ export default class MyDocument extends Document {
                     <link rel="stylesheet" href="/css/cookies.css" />
                     <link rel="stylesheet" href="/css/datepicker.css" />
                     <link rel="stylesheet" href="/css/react-big-calendar.css" />
+                    <link rel="stylesheet" href="/css/react-images-upload.css" />
                     <link rel="stylesheet" href="/css/admin.css"/>
                 </Head>
                 <body>
