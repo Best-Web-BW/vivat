@@ -2,8 +2,14 @@ import React from "react";
 import Link from "next/link";
 import Unicorn, { UnicornFollowInput, UnicornShyInput } from "../common/Unicorn";
 import AuthProvider, { AuthVariableComponent } from "../../utils/providers/AuthProvider";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+
+
 
 export default class Header extends React.Component {
+
+    
     constructor(props) {
         super(props);
         this.state = {
@@ -152,8 +158,11 @@ export default class Header extends React.Component {
         };
     }
 
+
+
     render() {
         const profilePreviewName = AuthProvider.userData ? (({ second, first, middle }) => `${second} ${first} ${middle}`)(AuthProvider.userData.name) : "";
+        
         return (
             <header>
                 <div className="header-container">
@@ -372,6 +381,14 @@ export default class Header extends React.Component {
                                 Дата рождения
                                 <span className="required">*</span>
                                 <input ref={this.authRefs.register.birthdate} type="date" name="birthdate" className="datepicker-here" />
+                                {/* <DatePicker 
+                                selected={startDate} 
+                                onChange={date => setStartDate(date)}
+                                peekNextMonth
+                                showYearDropdown
+                                dropdownMode="select"
+                                locale="ru-RU"
+                                /> */}
                             </label>
                             <label className="email-label">
                                 Адрес электронной почты
