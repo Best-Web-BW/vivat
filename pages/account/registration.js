@@ -2,20 +2,13 @@ import ProfileMenu from "../../components/common/ProfileMenu";
 import Select from "react-select";
 import AuthProvider, { AuthVariableComponent, useAuth } from "../../utils/providers/AuthProvider";
 import EventListProvider from "../../utils/providers/EventListProvider";
-import { currentISODate } from "../../utils/common";
+import { currentISODate, toISODate } from "../../utils/common";
 import { useEffect, useRef, useState } from "react";
 import Router from "next/router";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 // import makeAnimated from "react-select/animated";
 // import { css, cx } from "@emotion/css";
-
-const categoryOptions = [
-    { value: "chocolate", label: "Скачки белых лошадей" },
-    { value: "strawberry", label: "Гарцующий пони" },
-    { value: "vanilla", label: "Самые быстрые скакуны" },
-    { value: "vanilla", label: "Самая длинная грива" }
-]
 
 const groupStyles = {
     display: "flex",
@@ -60,18 +53,19 @@ export default function Registration() {
         let events;
         try { events = await EventListProvider.getEventList(); }
         catch(e) { return console.log("wtf, where is an event list"); }
-        console.log("Events", events);
+        // console.log("Events", events);
         
         const dateFilteredEvents = events.filter(event => event.dates[0] > currentDate);
-        console.log("Date filtered events", dateFilteredEvents);
+        // console.log("Date filtered events", dateFilteredEvents);
 
         const idFilteredEvents = dateFilteredEvents.filter(({ id }) => !user.events.some(({ event_id }) => id === event_id ));
-        console.log("ID filtered events", idFilteredEvents);
+        // console.log("ID filtered events", idFilteredEvents);
         
         const mappedEvents = idFilteredEvents.map(({ id, title }) => ({ value: id, label: title }));
-        console.log("Mapped events", mappedEvents);
+        // console.log("Mapped events", mappedEvents);
         
         setEvents(mappedEvents);
+        refs.event_id.current = mappedEvents[0].value;
     }, [user]);
 
     const refs = {
@@ -99,7 +93,7 @@ export default function Registration() {
         event_id: refs.event_id.current,
         rider: {
             name: refs.rider.name.current.value,
-            birthdate: refs.rider.birthdate.current.value
+            birthdate: toISODate(riderBirthdate)
         },
         region: refs.region.current.value,
         trainer_name: refs.trainer_name.current.value,
@@ -124,7 +118,7 @@ export default function Registration() {
         } else alert("Что-то пошло не так, повторите попытку позже");
     };
 
-    const [startDate, setStartDate] = useState(new Date());
+    const [riderBirthdate, setRiderBirthdate] = useState(new Date());
 
     return (
         <AuthVariableComponent>
@@ -156,13 +150,13 @@ export default function Registration() {
                             <span className="required">*</span>
                             <p className="registration-element-title">Дата рождения всадника</p>
                             {/* <input ref={refs.rider.birthdate} type="text" className="datepicker-here registration-element-input " placeholder="11.02.1996" /> */}
-                            <DatePicker 
-                            selected={startDate} 
-                            onChange={date => setStartDate(date)}
-                            peekNextMonth
-                            showYearDropdown
-                            dropdownMode="select"
-                            locale="ru-RU"
+                            <DatePicker
+								dateFormat="dd.MM.yyyy"
+								selected={riderBirthdate}
+								onChange={date => setRiderBirthdate(date)} 
+								peekNextMonth
+								showYearDropdown
+								dropdownMode="select"
                             />
                         </div>
                         <div className="registration-element">
