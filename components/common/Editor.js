@@ -25,7 +25,7 @@ const TOOLS = {
 //   warning: Warning,
 //   code: Code,
 //   linkTool: LinkTool,
-  image: Image,
+  image: { class: Image, config: { endpoints: { byFile: "/api/admin/load_image" } } },
 //   raw: Raw,
 //   header: Header,
 //   quote: Quote,

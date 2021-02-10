@@ -281,8 +281,8 @@ export function PostEditor({ opened, action, postData, close, categories, tags }
                 </div>
                 <div className="add-article-modal-body">
                     <div className="edit-event-modal-name">
-                        <span>Название события</span>
-                        <input type="text" placeholder="Введите название события" defaultValue={post ? post.title : ""} />
+                        <span>Название новости</span>
+                        <input type="text" placeholder="Введите название новости" defaultValue={post ? post.title : ""} />
                     </div>
                     <div className="add-article-modal-text-editor-wrapper">
                         {/* <textarea cols="30" rows="10" placeholder="введите что-нибудь интересное" /> */}
