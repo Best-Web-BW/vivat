@@ -102,7 +102,7 @@ function TagButton({ text, turn, defaultActive }) {
     const [active, setActive] = useState(defaultActive);
     const toggle = () => setActive(prev => (turn(!prev, text), !prev));
 
-    return <span className={`${active && "active"}`} onClick={toggle}>{ text }</span>;
+    return <span className={`blog-keywords-button ${active && "active"}`} onClick={toggle}>{ text }</span>;
 }
 
 const parseURL = (raw, defaultValue) => {

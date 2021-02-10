@@ -11,12 +11,12 @@ function Album({ id, image, date, title, edit, remove }) {
         <div className="album-list-element">
             <AdminVariableComponent>
                 <div className ="gallery-edit-wrapper">
-                    {/* <span className="edit" onClick={() => edit(id)}></span>   */}
-                    <button className="delete" onClick={() => remove(id)}>X</button>
+                    <span className="edit"></span>  
+                    <button className="delete">X</button>
                 </div>    
             </AdminVariableComponent>
             <Link href={`/gallery/${id}`}>
-                <a>
+                <a className="album-list-link">
                     <img src={`/images/gallery/album/webp/${image}.webp`} alt="" width="100%" />
                     <div className="flex-row">
                         <div className="album-list-date">
