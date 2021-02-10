@@ -157,5 +157,5 @@ export function AdminVariableComponent({ children }) {
         return () => window.removeEventListener("onauth", adminHandler);
     }, [children]);
 
-    return /* content ?? */ null;
+    return content ?? null;
 }
