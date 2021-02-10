@@ -398,7 +398,14 @@
     width: calc(50% - 2vh);
 }
 
-.registration-element .react-datepicker__input-container input {
+.profile-element-wrapper .react-datepicker-wrapper {
+    margin: 1vh;
+}
+
+
+
+.registration-element .react-datepicker__input-container input,
+.profile-element-wrapper .react-datepicker__input-container input {
     width: 100%;
     height: 3vh;
     background-color: transparent;
@@ -408,7 +415,13 @@
     font-size: 100%;
 }
 
-.registration-element .react-datepicker__input-container input:hover {
+.profile-element-wrapper .registration-element .react-datepicker__input-container input, .profile-element-wrapper .react-datepicker__input-container input {
+    width: max-content;
+    border: 1px solid whitesmoke;
+}
+
+.registration-element .react-datepicker__input-container input:hover,
+.profile-element-wrapper .react-datepicker__input-container input:hover {
     border-color: #ff0a0a !important;
     box-shadow: 0 0 10px 1px #ff0a0a !important;
 }
@@ -451,6 +464,26 @@
 .react-datepicker-popper[data-placement^="bottom"] .react-datepicker__triangle, .react-datepicker-popper[data-placement^="bottom"] .react-datepicker__triangle::before {
     border-bottom-color: whitesmoke !important;
 }
+
+.react-datepicker__year-select {
+    background-color: transparent !important;
+    color: whitesmoke;
+    border: 1px solid transparent;
+}
+
+.react-datepicker__year-select:hover {
+    box-shadow: 0 0 10px 1px #ff0a0a;
+    border-color: #ff0a0a;
+}
+
+.react-datepicker__year-select option {
+    color: black !important;
+    background-color: transparent;
+} 
+
+/* .react-datepicker__year-select::-webkit-scrollbar {
+    width: 1px;
+} */
 
 .registration-row {
     justify-content: flex-start;

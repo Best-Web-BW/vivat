@@ -156,7 +156,13 @@ export default function Registration() {
                             <span className="required">*</span>
                             <p className="registration-element-title">Дата рождения всадника</p>
                             {/* <input ref={refs.rider.birthdate} type="text" className="datepicker-here registration-element-input " placeholder="11.02.1996" /> */}
-                            <DatePicker selected={startDate} onChange={date => setStartDate(date)}
+                            <DatePicker 
+                            selected={startDate} 
+                            onChange={date => setStartDate(date)}
+                            peekNextMonth
+                            showYearDropdown
+                            dropdownMode="select"
+                            locale="ru-RU"
                             />
                         </div>
                         <div className="registration-element">

@@ -3,6 +3,8 @@ import { useEffect, useRef, useState } from "react";
 import ProfileMenu from "../../components/common/ProfileMenu";
 import { reformatDate, toISODate } from "../../utils/common";
 import AuthProvider, { AuthVariableComponent, useAuth } from "../../utils/providers/AuthProvider";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 export default function Change() {
     const [user, setUser] = useState(useAuth());
@@ -50,6 +52,8 @@ export default function Change() {
         }
     }
     
+    const [startDate, setStartDate] = useState(new Date());
+
     return (
         <AuthVariableComponent>
 
@@ -83,7 +87,15 @@ export default function Change() {
                     </label>
                     <label className="profile-element-wrapper">
                         <p className="birthday-title"><span className="required">*</span>Дата рождения:</p>
-                        <input ref={refs.birthdate} type="date" name="birthdate" className="datepicker-here" placeholder="11.11.1990" defaultValue={user ? toISODate(user.birthdate) : ""} />
+                        {/* <input ref={refs.birthdate} type="date" name="birthdate" className="datepicker-here" placeholder="11.11.1990" defaultValue={user ? toISODate(user.birthdate) : ""} /> */}
+                        <DatePicker 
+                            selected={startDate} 
+                            onChange={date => setStartDate(date)}
+                            peekNextMonth
+                            showYearDropdown
+                            dropdownMode="select"
+                            locale="ru-RU"
+                            />
                     </label>
                     <label className="profile-element-wrapper">
                         <p className="email-title"><span className="required">*</span>email:</p>
