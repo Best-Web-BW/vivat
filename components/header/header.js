@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import Unicorn, { UnicornFollowInput, UnicornShyInput } from "../common/Unicorn";
 import AuthProvider, { AuthVariableComponent } from "../../utils/providers/AuthProvider";
@@ -389,6 +389,7 @@ export default class Header extends React.Component {
                                 dropdownMode="select"
                                 locale="ru-RU"
                                 /> */}
+                                <WrapperDatePicker />
                             </label>
                             <label className="email-label">
                                 Адрес электронной почты
@@ -417,4 +418,18 @@ export default class Header extends React.Component {
             </header>
         );
     }
+}
+
+function WrapperDatePicker() {
+    const [startDate, setStartDate] = useState(new Date());
+    
+    return (
+        <DatePicker 
+            selected={startDate} 
+            onChange={date => setStartDate(date)}
+            peekNextMonth
+            showYearDropdown
+            dropdownMode="select"
+        />
+    );
 }
