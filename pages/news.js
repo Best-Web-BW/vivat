@@ -286,7 +286,8 @@ export function PostEditor({ opened, action, postData, close, categories, tags }
                     </div>
                     <div className="add-article-modal-text-editor-wrapper">
                         {/* <textarea cols="30" rows="10" placeholder="введите что-нибудь интересное" /> */}
-                        <TextEditor />
+                        <TextEditor 
+                        />
                     </div>
                 </div>
                 <div className="add-article-modal-footer">
@@ -309,11 +310,11 @@ export function PostEditor({ opened, action, postData, close, categories, tags }
                             menuPlacement="top"
                             isClearable
                         />
-                        <div className="add-article-add-new-category"> 
-                            {/* <input type="text" placeholder="Категория" defaultValue={post ? post.category : ""} />
+                        {/* <div className="add-article-add-new-category"> 
+                            <input type="text" placeholder="Категория" defaultValue={post ? post.category : ""} />
                             <input type="text" placeholder="Добавить категорию"/>
-                            <button className="add-article-add-new-category-button">Добавить</button> */}
-                        </div>
+                            <button className="add-article-add-new-category-button">Добавить</button>
+                        </div> */}
                     </div>
                     <div className="col-1-3">
                         <p>Выберите ключевые слова</p>

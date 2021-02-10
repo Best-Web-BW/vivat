@@ -121,17 +121,18 @@
 }
 
 .add-gallery-modal-choose-cover:hover, .add-gallery-modal-choose-imgs:hover, .add-gallery-modal-nameinput input:hover, .delete:hover, 
-.add-gallery-modal-save-button:hover, .edit:hover, .edit-gallery-modal-name-wrapper input:hover, .edit-gallery-modal-save-button:hover {
+.add-gallery-modal-save-button:hover, .edit:hover, .edit-gallery-modal-name-wrapper input:hover, .edit-gallery-modal-save-button:hover, 
+.add-article-modal-body input:hover{
     color: #ff0a0a;
     border-color: #ff0a0a;
     text-shadow: 0 0 10px #ff0a0a;
 }
 
-.add-gallery-modal-nameinput input:hover, .edit-gallery-modal-name-wrapper input:hover {
+.add-gallery-modal-nameinput input:hover, .edit-gallery-modal-name-wrapper, input:hover .add-article-modal-body input:hover{
     box-shadow: 0 0 10px 1px #ff0a0a;
 }
 
-.add-gallery-modal-nameinput input:hover::placeholder, .edit-gallery-modal-name-wrapper input:hover::placeholder {
+.add-gallery-modal-nameinput input:hover::placeholder, .edit-gallery-modal-name-wrapper input:hover::placeholder, .add-article-modal-body input:hover::placeholder {
     color: #ff0a0a;
 }
 
@@ -295,7 +296,7 @@
 }
 
 .add-article-modal-footer .col-1-3 {
-    height: 100%;
+    height: calc(100% - 2vh);
     display: flex;
     flex-wrap: wrap;
     align-items: center;
@@ -433,6 +434,11 @@
 .news-content .article-edit-wrapper {
     top: 0;
     right: 5vh;
+}
+
+.edit-event-modal-name span {
+    color: whitesmoke;
+    margin-right: 1vh;
 }
 
 /* news admin end */
@@ -582,7 +588,7 @@
     flex-wrap: nowrap;
 }
 
-.edit-event-modal-body input {
+.edit-event-modal-body input, .add-article-modal-body input {
     height: 3vh;
     color: whitesmoke;
     background-color: transparent;
@@ -712,6 +718,44 @@
 
 /* warning modals end */
 
+/* text editor */
+
+/* .add-article-modal-text-editor-wrapper div:first-child {
+    width: 100%;
+}
+
+.add-article-modal-text-editor-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+} */
+
+.add-article-modal-header, .add-article-modal-body, .add-article-modal-footer {
+    width: 100%;
+}
+
+.add-article-modal-text-editor-wrapper {
+    height: calc(100% - 2vh - 2px - 4vh);
+    width: calc(100% - 2vh - 2px);
+    padding: 1vh;
+    border: 1px solid whitesmoke;
+}
+
+.ce-block__content {
+    width: 98%;
+    max-width: 98%;
+    color: whitesmoke;
+}
+
+.ce-toolbar__content {
+    max-width: 96%;
+}
+
+.cdx-block {
+    width: 98%;
+    margin: 0 auto;
+}
+
+/* text editor end */
 
 /* media style */
 
