@@ -2,28 +2,14 @@ import Router, { useRouter } from "next/router"
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import Select from "react-select";
+import CreatableSelect from 'react-select/creatable';
 import makeAnimated from "react-select/animated";
 import ContentHeader from "../components/common/ContentHeader";
 import DBProvider from "../utils/providers/DBProvider";
 import PostListProvider from "../utils/providers/PostListProvider";
 import AuthProvider, { AdminVariableComponent } from "../utils/providers/AuthProvider";
+import TextEditor from "../components/common/TextEditor";
 // import { css, cx } from "@emotion/css"
-
-const options = [
-    { value: "chocolate", label: "Лошади" },
-    { value: "strawberry", label: "Белые" },
-    { value: "vanilla", label: "Призы" },
-    { value: "vanilla", label: "Результаты" },
-    { value: "vanilla", label: "Полезное питание" }
-]
-
-const categoryOptions = [
-    { value: "chocolate", label: "Лошади" },
-    { value: "strawberry", label: "Eзда" },
-    { value: "vanilla", label: "Конкур" },
-    { value: "vanilla", label: "Соревнования" },
-    { value: "vanilla", label: "Пони" }
-]
 
 const groupStyles = {
     display: "flex",
@@ -180,17 +166,6 @@ function News({ query: { categories: _categories, tags: _tags, search: _search }
         setUniqueTags(tags);
         setCounts(Object.entries(counts));
     }, []);
-    
-    const paragraphs = [
-        {
-            image: "yael-gonzalez-jd9UEc8Sc58-unsplash",
-            text: "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Reprehenderit maxime hic repellat! Dolores culpa quae et debitis? Tenetur aut ut ab harum, repellendus et ducimus eos provident praesentium totam! Ullam enim sunt ipsum? Nam, dolor ex placeat dignissimos molestiae repellendus quaerat velit maxime aperiam vel voluptatum perspiciatis praesentium officiis quidem maiores minus consectetur nesciunt in deleniti ipsa quas ea! Incidunt, officia! Labore nostrum, dolor ut voluptatum adipisci, distinctio temporibus dignissimos, tempora praesentium architecto aut quia! Fuga atque nihil eius, cumque tenetur in quo quibusdam rerum repellendus, magnam veniam obcaecati consequuntur ipsam necessitatibus perspiciatis iure voluptatum asperiores debitis quasi fugiat delectus ullam ducimus? Quam repellendus reiciendis nisi corrupti error rerum ullam pariatur laborum eum assumenda repudiandae maiores beatae, velit libero tenetur perspiciatis, atque saepe est ut, id voluptas voluptatibus tempore commodi molestias. Inventore quam iusto obcaecati quibusdam, corrupti omnis ipsam consectetur dolorum non nesciunt possimus impedit suscipit amet accusamus, explicabo voluptates. Alias nostrum aperiam repellendus, numquam, quis quidem hic pariatur voluptatum omnis autem sit architecto optio dicta provident, officiis odio quisquam temporibus excepturi sunt voluptatem consectetur eos dolore harum animi. Voluptate, a delectus? Harum eius, expedita eos aut aliquam quis aspernatur exercitationem veritatis, dolorem sunt ducimus eveniet similique nam cum, culpa voluptatem consectetur voluptatum quisquam itaque distinctio consequatur. Repudiandae nihil deleniti ipsam vel aut consequatur odit reiciendis veniam ad autem voluptatum alias pariatur et quia, ab laborum consectetur earum, delectus voluptas. Perferendis neque ratione magni voluptatibus veniam debitis consequatur tempore eos autem nihil impedit magnam ipsa, molestias amet aspernatur facilis iste!"
-        },
-        {
-            image: "yael-gonzalez-jd9UEc8Sc58-unsplash",
-            text: "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Reprehenderit maxime hic repellat! Dolores culpa quae et debitis? Tenetur aut ut ab harum, repellendus et ducimus eos provident praesentium totam! Ullam enim sunt ipsum? Nam, dolor ex placeat dignissimos molestiae repellendus quaerat velit maxime aperiam vel voluptatum perspiciatis praesentium officiis quidem maiores minus consectetur nesciunt in deleniti ipsa quas ea! Incidunt, officia! Labore nostrum, dolor ut voluptatum adipisci, distinctio temporibus dignissimos, tempora praesentium architecto aut quia! Fuga atque nihil eius, cumque tenetur in quo quibusdam rerum repellendus, magnam veniam obcaecati consequuntur ipsam necessitatibus perspiciatis iure voluptatum asperiores debitis quasi fugiat delectus ullam ducimus? Quam repellendus reiciendis nisi corrupti error rerum ullam pariatur laborum eum assumenda repudiandae maiores beatae, velit libero tenetur perspiciatis, atque saepe est ut, id voluptas voluptatibus tempore commodi molestias. Inventore quam iusto obcaecati quibusdam, corrupti omnis ipsam consectetur dolorum non nesciunt possimus impedit suscipit amet accusamus, explicabo voluptates. Alias nostrum aperiam repellendus, numquam, quis quidem hic pariatur voluptatum omnis autem sit architecto optio dicta provident, officiis odio quisquam temporibus excepturi sunt voluptatem consectetur eos dolore harum animi. Voluptate, a delectus? Harum eius, expedita eos aut aliquam quis aspernatur exercitationem veritatis, dolorem sunt ducimus eveniet similique nam cum, culpa voluptatem consectetur voluptatum quisquam itaque distinctio consequatur. Repudiandae nihil deleniti ipsam vel aut consequatur odit reiciendis veniam ad autem voluptatum alias pariatur et quia, ab laborum consectetur earum, delectus voluptas. Perferendis neque ratione magni voluptatibus veniam debitis consequatur tempore eos autem nihil impedit magnam ipsa, molestias amet aspernatur facilis iste!"
-        }
-    ];
 
     const [isPostEditorOpened, setIsPostEditorOpened] = useState(false);
     const [postEditorAction, setPostEditorAction] = useState("create");
@@ -259,16 +234,16 @@ function News({ query: { categories: _categories, tags: _tags, search: _search }
                                 </div>
                             </div>
                         </div>
-                        {<AdminVariableComponent>
+                        <AdminVariableComponent>
                             <div className="blog-menu-section admin">
                                 <button className="blog-menu-section-add-article-button" onClick={() => switchPostEditor(true, "create")}>Создать новость</button>
                             </div>
-                        </AdminVariableComponent>}
+                        </AdminVariableComponent>
                     </div>
                 </div>
-                {<AdminVariableComponent>
-                    <PostEditor opened={isPostEditorOpened} action={postEditorAction} postData={postEditorData} close={() => setIsPostEditorOpened(false)} />
-                </AdminVariableComponent>}
+                <AdminVariableComponent>
+                    <PostEditor tags={uniqueTags} categories={counts} opened={isPostEditorOpened} action={postEditorAction} postData={postEditorData} close={() => setIsPostEditorOpened(false)} />
+                </AdminVariableComponent>
             </div>
         </div>
     );
@@ -278,9 +253,17 @@ News.getInitialProps = ({ query }) => ({ query });
 
 export default News;
 
-export function PostEditor({ opened, action, postData, close }) {
+export function PostEditor({ opened, action, postData, close, categories, tags }) {
     const [actionMap] = useState({ "create": ["Создать", () => setPost(undefined)], "edit": ["Изменить", (data) => setPost(data)] });
     const [post, setPost] = useState();
+    const [selectedCategory, setSelectedCategory] = useState("");
+    const [selectedTags, setSelectedTags] = useState([]);
+    const updateTags = tags => setSelectedTags([... new Set(tags)]);
+
+    console.log("Category:", selectedCategory);
+    console.log("Tags:", selectedTags);
+
+    // console.log(categories, tags);
     
     useEffect(() => opened && actionMap[action][1](postData), [opened]);
 
@@ -298,19 +281,17 @@ export function PostEditor({ opened, action, postData, close }) {
                 </div>
                 <div className="add-article-modal-body">
                     <div className="edit-event-modal-name">
-                        <label>
-                            Название события
-                            <input type="text" placeholder="Введите название события" defaultValue={post ? post.title : ""} />
-                        </label>
+                        <span>Название события</span>
+                        <input type="text" placeholder="Введите название события" defaultValue={post ? post.title : ""} />
                     </div>
                     <div className="add-article-modal-text-editor-wrapper">
-                        <textarea cols="30" rows="10" placeholder="введите что-нибудь интересное" />
+                        {/* <textarea cols="30" rows="10" placeholder="введите что-нибудь интересное" /> */}
+                        <TextEditor />
                     </div>
                 </div>
                 <div className="add-article-modal-footer">
                     <div className="col-1-3">
-                        <p>Введите категорию</p>
-                        {/* <p>Выберите категорию</p> */}
+                        <p>Выберите категорию</p>
                         {/* <Select
                             // defaultValue={colourOptions[1]}
                             options={categoryOptions}
@@ -318,27 +299,42 @@ export function PostEditor({ opened, action, postData, close }) {
                             theme={theme => ({ ...theme, borderRadius: 0, colors: { ...theme.colors, primary: "" } })}
                             placeholder="Выберите из списка"
                         /> */}
+                        <CreatableSelect
+                            theme={theme => ({ ...theme, borderRadius: 0, colors: { ...theme.colors, primary: "" } })}
+                            options={categories.map(([category]) => ({ value: category, label: category }))}
+                            onChange={option => setSelectedCategory(option?.label ?? "")}
+                            formatCreateLabel={value => `Создать категорию "${value}"`}
+                            placeholder="Выберите из списка или создайте новую"
+                            formatGroupLabel={formatGroupLabel}
+                            menuPlacement="top"
+                            isClearable
+                        />
                         <div className="add-article-add-new-category"> 
-                            <input type="text" placeholder="Категория" defaultValue={post ? post.category : ""} />
-                            {/* <input type="text" placeholder="Добавить категорию"/>
+                            {/* <input type="text" placeholder="Категория" defaultValue={post ? post.category : ""} />
+                            <input type="text" placeholder="Добавить категорию"/>
                             <button className="add-article-add-new-category-button">Добавить</button> */}
                         </div>
                     </div>
                     <div className="col-1-3">
                         <p>Выберите ключевые слова</p>
-                        <Select 
-                            closeMenuOnSelect={false}
-                            components={animatedComponents}
-                            isMulti={true}
-                            options={options}
-                            // styles={customStyles}
+                        <CreatableSelect 
                             theme={theme => ({ ...theme, borderRadius: 0, colors: { ...theme.colors, primary: "" } })}
-                            placeholder="Выберите из списка"
+                            noOptionsMessage={() => "Тегов больше нет, но вы можете создать новые"}
+                            onChange={tags => updateTags(tags.map(({ value }) => value))}
+                            options={tags.map(tag => ({ value: tag, label: tag }))}
+                            formatCreateLabel={value => `Создать тег "${value}"`}
+                            placeholder="Выберите из списка или создайте новый"
+                            components={animatedComponents}
+                            closeMenuOnSelect={false}
+                            menuPlacement="top"
+                            isClearable
+                            isMulti
+                            // styles={customStyles}
                         />
-                        <div className="add-article-add-new-keyword"> 
+                        {/* <div className="add-article-add-new-keyword"> 
                             <input type="text" placeholder="Добавить ключевое слово"/>
                             <button className="add-article-add-new-keyword-button">Добавить</button>
-                        </div>
+                        </div> */}
                     </div>
                     <div className="col-1-3">
                         <div className="col-1-2" style={{"display" : "none"}}>
