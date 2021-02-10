@@ -394,6 +394,64 @@
     margin: 0;
 }
 
+.registration-element .react-datepicker-wrapper {
+    width: calc(50% - 2vh);
+}
+
+.registration-element .react-datepicker__input-container input {
+    width: 100%;
+    height: 3vh;
+    background-color: transparent;
+    border: 1px solid gray;
+    padding: 0 1vh;
+    color: whitesmoke;
+    font-size: 100%;
+}
+
+.registration-element .react-datepicker__input-container input:hover {
+    border-color: #ff0a0a !important;
+    box-shadow: 0 0 10px 1px #ff0a0a !important;
+}
+
+.react-datepicker, .react-datepicker__header {
+    background-color: #131313 !important;
+    border-color: whitesmoke !important;
+}
+
+.react-datepicker__day-name, .react-datepicker__day, .react-datepicker__time-name {
+    color: whitesmoke !important;
+    border: 1px solid transparent;
+}
+
+.react-datepicker__current-month, .react-datepicker-time__header, .react-datepicker-year-header {
+    color: whitesmoke !important;
+}
+
+.react-datepicker__day--selected, .react-datepicker__day--in-selecting-range, .react-datepicker__day--in-range, 
+.react-datepicker__month-text--selected, .react-datepicker__month-text--in-selecting-range, 
+.react-datepicker__month-text--in-range, .react-datepicker__quarter-text--selected, .react-datepicker__quarter-text--in-selecting-range, 
+.react-datepicker__quarter-text--in-range, .react-datepicker__year-text--selected, .react-datepicker__year-text--in-selecting-range, 
+.react-datepicker__year-text--in-range,
+.react-datepicker__day:hover, .react-datepicker__month-text:hover, .react-datepicker__quarter-text:hover, .react-datepicker__year-text:hover,
+.react-datepicker__day--keyboard-selected, .react-datepicker__month-text--keyboard-selected, .react-datepicker__quarter-text--keyboard-selected, 
+.react-datepicker__year-text--keyboard-selected {
+    box-shadow: 0 0 10px 1px #ff0a0a !important;
+    border: 1px solid #ff0a0a !important;
+    background-color: transparent !important;
+}
+
+.react-datepicker__navigation--next:hover {
+    border-left-color: #ff0a0a !important;
+}
+
+.react-datepicker__navigation--previous:hover {
+    border-right-color: #ff0a0a !important;
+}
+
+.react-datepicker-popper[data-placement^="bottom"] .react-datepicker__triangle, .react-datepicker-popper[data-placement^="bottom"] .react-datepicker__triangle::before {
+    border-bottom-color: whitesmoke !important;
+}
+
 .registration-row {
     justify-content: flex-start;
     align-items: center;
