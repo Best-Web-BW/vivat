@@ -32,14 +32,16 @@
     transform: translate(-50%, -50%);
     border: 1px solid whitesmoke;
     border-bottom: 1px solid whitesmoke;
-    width: 70vw;
+    width: calc(100% - 4vh - 2px);
+    height: calc(100% - 10vh - 2px);
     padding: 2vh;
     transition: 0.6s ease-in-out;
+    overflow: auto;
 }
 
 .add-gallery-modal.opened, .edit-gallery-modal.opened {
-    top: 50%;
-    transform: translate(-50%, -50%);
+    top: 6vh;
+    transform: translate(-50%, 0vh);
 }
 
 .add-gallery-modal-content {
@@ -213,8 +215,94 @@
     align-items: center;
 }
 
+.add-gallery-modal-nameinput label, .edit-gallery-modal-name-wrapper label {
+    color: whitesmoke;
+    font-size: 100%;
+    margin-right: 1vh;
+    width: 100%;
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: center;
+    gap: 1vh;
+}
+
+.add-gallery-modal-nameinput input, .edit-gallery-modal-name-wrapper input {
+    width: 50%;
+    background-color: transparent;
+    border: 1px solid whitesmoke;
+    color: whitesmoke;
+    font-size: 100%;
+    padding: 1vh 0;
+    padding-left: 1vh;
+}
+
 .edit-gallery-modal {
     width: 80vw;
+}
+
+.fileUploader {
+    width: 20%;
+}
+
+.fileContainer {
+    background-color: transparent;
+    box-shadow: none;
+    margin: 0;
+    padding: 0;
+}
+
+.fileContainer .uploadPictureContainer {
+    width: 50%;
+    padding: 0;
+    background: transparent;
+    box-shadow: none;
+    border: none;
+    margin: 0;
+}
+
+.fileContainer .chooseFileButton {
+    height: 4vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: transparent;
+    color: whitesmoke;
+    font-size: 100%;
+    border: 1px solid whitesmoke;
+    padding: 1vh;
+    border-radius: 0;
+}
+
+.fileContainer .chooseFileButton:hover {
+    color: #ff0a0a;
+    text-shadow: 0 0 10px #ff0a0a;
+    border-color: #ff0a0a;
+    box-shadow: 0 0 10px 1px #ff0a0a;
+    background: transparent;
+}
+
+.add-gallery-modal-choose-img-wrapper .fileUploader {
+    width: 100%;
+}
+
+.add-gallery-modal-choose-img-wrapper .fileContainer .uploadPictureContainer {
+    width: 10%;
+    margin: 0 1vh;
+}
+
+.fileContainer .deleteImage {
+    color: whitesmoke;
+    background: transparent;
+    border: 1px solid whitesmoke;
+}
+
+.fileContainer .deleteImage:hover {
+    color: #ff0a0a;
+    text-shadow: 0 0 10px #ff0a0a;
+    border-color: #ff0a0a;
+    box-shadow: 0 0 10px 1px #ff0a0a;
+    background: transparent;
 }
 
 /* gallery admin end */
