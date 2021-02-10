@@ -380,15 +380,7 @@ export default class Header extends React.Component {
                             <label className="birth-date-label">
                                 Дата рождения
                                 <span className="required">*</span>
-                                <input ref={this.authRefs.register.birthdate} type="date" name="birthdate" className="datepicker-here" />
-                                {/* <DatePicker 
-                                selected={startDate} 
-                                onChange={date => setStartDate(date)}
-                                peekNextMonth
-                                showYearDropdown
-                                dropdownMode="select"
-                                locale="ru-RU"
-                                /> */}
+                                {/* <input ref={this.authRefs.register.birthdate} type="date" name="birthdate" className="datepicker-here" /> */}
                                 <WrapperDatePicker />
                             </label>
                             <label className="email-label">
