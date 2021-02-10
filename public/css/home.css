@@ -169,9 +169,9 @@
     width: 100%;
 }
 
-.rbc-row-segment {
-    max-width: 14.24% !important;
-}
+/* .rbc-row-segment { */
+    /* max-width: 14.24% !important; */
+/* } */
 
 .rbc-event, .rbc-day-slot .rbc-background-event {
     background-color: #800018 !important;

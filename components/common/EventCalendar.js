@@ -1,26 +1,29 @@
-import { useState, useEffect } from "react";
-import moment from "moment";
+import { useState, useEffect, useMemo } from "react";
+import Router from "next/router";
 import { Calendar, momentLocalizer } from "react-big-calendar";
+import moment from "moment";
 import EventListProvider from "../../utils/providers/EventListProvider";
 import { currentISODate } from "../../utils/common";
 
 export default function EventCalendar() {
-    const [calendar, setCalendar] = useState(null);
+    const localizer = useMemo(() => momentLocalizer(moment), []);
+    const [config, setConfig] = useState({ localizer, events: [] });
 
     useEffect(async () => {
         const json = await EventListProvider.getEventList();
         const date = currentISODate(new Date());
-        const events = [];
-        for(let { title, dates: [start, end] } of json) {
-            if(date <= end) events.push({
-                start: moment.utc(start),
-                end: moment.utc(end),
-                title: title,
-            });
-        }
-        setCalendar(<Calendar localizer={momentLocalizer(moment)} events={events} views={["month"]} />
-        );
+
+        const config = {
+            localizer,
+            views: ["month"],
+            events: json.filter(({ dates: [,end] }) => date <= end).map(({ id, title, dates: [start, end] }) => ({ id, title, start, end })),
+            startAccessor: event => moment.utc(event.start).toDate(),
+            endAccessor: event => moment.utc(event.end).toDate(),
+            onSelectEvent: event => Router.push(`/events/${event.id}`)
+        };
+
+        setConfig(config);
     }, []);
 
-    return calendar;
+    return <Calendar {...config} />;
 }
