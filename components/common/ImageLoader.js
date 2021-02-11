@@ -62,7 +62,7 @@ export default function ImageLoader({ isSingle, type, onChange, defaultImages })
         if(json.status !== "success") alert("Не удалось загрузить фото, попробуйте позже");
         else for(let image of json.images) addImage(new Image(image.url, image.name));
 
-        // resetInput();
+        resetInput();
     };
     
     const [input, setInput] = useState();
