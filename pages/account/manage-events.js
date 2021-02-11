@@ -227,21 +227,22 @@ export function EventEditor({ opened, action, eventData, close, categories }) {
                     <div className="edit-event-modal-name">
                         <label onClick={() => console.log(validate(crawl()))}>
                             Название события
-                            <input ref={refs.title} type="text" placeholder="Введите название собыия" defaultValue={event ? event.title : ""}/>
                         </label>
+                        <input ref={refs.title} type="text" placeholder="Введите название собыия" defaultValue={event ? event.title : ""}/>
                         {/* <label htmlFor="">Название события</label> */}
                     </div>
                     <div className="edit-event-modal-col-left">
                         <div className="edit-event-modal-place">
                             <label>
-                                Место проведения<br /><br />
-                                <input ref={refs.address} type="text" name="address" placeholder="Введите адрес" defaultValue={event ? event.address : ""} />
-                            </label><br />
+                                Место проведения
+                            </label>
+                            <input ref={refs.address} type="text" name="address" placeholder="Введите адрес" defaultValue={event ? event.address : ""} />
                         </div>
                         <div className="edit-event-modal-date">
                             <label>
-                                Дата начала<br /><br />
-                                <DatePicker
+                                Дата начала
+                            </label>
+                            <DatePicker
                                     dateFormat="dd.MM.yyyy"
                                     selected={startDate} 
                                     onChange={date => setStartDate(date)}
@@ -249,10 +250,10 @@ export function EventEditor({ opened, action, eventData, close, categories }) {
                                     showYearDropdown
                                     dropdownMode="select"
                                 />
-                            </label><br />
                             <label>
-                                Дата окончания<br /><br />
-                                <DatePicker
+                                Дата окончания
+                            </label>
+                            <DatePicker
                                     dateFormat="dd.MM.yyyy"
                                     selected={endDate} 
                                     onChange={date => setEndDate(date)}
@@ -260,7 +261,6 @@ export function EventEditor({ opened, action, eventData, close, categories }) {
                                     showYearDropdown
                                     dropdownMode="select"
                                 />
-                            </label>
                         </div>
                     </div>
                     <div className="edit-event-modal-col-right">

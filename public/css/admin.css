@@ -871,6 +871,10 @@
     margin: 1vh;
 }
 
+.edit-event-modal-content {
+    overflow: auto;
+}
+
 /* events edmin end */
 
 /* warning modals */
@@ -1061,18 +1065,61 @@
     .add-gallery-modal-imgs-list li {
         width: 49%;
     }
+
+    .edit-event-modal-body {
+        flex-wrap: wrap;
+        height: auto;
+    }
+
+    .edit-event-modal-col-left, .edit-event-modal-col-right {
+        width: 100%;
+        height: auto;
+    }
+
+    .edit-event-modal-col-left {
+        z-index: 2;
+    }
+
+    .edit-event-modal-col-right {
+        z-index: 1;
+    }
+
+    .edit-event-modal-footer {
+        flex-wrap: wrap;
+    }
+
+    .edit-event-modal-footer .col-1-3 {
+        width: 100%;
+    }
+
+    .add-article-add-new-keyword-button, .add-article-add-new-category-button, .add-event-button {
+        width: 50%;
+    }
+
+    .admin-events-list .events-block {
+        width: 40%;
+    }
+
+    .edit-event-modal-col-left, .edit-event-modal-col-right {
+        padding: 4vh;
+    }
+
 }
 
 /* ipad */
 
 @media screen and (min-width:541px) and (max-width: 768px) { 
-
+    .edit-event-modal-col-left, .edit-event-modal-col-right {
+        padding: 4vh;
+    }
 }
 
 /* ipad-pro */
 
 @media screen and (min-width:769px) and (max-width: 1024px) {
-
+    .edit-event-modal-col-left, .edit-event-modal-col-right {
+        padding: 4vh;
+    }
 }
 
 

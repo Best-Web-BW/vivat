@@ -20,7 +20,7 @@
     display: flex;
     flex-wrap: nowrap;
     transition: 0.6s ease-in-out;
-    z-index: 1;
+    z-index: 2;
 }
 
 .profile-menu-container.active {
