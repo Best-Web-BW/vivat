@@ -240,7 +240,7 @@
         display: none;
     }
 
-    .header-content-wrapper {
+    .header-content-wrapper.services {
         background-image: url('/images/services/elegant-girl-farm-wiith-horsem.jpg');
     }
 

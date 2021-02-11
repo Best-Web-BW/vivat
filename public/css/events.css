@@ -251,7 +251,7 @@
         display: none;
     }
 
-    .header-content-wrapper {
+    .header-content-wrapper.events {
         background-image: url('/images/events/events_headerm.jpg');
     }
 

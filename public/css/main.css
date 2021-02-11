@@ -201,6 +201,7 @@ header {
     color: whitesmoke;
     font-size: 140%;
     position: relative;
+    z-index: 1;
 }
 
 .profile-button:hover, .search-button:hover {
@@ -1186,7 +1187,7 @@ header {
     }
 
     .header-content-wrapper {
-        background-image: url('/images/home/slider/mobile.jpg');
+        /* background-image: url('/images/home/slider/mobile.jpg'); */
     }
 
     .header-title-wrapper {

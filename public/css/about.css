@@ -99,7 +99,7 @@
         display: none;
     }
 
-    .header-content-wrapper {
+    .header-content-wrapper.about {
         background-image: url('/images/about/marylou-fortier-mjXm9gYP4wE-unsplashm.jpg');
     }
 

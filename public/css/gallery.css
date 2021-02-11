@@ -264,7 +264,7 @@
         display: none;
     }
 
-    .header-content-wrapper {
+    .header-content-wrapper.gallery {
         background-image: url('/images/gallery/erin-dolson-uwEt4grBcdo-unsplashm.jpg');
     }
 

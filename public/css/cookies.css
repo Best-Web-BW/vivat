@@ -37,12 +37,23 @@
 }
 
 .cookies-content, .confidential-content {
-
+    color: whitesmoke;
+    padding: 5vh;
+    padding-top: 0;
 }
 
 .cookies-content p, .confidential-content p {
     font-size: 120%;
     margin-bottom: 1vh;
+}
+
+.cookies-content a {
+    color: whitesmoke;
+}
+
+.cookies-content a:hover {
+    color: #ff0a0a;
+    text-shadow: 0 0 10px #ff0a0a;
 }
 
 .cookies-content ul, .confidential-content ul {

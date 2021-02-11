@@ -181,9 +181,10 @@ export default class Header extends React.Component {
                                 <span className="search-icon" />
                             </button> */}
                             {<AuthVariableComponent>
-                                <button className="profile-button" onMouseEnter={this.openProfileMenu} onMouseLeave={this.closeProfileMenu}>
+                                <Link href="/account/profile"><button className="profile-button" onMouseEnter={this.openProfileMenu} onMouseLeave={this.closeProfileMenu}>
                                     <span className="profile-icon" />
                                 </button>
+                                </Link>
                                 <button id="open-enter-form" className="login-button" onClick={this.toggleSignForm}>Войти</button>
                             </AuthVariableComponent>}
                             <div

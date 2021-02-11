@@ -329,7 +329,7 @@
     height: 94vh;
     position: fixed;
     top: 6vh;
-    left: -100vw;
+    left: -200vw;
     background-color: #131313;
     z-index: 1;
     overflow: auto;
@@ -460,7 +460,7 @@
     box-shadow: 0 0 10px 1px #ff0a0a;
 }
 
-.css-i0syzg-menu, .css-26l3qy-menu {
+.css-i0syzg-menu, .css-26l3qy-menu, .css-1feoddu-menu {
     background-color: #131313 !important;
     color: whitesmoke;
     border: 1px solid whitesmoke;
@@ -909,6 +909,41 @@
     .add-gallery-button-icon {
         width: 10%;
     }
+
+    .fileUploader {
+        width: 100%;
+    }
+
+    .add-gallery-modal-choose-img-wrapper .fileContainer .uploadPictureContainer {
+        width: 40%;
+        margin: 1vh 1vh;
+    }
+
+    .add-article-modal-text-editor-wrapper {
+        height: calc(100% - 2vh - 2px - 7vh);
+        overflow: hidden;
+    }
+
+    .sun-editor .se-toolbar.se-toolbar-sticky {
+        opacity: 0;
+    }
+
+    .edit-event-modal-body input, .add-article-modal-body input {
+        width: 50%;
+    }
+
+    .edit-event-modal-name {
+        height: 7vh;
+    }
+
+    .add-article-modal-footer .col-1-3 {
+        width: 100%;
+    }
+
+    .add-article-modal-footer {
+        flex-wrap: wrap;
+    }
+
 }
 
 /* ipad */

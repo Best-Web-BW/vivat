@@ -382,6 +382,11 @@
         height: 60vw;
         margin-bottom: 2vh;
     }
+
+    .event-calendar-wrapper {
+        width: 100%;
+        font-size: 70%;
+    }
 }
 
 /* ipad */
@@ -410,6 +415,10 @@
     }
 
     .fc .fc-toolbar.fc-header-toolbar {
+        font-size: 100%;
+    }
+
+    .event-calendar-wrapper {
         font-size: 100%;
     }
 
@@ -451,6 +460,10 @@
 
     .service-title {
         font-size: 200%;
+    }
+
+    .event-calendar-wrapper {
+        font-size: 130%;
     }
 
 }

@@ -388,7 +388,7 @@
         display: none;
     }
 
-    .header-content-wrapper {
+    .header-content-wrapper.news {
         background-image: url('/images/services/elegant-girl-farm-wiith-horsem.jpg');
     }
 
@@ -400,11 +400,20 @@
     .blog-content .left-column, .blog-content .right-column {
         width: 100%;
     }
-    
+
     .blog-content .right-column {
-        position: absolute;
-        top: 0;
+        position: fixed;
+        top: -100vh;
         z-index: 1;
+        left: 0;
+        padding: 0;
+        transition: 0.6s ease-in-out;
+        height: 100%;
+        background-color: rgb(49 49 49);
+    }
+
+    .blog-content .right-column.opened {
+        top: 6vh;
     }
 
     .blog-content .left-column {
@@ -459,7 +468,7 @@
 
     .blog-menu-wrapper {
         padding: 0;
-        height: 0;
+        height: 100%;
         overflow: hidden;
         transition: 0.6s ease-in-out;
     }
