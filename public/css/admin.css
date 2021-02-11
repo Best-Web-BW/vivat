@@ -891,6 +891,10 @@
     margin: 0 auto;
 }
 
+.sun-editor .se-toolbar.se-toolbar-sticky {
+    opacity: 0;
+}
+
 /* text editor end */
 
 /* media style */
