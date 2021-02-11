@@ -1017,6 +1017,32 @@
         flex-wrap: wrap;
     }
 
+    .add-gallery-modal-choose-cover-wrapper {
+        flex-wrap: wrap;
+    }
+
+    .add-gallery-modal-choose-cover-wrapper form {
+        width: 100%;
+    }
+
+    .add-gallery-modal-imgs-list {
+        width: 100%;
+    }
+
+    .add-gallery-modal-content form label, .edit-event-add-document form label {
+        justify-content: center;
+        align-items: center;
+    }
+
+    .add-gallery-modal-imgs-list {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .add-gallery-modal-imgs-list li {
+        width: 49%;
+    }
 }
 
 /* ipad */
