@@ -120,6 +120,7 @@ export function EventEditor({ opened, action, eventData, close, categories }) {
     const [event, setEvent] = useState();
     const [selectedCategory, setSelectedCategory] = useState("");
     const [documents, setDocuments] = useState([]);
+    const defaultDocuments = useMemo(() => event ? event.documents : [], [event]);
     
     useEffect(() => opened && actionMap[action][1](eventData), [opened]);
     
@@ -289,7 +290,7 @@ export function EventEditor({ opened, action, eventData, close, categories }) {
                     </div>
                     <div className="col-1-3">
                         <div className="edit-event-add-document">
-                            <DocumentLoader type="events" onChange={setDocuments} defaultDocuments={event ? event.documents : []} />
+                            <DocumentLoader type="events" onChange={setDocuments} defaultDocuments={defaultDocuments} />
                         </div>
                     </div>
                     <div className="col-1-3">
