@@ -778,10 +778,10 @@
 
 .edit-event-modal-footer {
     width: 100%;
-    height: 20%;
+    min-height: 20%;
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
     flex-wrap: nowrap;
 }
 
@@ -800,7 +800,7 @@
 }
 
 .edit-event-add-document-preview-list .documents-element {
-    width: 15vw;  
+    width: 100%;  
 }
 
 .edit-event-add-document-preview-list .documents-title {
@@ -851,6 +851,24 @@
 
 .add-gallery-modal-choose-img-wrapper {
     min-height: 60%;
+}
+
+.edit-event-add-document form {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.edit-event-add-document-preview-list {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.edit-event-add-document-preview-list li {
+    width: 20%;
+    margin: 1vh;
 }
 
 /* events edmin end */
