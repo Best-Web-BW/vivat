@@ -7,8 +7,10 @@ import makeAnimated from "react-select/animated";
 import ContentHeader from "../components/common/ContentHeader";
 import DBProvider from "../utils/providers/DBProvider";
 import PostListProvider from "../utils/providers/PostListProvider";
-import AuthProvider, { AdminVariableComponent } from "../utils/providers/AuthProvider";
+import { AdminVariableComponent } from "../utils/providers/AuthProvider";
 import TextEditor from "../components/common/TextEditor";
+// import SunEditor from 'suneditor-react';
+// import 'suneditor/dist/css/suneditor.min.css'; // Import Sun Editor's CSS File
 // import { css, cx } from "@emotion/css"
 
 const groupStyles = {
@@ -260,14 +262,20 @@ export function PostEditor({ opened, action, postData, close, categories, tags }
     const [selectedTags, setSelectedTags] = useState([]);
     const updateTags = tags => setSelectedTags([... new Set(tags)]);
 
-    console.log("Category:", selectedCategory);
-    console.log("Tags:", selectedTags);
+    // console.log("Category:", selectedCategory);
+    // console.log("Tags:", selectedTags);
 
     // console.log(categories, tags);
     
     useEffect(() => opened && actionMap[action][1](postData), [opened]);
 
-    const crawl = () => console.log("Data crawled");
+    const textEditorRef = useRef();
+
+    const crawl = () => {
+        console.log("Data crawled");
+        console.log(textEditorRef.current);
+        global.er = textEditorRef.current;
+    };
     const createPost = () => console.log("Post created");
 
     return (
@@ -277,7 +285,7 @@ export function PostEditor({ opened, action, postData, close, categories, tags }
                     <button className="delete" onClick={close}>X</button>
                 </div>
                 <div className="add-article-modal-header">
-                    <h2>{actionMap[action][0]} новость</h2>
+                    <h2 onClick={crawl}>{actionMap[action][0]} новость</h2>
                 </div>
                 <div className="add-article-modal-body">
                     <div className="edit-event-modal-name">
@@ -286,8 +294,7 @@ export function PostEditor({ opened, action, postData, close, categories, tags }
                     </div>
                     <div className="add-article-modal-text-editor-wrapper">
                         {/* <textarea cols="30" rows="10" placeholder="введите что-нибудь интересное" /> */}
-                        <TextEditor 
-                        />
+                        <TextEditor editorRef={textEditorRef} imageType="news" />
                     </div>
                 </div>
                 <div className="add-article-modal-footer">

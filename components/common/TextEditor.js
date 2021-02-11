@@ -1,6 +1,6 @@
 import dynamic from "next/dynamic";
 
-export default function TextEditor() {
-    const SSRSafe = dynamic(import("./Editor"), { ssr: false });
-    return <SSRSafe />;
+export default function TextEditor(props) {
+    const SSRSafe = dynamic(import("./RawEditor"), { ssr: false });
+    return <SSRSafe {...props} />;
 }

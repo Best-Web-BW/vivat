@@ -1,6 +1,8 @@
 const router = require("express").Router();
-const webp = require("webp-converter")
+const cwebp = require("webp-converter").cwebp;
 const path = require("path");
+const { v4: UUID } = require("uuid");
+const fs = require("fs");
 
 let events, albums, posts, users;
 new require("mongodb").MongoClient("mongodb://localhost:27017", { useUnifiedTopology: true, useNewUrlParser: true }).connect((err, client) => {
@@ -20,15 +22,37 @@ async function getMaxID(collection) {
 
 router.get("/", (_, res) => res.end("Are you my adminny?"));
 
-router.post("/load_image", async (req, res) => {
-    console.log(req.files);
+const getRawImagePath = (type, fullName) => path.join("public", "images", type, "tmp", fullName);
+const getWebpImagePath = (type, name) => path.join("public", "images", type, "webp", name);
+const getWebpImageUrl = (type, name) => `/images/${type}/webp/${name}`;
 
-    res.json({
-        success: 1,
-        file: {
-            url: "/images/news/yael-gonzalez-jd9UEc8Sc58-unsplash.jpg"
-        }
-    });
+const getImageSize = async path => (await fs.promises.stat(path)).size;
+
+router.post("/load_image/:type", async (req, res) => {
+    const { type } = req.params;
+    if(["events", "gallery", "news"].includes(type)) {
+        try {
+            const { "file-0": rawImage } = req.files;
+            console.log(type, { rawImage }); // Print arguments (just for debug);
+
+            const rawPath = getRawImagePath(type, rawImage.name);
+            rawImage.mv(rawPath);
+    
+            const webpName = UUID() + ".webp";
+            const webpPath = getWebpImagePath(type, webpName);
+            await cwebp(rawPath, webpPath, "-quiet -mt");
+    
+            const webpUrl = getWebpImageUrl(type, webpName);
+            const webpSize = await getImageSize(webpPath);
+            
+            const result = { result: [{ url: webpUrl, name: webpName, size: webpSize }] };
+            console.log("Image loaded, result is", JSON.stringify(result.result[0]));
+            
+            fs.promises.unlink(rawPath);
+            return res.json(result);
+        } catch(e) { console.log(e); res.end(); }
+    }
+    else return res.json({ errorMessage: "Invalid load type" });
 });
 
 router.post("/event/:action", async (req, res) => {
