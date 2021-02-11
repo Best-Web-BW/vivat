@@ -76,7 +76,7 @@ export default function DocumentLoader({ type, onChange, defaultDocuments }) {
     const [input, setInput] = useState();
     const resetInput = () => {
         setInput(<input />)
-        setInput(<input ref={inputRef} type="file" multiple={true} accept="application/pdf" onChange={loadDocuments} />);
+        setInput(<input ref={inputRef} type="file" accept="application/*, image/*, video/*, audio/*" multiple={true} onChange={loadDocuments} />);
     }
 
     useEffect(() => resetInput(), []);
