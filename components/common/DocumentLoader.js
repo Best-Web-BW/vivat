@@ -84,8 +84,9 @@ export default function DocumentLoader({ type, onChange, defaultDocuments }) {
     return (
         <>
             <form encType="multipart/form-data">
+                <p>Выберите документ</p>
                 <label>
-                    Выбрать документ(ы)
+                    <p className="document-upload-button">Выбрать</p>
                     { input }
                 </label>
             </form>
