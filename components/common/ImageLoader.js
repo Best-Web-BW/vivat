@@ -76,8 +76,9 @@ export default function ImageLoader({ isSingle, type, onChange, defaultImages })
     return (
         <>
             <form encType="multipart/form-data">
+                <p>Выберите фото</p>
                 <label>
-                    Выбрать фото
+                    <p className="gallery-upload-button">Выбрать фото</p>
                     { input }
                 </label>
             </form>
