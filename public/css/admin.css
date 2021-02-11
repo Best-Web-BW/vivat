@@ -49,6 +49,7 @@
     width: 100%;
     display: flex;
     flex-wrap: wrap;
+    height: 100%;
 }
 
 .add-gallery-modal-nameinput, .add-gallery-modal-choose-cover-wrapper, .add-gallery-modal-choose-img-wrapper {
@@ -842,6 +843,14 @@
 
 .documents-title .events-edit-wrapper .delete {
     right: 1vh;
+}
+
+.add-gallery-modal-choose-cover-wrapper {
+    min-height: 10%;
+}
+
+.add-gallery-modal-choose-img-wrapper {
+    min-height: 60%;
 }
 
 /* events edmin end */
