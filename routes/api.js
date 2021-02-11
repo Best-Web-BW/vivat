@@ -19,7 +19,7 @@ router.get("/events", async (req, res) => {
     const { date } = req.query;
 
     const query = date ? { "dates.0": { $lte: date }, "dates.1": { $gte: date } } : { };
-    const projection = { _id: false, id: true, title: true, dates: true };
+    const projection = { _id: false, id: true, title: true, dates: true, category: true };
     
     const result = await events.find(query, { projection }).sort({ id: 1 }).toArray();
     res.json(result);
@@ -31,7 +31,7 @@ router.get("/events/:id", async (req, res) => {
 });
 
 router.get("/albums", async (_, res) => {
-    const projection = { _id: false, id: true, title: true, image: true, date: true };
+    const projection = { _id: false, id: true, title: true, cover: true, date: true };
     const result = await albums.find({ }, { projection }).sort({ id: 1 }).toArray();
     res.json(result);
 });

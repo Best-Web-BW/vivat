@@ -1,13 +1,32 @@
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import ContentHeader from "../../components/common/ContentHeader";
 import EventListProvider from "../../utils/providers/EventListProvider";
 import EventSlider from "../../components/sliders/EventSlider";
-import { reformatDate } from "../../utils/common";
+import Link from "next/link";
+// import { reformatDate } from "../../utils/common";
+
+function DocumentBlock({ url, name }) {
+    return (
+        <div className="documents-element">
+            <Link href={url}>
+                <a>
+                    <div className="documents-img">
+                        <img src="/images/events/pdf-icon.png" alt="" width="100%" />
+                    </div>
+                    <p className="documents-title">{ name }</p>
+                </a>
+            </Link>
+        </div>
+    );
+}
 
 export default function EventPage() {
     const { id } = useRouter().query;
-    const [event, setEvent] = useState({ });
+    const [event, setEvent] = useState();
+    const contents = useMemo(() => event ? event.contents.replaceAll("script", "sсrірt") : "", [event]);
+    console.log("Event", event);
+    console.log("Contents", contents);
 
     useEffect(async () => {
         if(id) {
@@ -19,21 +38,15 @@ export default function EventPage() {
     return (
         <div>
             <ContentHeader
-                pages={[["events", "Мероприятия"], [`events/${id}`, event.title]]}
+                pages={[["events", "Мероприятия"], [`events/${id}`, event ? event.title : ""]]}
                 afterTitle={<EventSlider containerClass="day-events-container" />}
             />
             <div className="event-page-content content-block">
-                <article className="event-article">
-                    <div className="event-article-img">
+                <article className="event-article" dangerouslySetInnerHTML={{ __html: contents }}>
+                    {/* <div className="event-article-img">
                         <img src="/images/events/yael-gonzalez-jd9UEc8Sc58-unsplash.jpg" alt="" width="100%" />
-                    </div>
-                    <p className="event-article-p">
-                        Название: { event.title }<br />
-                        Описание: { event.desc }<br />
-                        Место проведения: { event.place }<br />
-                        Категория: { event.category }<br />
-                        Дата начала: { event.dates && reformatDate(event.dates[0]) }<br />
-                        Дата окончания: { event.dates && reformatDate(event.dates[1]) }
+                    </div> */}
+                    {/* <p className="event-article-p"> */}
                         {/* Lorem ipsum, dolor sit amet consectetur adipisicing elit. Perspiciatis voluptas in nisi et suscipit
                         ullam maiores expedita ut rem quidem saepe eveniet sit est accusamus dolor ea dolorem consequuntur,
                         iusto voluptatem beatae, cupiditate enim aliquid? Suscipit, nesciunt esse rem error dicta eveniet
@@ -53,7 +66,7 @@ export default function EventPage() {
                         laudantium sed deserunt officiis necessitatibus enim, libero incidunt eum, odit magnam modi? Beatae
                         eaque delectus cum repellat. Ullam accusamus animi quidem harum dolor necessitatibus, qui odit,
                         repellendus ut, vel eum illo ad nihil modi! Nemo doloremque itaque molestias ipsam saepe. Aliquam! */}
-                    </p>
+                    {/* </p> */}
                     {/* <p className="event-article-p">
                         Lorem ipsum, dolor sit amet consectetur adipisicing elit. Perspiciatis voluptas in nisi et suscipit
                         ullam maiores expedita ut rem quidem saepe eveniet sit est accusamus dolor ea dolorem consequuntur,
@@ -77,24 +90,7 @@ export default function EventPage() {
                     </p> */}
                 </article>
                 <div className="event-documents-wrapper">
-                    <div className="documents-element">
-                        <div className="documents-img">
-                            <img src="/images/events/pdf-icon.png" alt="" width="100%" />
-                        </div>
-                        <p className="documents-title">Документы по белым лошадям часть 1</p>
-                    </div>
-                    <div className="documents-element">
-                        <div className="documents-img">
-                            <img src="/images/events/pdf-icon.png" alt="" width="100%" />
-                        </div>
-                        <p className="documents-title">Документы по белым лошадям часть 2</p>
-                    </div>
-                    <div className="documents-element">
-                        <div className="documents-img">
-                            <img src="/images/events/pdf-icon.png" alt="" width="100%" />
-                        </div>
-                        <p className="documents-title">Документы по результатам</p>
-                    </div>
+                    { event && event.documents.map(document => <DocumentBlock key={document.name} {...document} />) }
                 </div>
             </div>
         </div>

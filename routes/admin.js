@@ -16,8 +16,8 @@ new require("mongodb").MongoClient("mongodb://localhost:27017", { useUnifiedTopo
 });
 
 async function getMaxID(collection) {
-    const max = await collection.find().sort({ id: -1 }).limit(1);
-    return max;
+    const max = await collection.find().sort({ id: -1 }).limit(1).toArray();
+    return max[0].id;
 }
 
 router.get("/", (_, res) => res.end("Are you my adminny?"));
@@ -55,6 +55,62 @@ router.post("/load_image/:type", async (req, res) => {
     else return res.json({ errorMessage: "Invalid load type" });
 });
 
+router.post("/load_images/:type", async (req, res) => {
+    const { type } = req.params;
+    if(["gallery"].includes(type)) {
+        try {
+            let { images } = req.files;
+            if(!(images instanceof Array)) images = [images];
+            console.log({ type, images }); // Print arguments (just for debug);
+
+            const serverImages = [];
+
+            for(let rawImage of images) {
+                const rawPath = getRawImagePath(type, rawImage.name)
+                rawImage.mv(rawPath);
+        
+                const webpName = UUID() + ".webp";
+                const webpPath = getWebpImagePath(type, webpName);
+                await cwebp(rawPath, webpPath, "-quiet -mt");
+        
+                const webpUrl = getWebpImageUrl(type, webpName);
+
+                fs.promises.unlink(rawPath);
+                serverImages.push({ url: webpUrl, name: webpName });
+            }
+
+            console.log("Images loaded, result is", JSON.stringify(serverImages));
+            
+            return res.json({ status: "success", images: serverImages });
+        } catch(e) { console.log(e); res.json({ status: "error" }); }
+    }
+    else return res.json({ errorMessage: "Invalid load type" });
+});
+
+const getDocumentPath = (type, name) => path.join("public", "documents", type, name);
+const getDocumentUrl = (type, name) => `/documents/${type}/${name}`;
+
+router.post("/load_documents/:type", async (req, res) => {
+    const { type } = req.params;
+    if(["events"].includes(type)) {
+        try {
+            let { documents } = req.files;
+            if(!(documents instanceof Array)) documents = [documents];
+            console.log({ type, documents });
+
+            const serverDocuments = documents.map(document => {
+                const name = document.name;
+                document.mv(getDocumentPath(type, name));
+                return { url: getDocumentUrl(type, name), name }
+            });
+
+            console.log("Documents are loaded, result is", JSON.stringify(serverDocuments));
+
+            return res.json({ status: "success", documents: serverDocuments });
+        } catch(e) { console.log(e); res.json({ status: "error" }); }
+    }
+});
+
 router.post("/event/:action", async (req, res) => {
     const { action } = req.params;
     const { data } = req.body;
@@ -62,12 +118,15 @@ router.post("/event/:action", async (req, res) => {
     const SUCCESS = { status: "success" };
     const DB_ERROR = { status: "error", error: "db_error" };
     const EVENT_NOT_EXIST = { status: "error", error: "event_not_exist" };
+    const INVALID_REQUEST = { status: "error", error: "invalid_request" };
     let id, event;
     switch(action) {
         case "create":
             id = await getMaxID(events) + 1;
             try {
-                await events.insertOne({ ...data, id });
+                const newEvent = { id, ...data };
+
+                await events.insertOne(newEvent);
                 return res.json(SUCCESS);
             } catch(e) { return res.json(DB_ERROR) }
         case "edit":
@@ -78,6 +137,7 @@ router.post("/event/:action", async (req, res) => {
             } catch(e) { return res.json(DB_ERROR); }
 
             event = { ...event, ...data };
+
             try {
                 await events.replaceOne({ _id: event._id }, event);
                 return res.json(SUCCESS);
@@ -91,7 +151,7 @@ router.post("/event/:action", async (req, res) => {
                 await events.deleteOne({ _id: event._id });
                 return res.json(SUCCESS);
             } catch(e) { return res.json(DB_ERROR); }
-        default: return res.json({ status: "error", error: "invalid_request" });
+        default: return res.json(INVALID_REQUEST);
     }
 });
 
@@ -102,12 +162,15 @@ router.post("/album/:action", async (req, res) => {
     const SUCCESS = { status: "success" };
     const DB_ERROR = { status: "error", error: "db_error" };
     const ALBUM_NOT_EXIST = { status: "error", error: "album_not_exist" };
+    const INVALID_REQUEST = { status: "error", error: "invalid_request" };
     let id, album;
     switch(action) {
         case "create":
             id = await getMaxID(albums) + 1;
             try {
-                await albums.insertOne({ ...data, id });
+                const newAlbum = { id, ...data };
+
+                await albums.insertOne(newAlbum);
                 return res.json(SUCCESS);
             } catch(e) { return res.json(DB_ERROR) }
         case "edit":
@@ -118,6 +181,7 @@ router.post("/album/:action", async (req, res) => {
             } catch(e) { return res.json(DB_ERROR); }
 
             album = { ...album, ...data };
+
             try {
                 await albums.replaceOne({ _id: album._id }, album);
                 return res.json(SUCCESS);
@@ -131,7 +195,7 @@ router.post("/album/:action", async (req, res) => {
                 await albums.deleteOne({ _id: album._id });
                 return res.json(SUCCESS);
             } catch(e) { return res.json(DB_ERROR); }
-        default: return res.json({ status: "error", error: "invalid_request" });
+        default: return res.json(INVALID_REQUEST);
     }
 });
 
@@ -142,12 +206,21 @@ router.post("/post/:action", async (req, res) => {
     const SUCCESS = { status: "success" };
     const DB_ERROR = { status: "error", error: "db_error" };
     const POST_NOT_EXIST = { status: "error", error: "post_not_exist" };
-    let id, post;
+    const INVALID_REQUEST = { status: "error", error: "invalid_request" };
+    let id, post, images;
     switch(action) {
         case "create":
             id = await getMaxID(posts) + 1;
             try {
-                await posts.insertOne({ ...data, id });
+                const newPost = { id, ...data };
+
+                images = newPost.contents.match(/\<img.*?src="(.+?)"/);
+                if(images) {
+                    console.log("Found images in contents: ", images);
+                    newPost.image = images[1];
+                } else console.log("No images found in contents");
+
+                await posts.insertOne(newPost);
                 return res.json(SUCCESS);
             } catch(e) { return res.json(DB_ERROR) }
         case "edit":
@@ -158,6 +231,16 @@ router.post("/post/:action", async (req, res) => {
             } catch(e) { return res.json(DB_ERROR); }
 
             post = { ...post, ...data };
+
+            images = post.contents.match(/\<img.*?src="(.+?)"/);
+            if(images) {
+                console.log("Found images in contents: ", images);
+                post.image = images[1];
+            } else {
+                console.log("No images found in contents");
+                post.image = undefined;
+            }
+
             try {
                 await posts.replaceOne({ _id: post._id }, post);
                 return res.json(SUCCESS);
@@ -171,7 +254,7 @@ router.post("/post/:action", async (req, res) => {
                 await posts.deleteOne({ _id: post._id });
                 return res.json(SUCCESS);
             } catch(e) { return res.json(DB_ERROR); }
-        default: return res.json({ status: "error", error: "invalid_request" });
+        default: return res.json(INVALID_REQUEST);
     }
 });
 

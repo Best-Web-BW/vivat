@@ -67,12 +67,53 @@ export default class PostListProvider {
         });
     }
 
+    static createPost(data) {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const response = await fetch("/api/admin/post/create", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json;charset=utf-8" },
+                    body: JSON.stringify({ data })
+                });
+                const json = await response.json();
+                if(json.status === "success") {
+                    // this.posts.set(json.post.id, json.post);
+                    return resolve({ success: 1 });
+                } else return resolve({ success: 0, reason: json.error });
+            } catch(e) { reject({}); }
+        });
+    }
+
+    static editPost(id, data) {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const response = await fetch("/api/admin/post/edit", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json;charset=utf-8" },
+                    body: JSON.stringify({ data: { id, ...data } })
+                });
+                const json = await response.json();
+                if(json.status === "success") {
+                    // this.posts.set(json.post.id, json.post);
+                    return resolve({ success: 1 });
+                } else return resolve({ success: 0, reason: json.error });
+            } catch(e) { console.log(e); reject({ }); }
+        });
+    }
+
     static removePost(id) {
         return new Promise(async (resolve, reject) => {
             try {
-                const json = await DBProvider.removePost(id);
-                resolve(json);
-            } catch(e) { reject(); }
+                const response = await fetch("/api/admin/post/remove", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json;charset=utf-8" },
+                    body: JSON.stringify({ data: { id } })
+                });
+                const json = await response.json();
+                if(json.status === "success") {
+                    return resolve({ success: 1 });
+                } else return resolve({ success: 0, reason: json.error });
+            } catch(e) { console.log(e); reject(); }
         });
     }
 }

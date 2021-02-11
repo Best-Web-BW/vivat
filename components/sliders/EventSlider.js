@@ -5,7 +5,7 @@ import { reformatDate } from "../../utils/common";
 
 const daysOfWeek = ["ВС", "ПН", "ВТ", "СР", "ЧТ", "ПТ", "СБ"];
 
-function convertDate(rawDate) {
+export function convertDate(rawDate) {
     const date = new Date(rawDate);
     return `${daysOfWeek[date.getUTCDay()]}. ${reformatDate(date)}`;
 }

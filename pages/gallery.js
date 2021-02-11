@@ -1,23 +1,25 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import ContentHeader from "../components/common/ContentHeader";
 import AlbumListProvider from "../utils/providers/AlbumListProvider";
 import { AdminVariableComponent } from "../utils/providers/AuthProvider";
-import { reformatDate } from "../utils/common";
-import ImageUploader from "react-images-upload";
+import { currentISODate, reformatDate } from "../utils/common";
+// import ImageUploader from "react-images-upload";
+import Router from "next/router";
+import ImageLoader from "../components/common/ImageLoader";
 
-function Album({ id, image, date, title, edit, remove }) {
+function Album({ id, cover, date, title, edit, remove }) {
     return (
         <div className="album-list-element">
             <AdminVariableComponent>
                 <div className ="gallery-edit-wrapper">
-                    <span className="edit"></span>  
-                    <button className="delete">X</button>
+                    <span className="edit" onClick={() => edit(id)}></span>  
+                    <button className="delete" onClick={() => remove(id)}>X</button>
                 </div>    
             </AdminVariableComponent>
             <Link href={`/gallery/${id}`}>
                 <a className="album-list-link">
-                    <img src={`/images/gallery/album/webp/${image}.webp`} alt="" width="100%" />
+                    <img src={cover ? cover.url : ""} alt="" width="100%" />
                     <div className="flex-row">
                         <div className="album-list-date">
                             <p>{ reformatDate(date) }</p>
@@ -34,30 +36,46 @@ function Album({ id, image, date, title, edit, remove }) {
 
 export default function Gallery() {
     const [albums, setAlbums] = useState([]);
+    const [deleteModalOpened, setDeleteModalOpened] = useState(false);
+    const [successCreateModalOpened, setSuccessCreateModalOpened] = useState(false);
+    const [successEditModalOpened, setSuccessEditModalOpened] = useState(false);
 
     useEffect(async () => {
         const list = await AlbumListProvider.getAlbumList();
         setAlbums(list);
     }, []);
 
-    
-    const [isAlbumEditorOpened, setIsAlbumEditorOpened] = useState(false);
-    const [albumEditorAction, setAlbumEditorAction] = useState("create");
-    const [albumEditorData, setAlbumEditorData] = useState();
-    const switchAlbumEditor = (opened, action, data) => {
-        setIsAlbumEditorOpened(opened);
-        setAlbumEditorAction(action);
-        setAlbumEditorData(data);
-    }
-    
-    const editAlbum = id => {
-        const album = albums.find(album => album.id === id);
-        switchAlbumEditor(true, "edit", album);
+    const [editorConfig, setEditorConfig] = useState({
+        opened: false,
+        action: "create",
+        data: undefined
+    });
+    const switchAlbumEditor = (opened, action, data) => setEditorConfig({ opened, action, data })
+    const closeEditor = () => setEditorConfig(({ action, data }) => ({ action, data, opened: false }));
+
+    const editAlbum = async id => {
+        const a = await AlbumListProvider.getAlbumDetails(id);
+        console.log(id, a);
+        switchAlbumEditor(true, "edit", a);
     }
 
+    const [removeID, setRemoveID] = useState();
+    const prepareToRemove = id => {
+        setRemoveID(id);
+        setDeleteModalOpened(true);
+    };
     const removeAlbum = async id => {
-        const response = await AlbumListProvider.removeAlbum(id);
-        alert(response.success ? "Альбом успешно удалён" : response.reason);
+        const result = await AlbumListProvider.removeAlbum(id);
+        if(result.success) {
+            alert("Альбом успешно удалён");
+            // close();
+            Router.reload();
+        } else switch(result.reason) {
+            case "db_error": return alert("Ошибка БД, попробуйте позже");
+            case "album_not_exist": return alert("Такого альбома не существует");
+            case "invalid_request": return alert("Неправильный запрос");
+            default: return alert("Внутренная ошибка");
+        }
     }
 
     return (
@@ -85,65 +103,185 @@ export default function Gallery() {
                     </AdminVariableComponent>
                 </div>
                 <AdminVariableComponent>
-                    <AlbumEditor opened={isAlbumEditorOpened} action={albumEditorAction} albumData={albumEditorData} close={() => setIsAlbumEditorOpened(false)} />
+                    <AlbumEditor {...editorConfig} close={closeEditor} {...{ setSuccessCreateModalOpened, setSuccessEditModalOpened }} />
+                    <div className={`warning-delete-modal ${deleteModalOpened && "opened"}`}>
+                        <div className="warning-delete-modal-content">
+                            <p>Вы уверены, что хотите удалить этот альбом безвозвратно?</p>
+                            <button
+                                className="warning-delete-button"
+                                onClick={() => {
+                                    removeAlbum(removeID);
+                                    setDeleteModalOpened(false);
+                                }}
+                            >Да</button>
+                            <button className="warning-delete-button-no" onClick={() => setDeleteModalOpened(false)}>Нет</button>
+                        </div>
+                    </div>
+                    <div className={`warning-success-modal ${successCreateModalOpened && "opened"}`}>
+                        <div className="warning-success-modal-content">
+                            <span
+                                className="close-modal"
+                                onClick={() => {
+                                    setSuccessCreateModalOpened(false);
+                                    setTimeout(() => Router.reload(), 600);
+                                }}
+                            >X</span>
+                            <p>Альбом успешно создан!</p>
+                            <button
+                                className="warrning-success-modal-button"
+                                onClick={() => {
+                                    setSuccessCreateModalOpened(false);
+                                    setTimeout(() => Router.reload(), 600);
+                                }}
+                            >Ок</button>
+                        </div>
+                    </div>
+                    <div className={`warning-success-modal ${successEditModalOpened && "opened"}`}>
+                        <div className="warning-success-modal-content">
+                            <span
+                                className="close-modal"
+                                onClick={() => {
+                                    setSuccessEditModalOpened(false);
+                                    setTimeout(() => Router.reload(), 600);
+                                }}
+                            >X</span>
+                            <p>Альбом успешно изменен!</p>
+                            <button
+                                className="warrning-success-modal-button"
+                                onClick={() => {
+                                    setSuccessEditModalOpened(false);
+                                    setTimeout(() => Router.reload(), 600);
+                                }}
+                            >Ок</button>
+                        </div>
+                    </div>
                 </AdminVariableComponent>
                 <div className="album-list-container">
-                    { albums.map(album => <Album key={album.id} { ...album } edit={editAlbum} remove={removeAlbum} />) }
+                    { albums.map(album => <Album key={album.id} { ...album } edit={editAlbum} remove={prepareToRemove} />) }
                 </div>
             </div>
         </div>
     );
 }
 
-function ImageContainer({ isMulti, text, defaultImages }) {
-    const [pictures, setPictures] = useState([]);
-    const [files, setFiles] = useState([]);
-    const filterFiles = files => files.filter(file => !(/^data:/.test(file)));
+// function ImageContainer({ isMulti, text, defaultImages }) {
+//     const [pictures, setPictures] = useState([]);
+//     const [files, setFiles] = useState([]);
+//     const filterFiles = files => files.filter(file => !(/^data:/.test(file)));
+
+//     return (
+//         <ImageUploader
+//             withIcon={false}
+//             withLabel={false}
+//             withPreview={true}
+//             singleImage={!isMulti}
+//             buttonText={text}
+//             onChange={(pictures, files) => (console.log(pictures, files), setPictures(pictures), setFiles(files))}
+//             imgExtension={[".jpg", ".jpeg", ".png"]}
+//             maxFileSize={10485760}
+//             defaultImages={defaultImages}
+//         />
+//     );
+// }
+
+export function AlbumEditor({ opened, action, data, close, setSuccessCreateModalOpened, setSuccessEditModalOpened }) {
+    const [actionMap] = useState({ "create": ["Создать", () => setAlbum(undefined)], "edit": ["Изменить", data => setAlbum(data)] });
+    const [album, setAlbum] = useState();
+    const [cover, setCover] = useState();
+    const [images, setImages] = useState([]);
+    const defaultImages = useMemo(() => album ? album.images : [], [album]);
+    const defaultCover = useMemo(() => album ? [album.cover] : [], [album]);
+    
+    useEffect(() => opened && actionMap[action][1](data), [opened]);
+
+    useEffect(() => setCover(album ? album.cover : undefined), [album]);
+    useEffect(() => setImages(album ? album.images : []), [album]);
+    
+    const titleRef = useRef();
+
+    const crawl = () => ({
+        title: titleRef.current.value,
+        cover, images
+    });
+
+    const validate = data => {
+        if(!data.title.length) return { success: 0, error: "no_title" };
+        else if(!data.cover) return { success: 0, error: "no_cover" };
+        else if(!data.images.length) return { success: 0, error: "no_images" };
+        else return { success: 1 };
+    };
+
+    const submit = async () => {
+        const data = crawl();
+        const validated = validate(data);
+        if(!validated.success) {
+            switch (validated.error) {
+                case "no_title": return alert("Не введено название");
+                case "no_cover": return alert("Не выбрана обложка альбома");
+                case "no_images": return alert("Не выбраны фото");
+                default: return alert("Внутренняя ошибка");
+            }
+        }
+        return data;
+    };
+
+    const createAlbum = async () => {
+        const data = await submit();
+        if(data) {
+            const result = await AlbumListProvider.createAlbum({ ...data, date: new Date().toISOString() });
+            console.log(result);
+            if(result.success) {
+                setSuccessCreateModalOpened(true);
+                // close();
+                // Router.reload();
+            } else switch(result.reason) {
+                case "db_error": return alert("Ошибка БД, попробуйте позже");
+                case "album_not_exist": return alert("Такого альбома не существует");
+                case "invalid_request": return alert("Неправильный запрос");
+                default: return alert("Внутренная ошибка");
+            }
+        }
+    };
+
+    const editAlbum = async id => {
+        const data = await submit();
+        if(data) {
+            const result = await AlbumListProvider.editAlbum(id, data);
+            if(result.success) {
+                setSuccessEditModalOpened(true);
+                // close();
+                // Router.reload();
+            } else switch(result.reason) {
+                case "db_error": return alert("Ошибка БД, попробуйте позже");
+                case "album_not_exist": return alert("Такого альбома не существует");
+                case "invalid_request": return alert("Неправильный запрос");
+                default: return alert("Внутренная ошибка");
+            }
+        }
+    };
 
     return (
-        <ImageUploader
-            withIcon={false}
-            withLabel={false}
-            withPreview={true}
-            singleImage={!isMulti}
-            buttonText={text}
-            onChange={(pictures, files) => (console.log(pictures, files), setPictures(pictures), setFiles(files))}
-            imgExtension={[".jpg", ".jpeg", ".png"]}
-            maxFileSize={10485760}
-            defaultImages={defaultImages}
-        />
-    );
-}
-
-export function AlbumEditor({ opened, action, albumData, close }) {
-    const [actionMap] = useState({ "create": ["Создать", () => setAlbum(undefined)], "edit": ["Изменить", (data) => setAlbum(data)] });
-    const [album, setAlbum] = useState();
-    
-    useEffect(() => opened && actionMap[action][1](albumData), [opened]);
-
-    const crawl = () => console.log("Data crawled");
-    const submit = () => console.log("Album " + action);
-
-    return (<>
         <div className={`add-gallery-modal ${opened && "opened"}`}>
             <div className="add-gallery-modal-content">
                 <span className="close-modal" onClick={close}>X</span>
-                <h2>{actionMap[action][0]} альбом</h2>
+                <h2 onClick={() => console.log(crawl())}>{actionMap[action][0]} альбом</h2>
                 <div className="add-gallery-modal-nameinput">
-                    <label>
+                    <label onClick={() => console.log(validate(crawl()))}>
                         Название
-                        <input type="text" placeholder="Введите название" defaultValue={album ? album.title : ""} />
+                        <input ref={titleRef} type="text" placeholder="Введите название" defaultValue={album ? album.title : ""} />
                     </label>
                 </div>
                 <div className="add-gallery-modal-choose-cover-wrapper">
-                    <ImageContainer isMulti={false} text="Выберите обложку альбома" />
+                    <ImageLoader isSingle type="gallery" onChange={([cover]) => setCover(cover)} defaultImages={defaultCover} />
+                    {/* <ImageContainer isMulti={false} text="Выберите обложку альбома" /> */}
                     {/* <div className="add-gallery-modal-preview-cover">
                         <img src="/images/gallery/album/webp/akshat-vats-l_GAWl6q7LI-unsplash.webp" alt="" width="100%" />
                     </div> */}
                     {/* <button className="add-gallery-modal-choose-cover">Выберите обложку альбома</button> */}
                 </div>
                 <div className="add-gallery-modal-choose-img-wrapper">
-                    <ImageContainer isMulti={true} text="Выберите фотографии" defaultImages={["/images/gallery/album/webp/akshat-vats-l_GAWl6q7LI-unsplash.webp"]} />
+                    <ImageLoader type="gallery" onChange={setImages} defaultImages={defaultImages} />
+                    {/* <ImageContainer isMulti={true} text="Выберите фотографии" defaultImages={["/images/gallery/album/webp/akshat-vats-l_GAWl6q7LI-unsplash.webp"]} /> */}
                     {/* <button className="add-gallery-modal-choose-imgs">Выберите фотографии</button> */}
                     {/* <div className="add-gallery-modal-imgs-list">
                         <ul>
@@ -158,54 +296,8 @@ export function AlbumEditor({ opened, action, albumData, close }) {
                         </ul>
                     </div> */}
                 </div>
-                <button className="add-gallery-modal-save-button" onClick={submit}>Сохранить</button>
+                <button className="add-gallery-modal-save-button" onClick={album ? () => editAlbum(album.id) : createAlbum}>Сохранить</button>
             </div>
         </div>
-        {/* <div className="edit-gallery-modal">
-            <div className="edit-gallery-modal-content">
-                <span className="close-modal">X</span>
-                <h2>Изменить альбом</h2>
-                <div className="edit-gallery-modal-name-wrapper">
-                    <label>Название:</label>
-                    <input type="text" placeholder="Альбом с лошадьми, красивыми" />
-                </div>
-                <div className="edit-gallery-modal-imgs-wrapper">
-                    <ul>
-                        <li>
-                            <img src="/images/gallery/album/webp/akshat-vats-l_GAWl6q7LI-unsplash.webp" alt="" width="100%"/>
-                            <button className="delete">X</button>
-                        </li>
-                        <li>
-                            <img src="/images/gallery/album/webp/akshat-vats-l_GAWl6q7LI-unsplash.webp" alt="" width="100%"/>
-                            <button className="delete">X</button>
-                        </li>
-                    </ul>
-                </div>
-                <div className="add-gallery-modal-choose-img-wrapper">
-                    <button className="add-gallery-modal-choose-imgs">Выберите фотографии</button>
-                </div>
-                <button className="edit-gallery-modal-save-button">Сохарнить</button>
-            </div>
-        </div> */}
-        <div className="warning-delete-modal">
-            <div className="warning-delete-modal-content">
-                <p>Вы уверены, что хотите удалить этот альбом безвовзратно?</p>
-                <button className="warning-delete-button">Да</button><button className="warning-delete-button-no">Нет</button>
-            </div>
-        </div>
-        <div className="warning-success-modal">
-            <div className="warning-success-modal-content">
-                <span className="close-modal">X</span>
-                <p>Альбом успешно создан!</p>
-                <button className="warrning-success-modal-button">Ок</button>
-            </div>
-        </div>
-        <div className="warning-success-modal">
-            <div className="warning-success-modal-content">
-                <span className="close-modal">X</span>
-                <p>Альбом успешно изменен!</p>
-                <button className="warrning-success-modal-button">Ок</button>
-            </div>
-        </div>
-    </>);
+    );
 }

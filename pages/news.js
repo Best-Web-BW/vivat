@@ -1,6 +1,6 @@
 import Router, { useRouter } from "next/router"
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Select from "react-select";
 import CreatableSelect from 'react-select/creatable';
 import makeAnimated from "react-select/animated";
@@ -49,27 +49,26 @@ export function Tag({ name }) {
     );
 }
 
-function Post({ id, title, paragraphs, tags, edit, remove }) {
+function Post({ id, title, image, contents, tags, edit, remove }) {
+    const _contents = useMemo(() => contents.replaceAll(/<div class="se-component se-image-container.+?\/div>/gi, "").replaceAll("script", "sсrірt"), []);
     const [opened, setOpened] = useState(false);
     const narrow = () => setOpened(false);
     const expand = () => setOpened(true);
 
     return (
         <div className="blog-card">
-            {<AdminVariableComponent>
+            <AdminVariableComponent>
                 <div className ="article-edit-wrapper">
-                    <span className="edit" onClick={() => edit(id)}></span>  
+                    <span className="edit" onClick={() => edit(id)}></span>
                     <button className="delete" onClick={() => remove(id)}>X</button>
                 </div>
-            </AdminVariableComponent>}
+            </AdminVariableComponent>
             <div className="blog-img">
-                { paragraphs && <img src={`/images/news/${paragraphs[0].image.name}.jpg`} alt="" width="100%" /> }
+                { image && <img src={`${image}`} alt="" width="100%" /> }
             </div>
             <div className="blog-card-content" style={{ height: opened ? "max-content" : "40vh" }}>
                 <h2 className="blog-card-title">{ title }</h2>
-                <article className="blog-card-content-article">
-                    { paragraphs && paragraphs.map((paragraph, index) => <p key={index}>{ paragraph.text }</p>) }
-                </article>
+                <article className="blog-card-content-article" dangerouslySetInnerHTML={{ __html: _contents }} />
             </div>
             <div className="blog-card-footer">
                 <div className="blog-card-keywords-wrapper">
@@ -183,9 +182,18 @@ function News({ query: { categories: _categories, tags: _tags, search: _search }
         console.log(id, p);
         switchPostEditor(true, "edit", p);
     }
+
     const removePost = async id => {
-        const response = await PostListProvider.removePost(id);
-        alert(response.success ? "Новость успешно удалена" : response.reason);
+        const result = await PostListProvider.removePost(id);
+        if(result.success) {
+            alert("Новость успешно удалена");
+            Router.reload();
+        } else switch(result.reason) {
+            case "db_error": return alert("Ошибка БД, попробуйте позже");
+            case "post_not_exist": return alert("Такой новости не существует");
+            case "invalid_request": return alert("Неправильный запрос");
+            default: return alert("Внутренная ошибка");
+        }
     }
     
     return (
@@ -256,45 +264,109 @@ News.getInitialProps = ({ query }) => ({ query });
 export default News;
 
 export function PostEditor({ opened, action, postData, close, categories, tags }) {
-    const [actionMap] = useState({ "create": ["Создать", () => setPost(undefined)], "edit": ["Изменить", (data) => setPost(data)] });
+    const [actionMap] = useState({ "create": ["Создать", () => setPost(undefined)], "edit": ["Изменить", data => setPost(data)] });
     const [post, setPost] = useState();
     const [selectedCategory, setSelectedCategory] = useState("");
     const [selectedTags, setSelectedTags] = useState([]);
     const updateTags = tags => setSelectedTags([... new Set(tags)]);
 
-    // console.log("Category:", selectedCategory);
-    // console.log("Tags:", selectedTags);
+    console.log("Category:", selectedCategory);
+    console.log("Tags:", selectedTags);
 
     // console.log(categories, tags);
     
     useEffect(() => opened && actionMap[action][1](postData), [opened]);
+    const defaultValue = useMemo(() => post ? post.contents.replaceAll("script", "sсrірt") : "", [post]);
 
+    useEffect(() => post ? setSelectedCategory(post.category) : null, [post]);
+    useEffect(() => post ? setSelectedTags(post.tags) : null, [post]);
+
+    const titleRef = useRef();
     const textEditorRef = useRef();
+    const textEditor = useMemo(() => (<TextEditor editorRef={textEditorRef} defaultValue={defaultValue} imageType="news" />), [post]);
 
-    const crawl = () => {
-        console.log("Data crawled");
-        console.log(textEditorRef.current);
-        global.er = textEditorRef.current;
+    const crawl = () => ({
+        title: titleRef.current.value,
+        contents: textEditorRef.current.editor.getContents(),
+        category: selectedCategory,
+        tags: selectedTags
+    });
+
+    const validate = data => {
+        if(!data.title.length) return { success: 0, error: "no_title" };
+        else if(data.contents.length <= 7) return { success: 0, error: "no_contents" };
+        else if(!data.category.length) return { success: 0, error: "no_category" };
+        else if(!data.tags.length) return { success: 0, error: "no_tags" };
+        else return { success: 1 };
     };
-    const createPost = () => console.log("Post created");
+
+    const submit = async () => {
+        const data = crawl();
+        const validated = validate(data);
+        if(!validated.success) {
+            switch (validated.error) {
+                case "no_title": return alert("Не введено название");
+                case "no_contents": return alert("Не введён текст");
+                case "no_category": return alert("Не выбрана категория");
+                case "no_tags": return alert("Не выбрано ни одного тега");
+                default: return alert("Внутренняя ошибка");
+            }
+        }
+        return data;
+    };
+
+    const createPost = async () => {
+        const data = await submit();
+        if(data) {
+            const result = await PostListProvider.createPost({ ...data, date: new Date().toISOString() });
+            console.log(result);
+            if(result.success) {
+                alert("Новость успешно создана");
+                // close();
+                Router.reload();
+            } else switch(result.reason) {
+                case "db_error": return alert("Ошибка БД, попробуйте позже");
+                case "post_not_exist": return alert("Такой новости не существует");
+                case "invalid_request": return alert("Неправильный запрос");
+                default: return alert("Внутренная ошибка");
+            }
+        }
+    };
+
+    const editPost = async id => {
+        const data = await submit();
+        if(data) {
+            const result = await PostListProvider.editPost(id, data);
+            if(result.success) {
+                alert("Новость успешно изменена");
+                // close();
+                Router.reload();
+            } else switch(result.reason) {
+                case "db_error": return alert("Ошибка БД, попробуйте позже");
+                case "post_not_exist": return alert("Такой новости не существует");
+                case "invalid_request": return alert("Неправильный запрос");
+                default: return alert("Внутренная ошибка");
+            }
+        }
+    };
 
     return (
         <div className={`add-article-modal ${opened && "opened"}`}>
             <div className="add-article-modal-content">
-                <div className ="article-edit-wrapper">
+                <div className="article-edit-wrapper">
                     <button className="delete" onClick={close}>X</button>
                 </div>
                 <div className="add-article-modal-header">
-                    <h2 onClick={crawl}>{actionMap[action][0]} новость</h2>
+                    <h2 onClick={() => console.log(crawl())}>{actionMap[action][0]} новость</h2>
                 </div>
                 <div className="add-article-modal-body">
                     <div className="edit-event-modal-name">
-                        <span>Название новости</span>
-                        <input type="text" placeholder="Введите название новости" defaultValue={post ? post.title : ""} />
+                        <span onClick={() => console.log(validate(crawl()))}>Название новости</span>
+                        <input ref={titleRef} type="text" placeholder="Введите название новости" defaultValue={post ? post.title : ""} />
                     </div>
                     <div className="add-article-modal-text-editor-wrapper">
                         {/* <textarea cols="30" rows="10" placeholder="введите что-нибудь интересное" /> */}
-                        <TextEditor editorRef={textEditorRef} imageType="news" />
+                        { textEditor }
                     </div>
                 </div>
                 <div className="add-article-modal-footer">
@@ -309,6 +381,7 @@ export function PostEditor({ opened, action, postData, close, categories, tags }
                         /> */}
                         <CreatableSelect
                             theme={theme => ({ ...theme, borderRadius: 0, colors: { ...theme.colors, primary: "" } })}
+                            value={{ value: selectedCategory, label: selectedCategory }}
                             options={categories.map(([category]) => ({ value: category, label: category }))}
                             onChange={option => setSelectedCategory(option?.label ?? "")}
                             formatCreateLabel={value => `Создать категорию "${value}"`}
@@ -328,7 +401,8 @@ export function PostEditor({ opened, action, postData, close, categories, tags }
                         <CreatableSelect 
                             theme={theme => ({ ...theme, borderRadius: 0, colors: { ...theme.colors, primary: "" } })}
                             noOptionsMessage={() => "Тегов больше нет, но вы можете создать новые"}
-                            onChange={tags => updateTags(tags.map(({ value }) => value))}
+                            onChange={tags => (console.log(tags), updateTags(tags.map(({ value }) => value)))}
+                            value={selectedTags.map(tag => ({ value: tag, label: tag }))}
                             options={tags.map(tag => ({ value: tag, label: tag }))}
                             formatCreateLabel={value => `Создать тег "${value}"`}
                             placeholder="Выберите из списка или создайте новый"
@@ -363,7 +437,7 @@ export function PostEditor({ opened, action, postData, close, categories, tags }
                             </div>
                         </div>
                         <div className="col-1-2">
-                            <button className="add-article-save-button" onClick={() => createPost(crawl())}>Сохранить</button>
+                            <button className="add-article-save-button" onClick={post ? () => editPost(post.id) : createPost}>Сохранить</button>
                         </div>
                     </div>
                 </div>

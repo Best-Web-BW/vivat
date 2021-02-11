@@ -38,4 +38,54 @@ export default class AlbumListProvider {
             } catch(e) { reject({ }) };
         });
     }
+
+    static createAlbum(data) {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const response = await fetch("/api/admin/album/create", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json;charset=utf-8" },
+                    body: JSON.stringify({ data })
+                });
+                const json = await response.json();
+                if(json.status === "success") {
+                    // this.albums.set(json.album.id, json.album);
+                    return resolve({ success: 1 });
+                } else return resolve({ success: 0, reason: json.error });
+            } catch(e) { reject({}); }
+        });
+    }
+
+    static editAlbum(id, data) {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const response = await fetch("/api/admin/album/edit", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json;charset=utf-8" },
+                    body: JSON.stringify({ data: { id, ...data } })
+                });
+                const json = await response.json();
+                if(json.status === "success") {
+                    // this.albums.set(json.album.id, json.album);
+                    return resolve({ success: 1 });
+                } else return resolve({ success: 0, reason: json.error });
+            } catch(e) { console.log(e); reject({ }); }
+        });
+    }
+
+    static removeAlbum(id) {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const response = await fetch("/api/admin/album/remove", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json;charset=utf-8" },
+                    body: JSON.stringify({ data: { id } })
+                });
+                const json = await response.json();
+                if(json.status === "success") {
+                    return resolve({ success: 1 });
+                } else return resolve({ success: 0, reason: json.error });
+            } catch(e) { console.log(e); reject(); }
+        });
+    }
 }

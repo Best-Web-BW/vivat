@@ -1,14 +1,16 @@
 import ProfileMenu from "../../components/common/ProfileMenu";
 import Link from "next/link";
 import Select from "react-select";
-
-const categoryOptions = [
-    { value: "chocolate", label: "Лошади" },
-    { value: "strawberry", label: "Eзда" },
-    { value: "vanilla", label: "Конкур" },
-    { value: "vanilla", label: "Соревнования" },
-    { value: "vanilla", label: "Пони" }
-]
+import Router from "next/router";
+import CreatableSelect from 'react-select/creatable';
+import { convertDate } from "../../components/sliders/EventSlider";
+import { AdminVariableComponent } from "../../utils/providers/AuthProvider";
+import { useEffect, useMemo, useRef, useState } from "react";
+import EventListProvider from "../../utils/providers/EventListProvider";
+import TextEditor from "../../components/common/TextEditor";
+import DatePicker from "react-datepicker";
+import DocumentLoader from "../../components/common/DocumentLoader";
+import { toISODate } from "../../utils/common";
 
 const groupStyles = {
     display: "flex",
@@ -36,128 +38,262 @@ const formatGroupLabel = data => (
     </div>
 );
 
-export default function ManageEvents() {
+function EventBlock({ id, title, dates: [start, end], edit, remove }) {
+    const link = `/events/${id}`;
     return (
-        <div className="profile-content content-block">
-            <ProfileMenu active="manage-events" />
-            <div className="admin-events-list">
-                <h2>Управление событиями</h2>
-                <div className="add-event-button-container">
-                    <button className="add-event-button">Создать событие</button>
-                </div>
-                <div className="events-block">
-                    <div className="events-title">
-                        <a href="#">Мероприятие 1</a>
-                    </div>
-                    <div className="events-date">
-                        <a>СБ. 06.02.2021</a>
-                    </div>
-                    <div className ="events-edit-wrapper">
-                        <span className="edit"></span>  
-                        <button className="delete">X</button>
-                    </div>
-                </div>
-                <div className="events-block">
-                    <div className="events-title">
-                        <a href="#">Мероприятие 1</a>
-                    </div>
-                    <div className="events-date">
-                        <a>СБ. 06.02.2021</a>
-                    </div>
-                    <div className ="events-edit-wrapper">
-                        <span className="edit"></span>  
-                        <button className="delete">X</button>
-                    </div>
-                </div>
+        <div className="events-block">
+            <div className="events-title">
+                <Link href={link}>
+                    <a>{ title }</a>
+                </Link>
             </div>
-            <div className="edit-event-modal">
-                <div className="edit-event-modal-content">
-                    <div className="edit-event-modal-header">
-                        <h2>Создать/изменить событие</h2>
+            <div className="events-date">
+                <Link href={link}>
+                    <a>{ convertDate(start) } - { convertDate(end) }</a>
+                </Link>
+            </div>
+            <div className ="events-edit-wrapper">
+                <span className="edit" onClick={() => edit(id)}></span>  
+                <button className="delete" onClick={() => remove(id)}>X</button>
+            </div>
+        </div>
+    );
+}
+
+export default function ManageEvents() {
+    const [events, setEvents] = useState([]);
+    const [categories, setCategories] = useState([]);
+    useEffect(async () => {
+        const events = await EventListProvider.getEventList();
+        const categories = [...new Set(events.map(({ category }) => category))];
+
+        setEvents(events);
+        setCategories(categories);
+    }, []);
+
+    const [editorConfig, setEditorConfig] = useState({
+        opened: false,
+        action: "create",
+        data: undefined
+    });
+    const switchEventEditor = (opened, action, data) => setEditorConfig({ opened, action, data })
+    const closeEditor = () => setEditorConfig(({ action, data }) => ({ action, data, opened: false }));
+
+    const editEvent = async id => {
+        const e = await EventListProvider.getEventDetails(id);
+        console.log(id, e);
+        switchEventEditor(true, "edit", e);
+    }
+
+    const removeEvent = async id => {
+        const result = await EventListProvider.removeEvent(id);
+        if(result.success) {
+            alert("Мероприятие успешно удалено");
+            Router.reload();
+        } else switch(result.reason) {
+            case "db_error": return alert("Ошибка БД, попробуйте позже");
+            case "event_not_exist": return alert("Такого мероприятия не существует");
+            case "invalid_request": return alert("Неправильный запрос");
+            default: return alert("Внутренная ошибка");
+        }
+    }
+
+    return (
+        <AdminVariableComponent>
+            <div className="profile-content content-block">
+                <ProfileMenu active="manage-events" />
+                <div className="admin-events-list">
+                    <h2>Управление событиями</h2>
+                    <div className="add-event-button-container">
+                        <button className="add-event-button" onClick={() => switchEventEditor(true, "create")}>Создать событие</button>
                     </div>
-                    <div className="edit-event-modal-body">
-                        <div className="edit-event-modal-name">
-                            <label htmlFor="">Название события</label>
-                            <input type="text" placeholder="Введите название собыия"/>
+                    { events.map(event => <EventBlock key={event.id} {...event} edit={editEvent} remove={removeEvent} />) }
+                </div>
+                <EventEditor categories={categories} opened={editorConfig.opened} action={editorConfig.action} eventData={editorConfig.data} close={closeEditor} />
+            </div>
+        </AdminVariableComponent>
+    );
+}
+
+export function EventEditor({ opened, action, eventData, close, categories }) {
+    const [actionMap] = useState({ "create": ["Создать", () => setEvent(undefined)], "edit": ["Изменить", data => setEvent(data)] });
+    const [event, setEvent] = useState();
+    const [selectedCategory, setSelectedCategory] = useState("");
+    const [documents, setDocuments] = useState([]);
+    
+    useEffect(() => opened && actionMap[action][1](eventData), [opened]);
+    
+    useEffect(() => setSelectedCategory(event ? event.category : ""), [event]);
+    
+    const refs = {
+        title: useRef(),
+        textEditor: useRef(),
+        address: useRef()
+    };
+    
+    const defaultValue = useMemo(() => event ? event.contents.replaceAll("script", "sсrірt") : "", [event]);
+    const textEditor = useMemo(() => (<TextEditor editorRef={refs.textEditor} defaultValue={defaultValue} imageType="events" />), [event]);
+    
+    const [startDate, setStartDate] = useState();
+    const [endDate, setEndDate] = useState();
+    useEffect(() => {
+        if(event) {
+            setStartDate(new Date(event.dates[0]));
+            setEndDate(new Date(event.dates[1]));
+        } else {
+            setStartDate(new Date());
+            setEndDate(new Date());
+        }
+    }, [event]);
+
+    const crawl = () => ({
+        title: refs.title.current.value,
+        contents: refs.textEditor.current.editor.getContents(),
+        address: refs.address.current.value,
+        dates: [toISODate(startDate), toISODate(endDate)],
+        category: selectedCategory,
+        documents
+    });
+
+    const validate = data => {
+        if(!data.title.length) return { success: 0, error: "no_title" };
+        else if(data.contents.length <= 11) return { success: 0, error: "no_contents" };
+        else if(!data.address.length) return { success: 0, error: "no_address" };
+        else if(!data.category.length) return { success: 0, error: "no_category" };
+        else return { success: 1 };
+    };
+
+    const submit = async () => {
+        const data = crawl();
+        const validated = validate(data);
+        if(!validated.success) {
+            switch (validated.error) {
+                case "no_title": return alert("Не введено название");
+                case "no_contents": return alert("Не введён текст");
+                case "no_address": return alert("Не введён адрес");
+                case "no_category": return alert("Не выбрана категория");
+                default: return alert("Внутренняя ошибка");
+            }
+        }
+        return data;
+    };
+
+    const createEvent = async () => {
+        const data = await submit();
+        if(data) {
+            const result = await EventListProvider.createEvent(data);
+            console.log(result);
+            if(result.success) {
+                alert("Событие успешно создано");
+                // close();
+                Router.reload();
+            } else switch(result.reason) {
+                case "db_error": return alert("Ошибка БД, попробуйте позже");
+                case "event_not_exist": return alert("Такого события не существует");
+                case "invalid_request": return alert("Неправильный запрос");
+                default: return alert("Внутренная ошибка");
+            }
+        }
+    };
+
+    const editEvent = async id => {
+        const data = await submit();
+        if(data) {
+            const result = await EventListProvider.editEvent(id, data);
+            if(result.success) {
+                alert("Событие успешно изменено");
+                // close();
+                Router.reload();
+            } else switch(result.reason) {
+                case "db_error": return alert("Ошибка БД, попробуйте позже");
+                case "event_not_exist": return alert("Такого события не существует");
+                case "invalid_request": return alert("Неправильный запрос");
+                default: return alert("Внутренная ошибка");
+            }
+        }
+    };
+
+    return (
+        <div className={`edit-event-modal ${opened && "opened"}`}>
+            <div className="edit-event-modal-content">
+                <div className="article-edit-wrapper">
+                    <button className="delete" onClick={close}>X</button>
+                </div>
+                <div className="edit-event-modal-header">
+                    <h2 onClick={() => console.log(crawl())}>{actionMap[action][0]} событие</h2>
+                </div>
+                <div className="edit-event-modal-body">
+                    <div className="edit-event-modal-name">
+                        <label onClick={() => console.log(validate(crawl()))}>
+                            Название события
+                            <input ref={refs.title} type="text" placeholder="Введите название собыия" defaultValue={event ? event.title : ""}/>
+                        </label>
+                        {/* <label htmlFor="">Название события</label> */}
+                    </div>
+                    <div className="edit-event-modal-col-left">
+                        <div className="edit-event-modal-place">
+                            <label>
+                                Место проведения<br /><br />
+                                <input ref={refs.address} type="text" name="address" placeholder="Введите адрес" defaultValue={event ? event.address : ""} />
+                            </label><br />
                         </div>
-                        <div className="edit-event-modal-col-left">
-                            <div className="edit-event-modal-place">
-                                <label htmlFor="">Место проведения</label>
-                                <input type="text" placeholder="Введите адрес"/>
-                            </div>
-                            <div className="edit-event-modal-date">
-                                <label htmlFor="">Дата начала</label>
-                                <input type="text" placeholder="Введите адрес"/>
-                                <label htmlFor="">Дата окончания</label>
-                                <input type="text" placeholder="Введите адрес"/>
-                            </div>
-                        </div>
-                        <div className="edit-event-modal-col-right">
-                            <div className="edit-event-modal-edit-text">
-                                <textarea name="" id="" cols="30" rows="10" placeholder="Введите описание"></textarea>
-                            </div>
+                        <div className="edit-event-modal-date">
+                            <label>
+                                Дата начала<br /><br />
+                                <DatePicker
+                                    dateFormat="dd.MM.yyyy"
+                                    selected={startDate} 
+                                    onChange={date => setStartDate(date)}
+                                    peekNextMonth
+                                    showYearDropdown
+                                    dropdownMode="select"
+                                />
+                            </label><br />
+                            <label>
+                                Дата окончания<br /><br />
+                                <DatePicker
+                                    dateFormat="dd.MM.yyyy"
+                                    selected={endDate} 
+                                    onChange={date => setEndDate(date)}
+                                    peekNextMonth
+                                    showYearDropdown
+                                    dropdownMode="select"
+                                />
+                            </label>
                         </div>
                     </div>
-                    <div className="edit-event-modal-footer">
-                        <div className="col-1-3">
-                            <p>Выберите категорию</p>
-                            <Select
-                                // defaultValue={colourOptions[1]}
-                                options={categoryOptions}
-                                formatGroupLabel={formatGroupLabel}
-                                theme={theme => ({ ...theme, borderRadius: 0, colors: { ...theme.colors, primary: "" } })}
-                                placeholder="Выберите из списка"
-                            />
-                            <div className="add-article-add-new-category"> 
-                                <input type="text" placeholder="Добавить категорию"/>
-                                <button className="add-article-add-new-category-button">Добавить</button>
-                            </div>
+                    <div className="edit-event-modal-col-right">
+                        <div className="edit-event-modal-edit-text">
+                            { textEditor }
                         </div>
-                        <div className="col-1-3">
-                            <div className="edit-event-add-document">
-                                <button className="edit-event-add-document-button">Выбрать документ</button>
-                                <div className="edit-event-add-document-preview-list">
-                                    <ul>
-                                        <li>
-                                            <div className="documents-element">
-                                                <div className="documents-img">
-                                                    <img src="/images/events/pdf-icon.png" alt="" width="100%" />
-                                                </div>
-                                                <p className="documents-title">Документы по белым лошадям часть 1</p>
-                                                <div className ="events-edit-wrapper">
-                                                    <button className="delete">X</button>
-                                                </div>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div className="documents-element">
-                                                <div className="documents-img">
-                                                    <img src="/images/events/pdf-icon.png" alt="" width="100%" />
-                                                </div>
-                                                <p className="documents-title">Документы по белым лошадям часть 1</p>
-                                                <div className ="events-edit-wrapper">
-                                                    <button className="delete">X</button>
-                                                </div>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div className="documents-element">
-                                                <div className="documents-img">
-                                                    <img src="/images/events/pdf-icon.png" alt="" width="100%" />
-                                                </div>
-                                                <p className="documents-title">Документы по белым лошадям часть 1</p>
-                                                <div className ="events-edit-wrapper">
-                                                    <button className="delete">X</button>
-                                                </div>
-                                            </div>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
+                    </div>
+                </div>
+                <div className="edit-event-modal-footer">
+                    <div className="col-1-3">
+                        <p>Выберите категорию</p>
+                        <CreatableSelect
+                            theme={theme => ({ ...theme, borderRadius: 0, colors: { ...theme.colors, primary: "" } })}
+                            options={categories.map(category => ({ value: category, label: category }))}
+                            value={{ value: selectedCategory, label: selectedCategory }}
+                            onChange={option => setSelectedCategory(option?.label ?? "")}
+                            formatCreateLabel={value => `Создать категорию "${value}"`}
+                            placeholder="Выберите из списка или создайте новую"
+                            formatGroupLabel={formatGroupLabel}
+                            menuPlacement="top"
+                            isClearable
+                        />
+                        {/* <div className="add-article-add-new-category"> 
+                            <input type="text" placeholder="Добавить категорию"/>
+                            <button className="add-article-add-new-category-button">Добавить</button>
+                        </div> */}
+                    </div>
+                    <div className="col-1-3">
+                        <div className="edit-event-add-document">
+                            <DocumentLoader type="events" onChange={setDocuments} defaultDocuments={event ? event.documents : []} />
                         </div>
-                        <div className="col-1-3">
-                            <button className="edit-event-save-button">Сохранить</button>
-                        </div>
+                    </div>
+                    <div className="col-1-3">
+                        <button className="edit-event-save-button" onClick={event ? () => editEvent(event.id) : createEvent}>Сохранить</button>
                     </div>
                 </div>
             </div>
