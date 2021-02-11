@@ -736,8 +736,8 @@
 }
 
 .edit-event-modal-col-left {
-    width: calc(30% - 2vh);
-    height: calc(100% - 6vh);
+    width: calc(30% - 10vh);
+    height: calc(100% - 12vh);
     padding: 1vh;
 }
 
@@ -757,9 +757,9 @@
 }
 
 .edit-event-modal-col-right {
-    width: calc(70% - 2vh);
-    height: calc(100% - 6vh);
-    padding: 1vh;
+    width: calc(70% - 10vh);
+    height: calc(100% - 12vh);
+    padding: 4vh;
 }
 
 .edit-event-modal-edit-text, .edit-event-modal-edit-text textarea {

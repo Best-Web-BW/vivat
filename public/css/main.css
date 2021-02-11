@@ -819,7 +819,7 @@ header {
 
 .header-title-wrapper {
     color: whitesmoke;
-    width: 100%;
+    width: calc(100% - 10vh);
     padding: 5vh;
     padding-top: 15vh;
     padding-bottom: 0;

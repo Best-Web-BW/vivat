@@ -167,14 +167,14 @@
 
 .event-documents-wrapper {
     width: calc(100% - 20vh);
-    height: 6vh;
-    padding: 0 10vh;
+    height: auto;
+    padding: 2vh 10vh;
     display: flex;
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
 }
 
 .documents-element {
-    width: 20vw;
+    width: 20%;
     display: flex;
     flex-wrap: nowrap;
     justify-content: center;
@@ -255,7 +255,7 @@
     .event-documents-wrapper {
         width: calc(100% - 2vh);
         height: max-content;
-        padding: 0 1vh;
+        padding: 1vh;
     }
     
     .documents-element {
