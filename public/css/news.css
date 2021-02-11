@@ -156,7 +156,7 @@
 .blog-categories-button:hover a,
 .blog-keywords-button:hover a,
 .blog-search-button:hover a,
-.blog-keywords-button.active {
+.blog-keywords-button.active, .blog-categories-button.active {
     color       : #ff0a0a;
     border-color: #ff0a0a;
     box-shadow: 0 0 10px 1px #ff0a0a;
@@ -164,6 +164,10 @@
 
 .blog-search:hover::placeholder, .blog-categories-button:hover {
     box-shadow: none
+}
+
+.blog-categories-button.active {
+    box-shadow: none;
 }
 
 /* right-column end */
