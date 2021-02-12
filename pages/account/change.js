@@ -94,7 +94,7 @@ export default function Change() {
                             peekNextMonth
                             showYearDropdown
                             dropdownMode="select"
-                            locale="ru-RU"
+                            dateFormat="dd.MM.yyyy"
                             />
                     </label>
                     <label className="profile-element-wrapper">

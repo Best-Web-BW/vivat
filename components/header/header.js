@@ -423,6 +423,7 @@ function WrapperDatePicker({ selected, onChange }) {
         <DatePicker 
             // selected={startDate} 
             // onChange={date => setStartDate(date)}
+            dateFormat="dd.MM.yyyy"
             selected={selected}
             onChange={onChange}
             peekNextMonth
