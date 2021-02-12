@@ -1,13 +1,15 @@
-import { useState } from "react";
 import AuthProvider from "../../utils/providers/AuthProvider";
 import MailProvider from "../../utils/providers/MailProvider";
-import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { reformatDate } from "../../utils/common";
+import DatePicker from "react-datepicker";
+import { useState } from "react";
 
 const TimeButton = ({ time, turn, active }) => <button className={`order-service-time-button ${active && "active"}`} onClick={turn}>{ time }</button>;
 
 export default function Rent({ text, cost, minHours, hoursText }) {
     const [selectedTime, setSelectedTime] = useState("");
+    const [selectedDate, setSelectedDate] = useState(new Date());
 
     const submit = async () => {
         if(!selectedTime.length) return alert("Не выбрано время аренды");
@@ -15,7 +17,8 @@ export default function Rent({ text, cost, minHours, hoursText }) {
         try {
             const email = AuthProvider.userData.email;
             const phone = AuthProvider.userData.phone;
-            const result = await MailProvider.sendRentEmail(email, phone, text, selectedTime);
+            console.log(email, phone, text, selectedTime, reformatDate(selectedDate));
+            const result = await MailProvider.sendRentEmail(email, phone, text, selectedTime, reformatDate(selectedDate));
             if(result.success) {
                 alert("Успешная аренда, с вами свяжутся для уточнения деталей");
                 setSelectedTime("");
@@ -28,8 +31,6 @@ export default function Rent({ text, cost, minHours, hoursText }) {
             console.log(e);
         }
     };
-    
-    const [startDate, setStartDate] = useState(new Date());
 
     return (
         <div className="order-service-wrapper content-block">
@@ -44,14 +45,14 @@ export default function Rent({ text, cost, minHours, hoursText }) {
                 <div className="order-service-day-wrapper">
                     <div className="order-service-day-title">Выбор дня</div>
                     <div className="order-service-day-datepicker">
-                    <DatePicker 
-                            selected={startDate} 
-                            onChange={date => setStartDate(date)}
-                            peekNextMonth
-                            showYearDropdown
-                            dropdownMode="select"
+                        <DatePicker 
+                            onChange={setSelectedDate}
+                            selected={selectedDate} 
                             dateFormat="dd.MM.yyyy"
-                            />
+                            dropdownMode="select"
+                            showYearDropdown
+                            peekNextMonth
+                        />
                     </div>
                 </div>
                 <div className="order-service-time-wrapper">
