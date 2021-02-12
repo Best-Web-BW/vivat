@@ -22,8 +22,8 @@ async function getMaxID(collection) {
 
 router.get("/", (_, res) => res.end("Are you my adminny?"));
 
-const getRawImagePath = (type, fullName) => path.join("public", "images", type, "tmp", fullName);
-const getWebpImagePath = (type, name) => path.join("public", "images", type, "webp", name);
+const getRawImagePath = (type, fullName) => path.join("images", type, "tmp", fullName);
+const getWebpImagePath = (type, name) => path.join("images", type, "webp", name);
 const getWebpImageUrl = (type, name) => `/images/${type}/webp/${name}`;
 
 const getImageSize = async path => (await fs.promises.stat(path)).size;
@@ -87,7 +87,7 @@ router.post("/load_images/:type", async (req, res) => {
     else return res.json({ errorMessage: "Invalid load type" });
 });
 
-const getDocumentPath = (type, name) => path.join("public", "documents", type, name);
+const getDocumentPath = (type, name) => path.join("documents", type, name);
 const getDocumentUrl = (type, name) => `/documents/${type}/${name}`;
 
 router.post("/load_documents/:type", async (req, res) => {

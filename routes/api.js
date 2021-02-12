@@ -4,7 +4,7 @@ const path = require("path");
 let events, albums, posts;
 new require("mongodb").MongoClient("mongodb://localhost:27017", { useUnifiedTopology: true, useNewUrlParser: true }).connect((err, client) => {
     if(err) return console.error(err);
-
+    
     const db = client.db("vivat");
     events = db.collection("events");
     albums = db.collection("albums");
