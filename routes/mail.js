@@ -18,11 +18,11 @@ const mailer = {
         subject: `${name}, ${email}, ${phone}`,
         html: `
             <div>
-                <h2 style:"text-align: center;">Контактная информация</h2>
-                <p style:"font-weight: bold;">Имя:</p> <b>${name}</b><br />
-                <p style:"font-weight: bold;>Email:</p> <b>${email}</b><br />
-                <p style:"font-weight: bold;>Номер телефона:</p> <b>${phone}</b><br />
-                <p style:"font-weight: bold;>Вопрос:</p> <p>${question}</p>
+                <h2>Контактная информация</h2>
+                <p>Имя: <b>${name}</b><br /></p>
+                <p>Email: <b>${email}</b><br /></p>
+                <p>Номер телефона:<b>${phone}</b><br /></p>
+                <p>Вопрос:</p> <p>${question}</p>
             </div>
         `
     }),
