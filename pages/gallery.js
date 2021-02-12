@@ -272,6 +272,7 @@ export function AlbumEditor({ opened, action, data, close, setSuccessCreateModal
                     </label>
                 </div>
                 <div className="add-gallery-modal-choose-cover-wrapper">
+                    <p>Выберите обложку для альбома</p>
                     <ImageLoader isSingle type="gallery" onChange={([cover]) => setCover(cover)} defaultImages={defaultCover} />
                     {/* <ImageContainer isMulti={false} text="Выберите обложку альбома" /> */}
                     {/* <div className="add-gallery-modal-preview-cover">
@@ -280,6 +281,7 @@ export function AlbumEditor({ opened, action, data, close, setSuccessCreateModal
                     {/* <button className="add-gallery-modal-choose-cover">Выберите обложку альбома</button> */}
                 </div>
                 <div className="add-gallery-modal-choose-img-wrapper">
+                    <p>Выберите фотографии для альбома</p>
                     <ImageLoader type="gallery" onChange={setImages} defaultImages={defaultImages} />
                     {/* <ImageContainer isMulti={true} text="Выберите фотографии" defaultImages={["/images/gallery/album/webp/akshat-vats-l_GAWl6q7LI-unsplash.webp"]} /> */}
                     {/* <button className="add-gallery-modal-choose-imgs">Выберите фотографии</button> */}

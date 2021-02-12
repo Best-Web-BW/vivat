@@ -875,6 +875,10 @@
     overflow: auto;
 }
 
+.add-gallery-modal-content {
+    color: whitesmoke;
+}
+
 /* events edmin end */
 
 /* warning modals */
