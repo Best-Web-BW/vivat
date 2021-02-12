@@ -35,7 +35,7 @@ export default function Change() {
             second: refs.name.second.current.value,
             middle: refs.name.middle.current.value
         },
-        birthdate: refs.birthdate.current.value,
+        birthdate: toISODate(birthdate),
         email: refs.email.current.value,
         phone: refs.phone.current.value,
         address: refs.address.current.value,
@@ -52,7 +52,8 @@ export default function Change() {
         }
     }
     
-    const [startDate, setStartDate] = useState(new Date());
+    const [birthdate, setBirthdate] = useState(new Date());
+    useEffect(() => user && setBirthdate(new Date(user.birthdate)), [user]);
 
     return (
         <AuthVariableComponent>
@@ -89,13 +90,13 @@ export default function Change() {
                         <p className="birthday-title"><span className="required">*</span>Дата рождения:</p>
                         {/* <input ref={refs.birthdate} type="date" name="birthdate" className="datepicker-here" placeholder="11.11.1990" defaultValue={user ? toISODate(user.birthdate) : ""} /> */}
                         <DatePicker 
-                            selected={startDate} 
-                            onChange={date => setStartDate(date)}
+                            selected={birthdate} 
+                            onChange={date => setBirthdate(date)}
                             peekNextMonth
                             showYearDropdown
                             dropdownMode="select"
                             dateFormat="dd.MM.yyyy"
-                            />
+                        />
                     </label>
                     <label className="profile-element-wrapper">
                         <p className="email-title"><span className="required">*</span>email:</p>
