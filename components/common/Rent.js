@@ -12,7 +12,8 @@ export default function Rent({ text, cost, minHours, hoursText }) {
         
         try {
             const email = AuthProvider.userData.email;
-            const result = await MailProvider.sendRentEmail(email, text, selectedTime);
+            const phone = AuthProvider.userData.phone;
+            const result = await MailProvider.sendRentEmail(email, phone, text, selectedTime);
             if(result.success) {
                 alert("Успешная аренда, с вами свяжутся для уточнения деталей");
                 setSelectedTime("");
