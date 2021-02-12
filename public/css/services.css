@@ -220,6 +220,14 @@
     color: #797878d1;
 }
 
+.order-service-wrapper.content-block {
+    height: auto;
+}
+
+.order-service-day-datepicker {
+    width: 20vh;
+}
+
 /*service page end */
 
 /* media style */
@@ -256,6 +264,16 @@
         margin-bottom: 2vh;
     }
 
+    .order-service-block {
+        width: calc(100% - 2vh);
+        margin-top: 0%;
+        padding: 1vh;
+    }
+
+    .order-service-day-datepicker, .order-service-mintime-time {
+        width: 20vh;
+    }
+    
 }
 
 /* ipad */
