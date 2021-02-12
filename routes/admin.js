@@ -36,7 +36,7 @@ router.post("/load_image/:type", async (req, res) => {
             console.log(type, { rawImage }); // Print arguments (just for debug);
 
             const rawPath = getRawImagePath(type, rawImage.name);
-            rawImage.mv(rawPath);
+            await rawImage.mv(rawPath);
     
             const webpName = UUID() + ".webp";
             const webpPath = getWebpImagePath(type, webpName);
@@ -59,7 +59,7 @@ router.post("/load_images/:type", async (req, res) => {
     const { type } = req.params;
     if(["gallery"].includes(type)) {
         try {
-            let { images } = req.files;
+            let { images } = (req.files instanceof Array) ? req.files : [req.files];
             if(!(images instanceof Array)) images = [images];
             console.log({ type, images }); // Print arguments (just for debug);
 
@@ -67,7 +67,7 @@ router.post("/load_images/:type", async (req, res) => {
 
             for(let rawImage of images) {
                 const rawPath = getRawImagePath(type, rawImage.name)
-                rawImage.mv(rawPath);
+                await rawImage.mv(rawPath);
         
                 const webpName = UUID() + ".webp";
                 const webpPath = getWebpImagePath(type, webpName);
@@ -94,15 +94,15 @@ router.post("/load_documents/:type", async (req, res) => {
     const { type } = req.params;
     if(["events"].includes(type)) {
         try {
-            let { documents } = req.files;
-            if(!(documents instanceof Array)) documents = [documents];
+            let { documents } = (req.files instanceof Array) ? req.files : [req.files];
             console.log({ type, documents });
 
-            const serverDocuments = documents.map(document => {
+            const serverDocuments = [];
+            for(let document of documents) {
                 const name = document.name;
-                document.mv(getDocumentPath(type, name));
-                return { url: getDocumentUrl(type, name), name }
-            });
+                await document.mv(getDocumentPath(type, name));
+                serverDocuments.push({ url: getDocumentUrl(type, name), name });
+            }
 
             console.log("Documents are loaded, result is", JSON.stringify(serverDocuments));
 
