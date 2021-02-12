@@ -38,9 +38,14 @@ export default function Home() {
                 <title>{translator.get("header")} "{translator.get("vivat")}"</title>
             </Head>
             <div className="header-content-wrapper content-block">
-                <div className="video-background">
+                <div className="video-background desktop">
                     <video preload="auto" autoPlay loop muted>
                         <source src="/images/horse.mp4" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"' />
+                    </video>
+                </div>
+                <div className="video-background mobile">
+                    <video preload="auto" autoPlay loop muted>
+                        <source src="/images/horse_m.mp4" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"' />
                     </video>
                 </div>
                 <div>
