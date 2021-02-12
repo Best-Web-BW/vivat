@@ -9,8 +9,6 @@ import DBProvider from "../utils/providers/DBProvider";
 import PostListProvider from "../utils/providers/PostListProvider";
 import { AdminVariableComponent } from "../utils/providers/AuthProvider";
 import TextEditor from "../components/common/TextEditor";
-// import SunEditor from 'suneditor-react';
-// import 'suneditor/dist/css/suneditor.min.css'; // Import Sun Editor's CSS File
 // import { css, cx } from "@emotion/css"
 
 const groupStyles = {
@@ -168,21 +166,29 @@ function News({ query: { categories: _categories, tags: _tags, search: _search }
         setCounts(Object.entries(counts));
     }, []);
 
-    const [isPostEditorOpened, setIsPostEditorOpened] = useState(false);
-    const [postEditorAction, setPostEditorAction] = useState("create");
-    const [postEditorData, setPostEditorData] = useState();
-    const switchPostEditor = (opened, action, data) => {
-        setIsPostEditorOpened(opened);
-        setPostEditorAction(action);
-        setPostEditorData(data);
-    }
+    const [deleteModalOpened, setDeleteModalOpened] = useState(false);
+    const [successCreateModalOpened, setSuccessCreateModalOpened] = useState(false);
+    const [successEditModalOpened, setSuccessEditModalOpened] = useState(false);
+
+    const [editorConfig, setEditorConfig] = useState({
+        opened: false,
+        action: "create",
+        data: undefined
+    });
+    const switchEditor = (opened, action, data) => setEditorConfig({ opened, action, data })
+    const closeEditor = () => setEditorConfig(({ action, data }) => ({ action, data, opened: false }));
 
     const editPost = id => {
         const p = posts.find(post => post.id === id);
         console.log(id, p);
-        switchPostEditor(true, "edit", p);
+        switchEditor(true, "edit", p);
     }
 
+    const [removeID, setRemoveID] = useState();
+    const prepareToRemove = id => {
+        setRemoveID(id);
+        setDeleteModalOpened(true);
+    };
     const removePost = async id => {
         const result = await PostListProvider.removePost(id);
         if(result.success) {
@@ -211,58 +217,61 @@ function News({ query: { categories: _categories, tags: _tags, search: _search }
                 </p>
             </ContentHeader>
             <div className="blog-content content-block">
-            {/* 
-             <div className={`warning-delete-modal ${deleteModalOpened && "opened"}`}>
-                        <div className="warning-delete-modal-content">
-                            <p>Вы уверены, что хотите удалить эту статью безвозвратно?</p>
-                            <button
-                                className="warning-delete-button"
-                                onClick={() => {
-                                    removeAlbum(removeID);
-                                    setDeleteModalOpened(false);
-                                }}
-                            >Да</button>
-                            <button className="warning-delete-button-no" onClick={() => setDeleteModalOpened(false)}>Нет</button>
-                        </div>
+            
+                <div className={`warning-delete-modal ${deleteModalOpened && "opened"}`}>
+                    <div className="warning-delete-modal-content">
+                        <p>Вы уверены, что хотите удалить эту статью безвозвратно?</p>
+                        <button
+                            className="warning-delete-button"
+                            onClick={() => {
+                                removePost(removeID);
+                                setDeleteModalOpened(false);
+                            }}
+                        >Да</button>
+                        <button className="warning-delete-button-no" onClick={() => setDeleteModalOpened(false)}>Нет</button>
                     </div>
-            <div className={`warning-success-modal ${successCreateModalOpened && "opened"}`}>
-                        <div className="warning-success-modal-content">
-                            <span
-                                className="close-modal"
-                                onClick={() => {
-                                    setSuccessCreateModalOpened(false);
-                                    setTimeout(() => Router.reload(), 600);
-                                }}
-                            >X</span>
-                            <p>Статья успешно создана!</p>
-                            <button
-                                className="warrning-success-modal-button"
-                                onClick={() => {
-                                    setSuccessCreateModalOpened(false);
-                                    setTimeout(() => Router.reload(), 600);
-                                }}
-                            >Ок</button>
-                        </div>
+                </div>
+
+                <div className={`warning-success-modal ${successCreateModalOpened && "opened"}`}>
+                    <div className="warning-success-modal-content">
+                        <span
+                            className="close-modal"
+                            onClick={() => {
+                                setSuccessCreateModalOpened(false);
+                                setTimeout(() => Router.reload(), 600);
+                            }}
+                        >X</span>
+                        <p>Статья успешно создана!</p>
+                        <button
+                            className="warrning-success-modal-button"
+                            onClick={() => {
+                                setSuccessCreateModalOpened(false);
+                                setTimeout(() => Router.reload(), 600);
+                            }}
+                        >Ок</button>
                     </div>
-                    <div className={`warning-success-modal ${successEditModalOpened && "opened"}`}>
-                        <div className="warning-success-modal-content">
-                            <span
-                                className="close-modal"
-                                onClick={() => {
-                                    setSuccessEditModalOpened(false);
-                                    setTimeout(() => Router.reload(), 600);
-                                }}
-                            >X</span>
-                            <p>Статья успешно изменена!</p>
-                            <button
-                                className="warrning-success-modal-button"
-                                onClick={() => {
-                                    setSuccessEditModalOpened(false);
-                                    setTimeout(() => Router.reload(), 600);
-                                }}
-                            >Ок</button>
-                        </div>
-                    </div> */}
+                </div>
+
+                <div className={`warning-success-modal ${successEditModalOpened && "opened"}`}>
+                    <div className="warning-success-modal-content">
+                        <span
+                            className="close-modal"
+                            onClick={() => {
+                                setSuccessEditModalOpened(false);
+                                setTimeout(() => Router.reload(), 600);
+                            }}
+                        >X</span>
+                        <p>Статья успешно изменена!</p>
+                        <button
+                            className="warrning-success-modal-button"
+                            onClick={() => {
+                                setSuccessEditModalOpened(false);
+                                setTimeout(() => Router.reload(), 600);
+                            }}
+                        >Ок</button>
+                    </div>
+                </div>
+
                 <div className="modile-blog-menu">
                     <div className="mobile-blog-menu-wrapper">
                         <div className="mobile-nav-button">
@@ -271,7 +280,7 @@ function News({ query: { categories: _categories, tags: _tags, search: _search }
                     </div>
                 </div>
                 <div className="left-column">
-                    { posts.map(post => <Post key={post.id} { ...post } edit={editPost} remove={removePost} />) }
+                    { posts.map(post => <Post key={post.id} { ...post } edit={editPost} remove={prepareToRemove} />) }
                 </div>
                 <div className="right-column">
                     <div className="blog-menu-wrapper">
@@ -298,13 +307,13 @@ function News({ query: { categories: _categories, tags: _tags, search: _search }
                         </div>
                         <AdminVariableComponent>
                             <div className="blog-menu-section admin">
-                                <button className="blog-menu-section-add-article-button" onClick={() => switchPostEditor(true, "create")}>Создать новость</button>
+                                <button className="blog-menu-section-add-article-button" onClick={() => switchEditor(true, "create")}>Создать новость</button>
                             </div>
                         </AdminVariableComponent>
                     </div>
                 </div>
                 <AdminVariableComponent>
-                    <PostEditor tags={uniqueTags} categories={counts} opened={isPostEditorOpened} action={postEditorAction} postData={postEditorData} close={() => setIsPostEditorOpened(false)} />
+                    <PostEditor tags={uniqueTags} categories={counts} {...editorConfig} close={() => closeEditor(false)} {...{ setSuccessCreateModalOpened, setSuccessEditModalOpened }} />
                 </AdminVariableComponent>
             </div>
         </div>
@@ -315,7 +324,7 @@ News.getInitialProps = ({ query }) => ({ query });
 
 export default News;
 
-export function PostEditor({ opened, action, postData, close, categories, tags }) {
+export function PostEditor({ opened, action, data, close, categories, tags, setSuccessCreateModalOpened, setSuccessEditModalOpened }) {
     const [actionMap] = useState({ "create": ["Создать", () => setPost(undefined)], "edit": ["Изменить", data => setPost(data)] });
     const [post, setPost] = useState();
     const [selectedCategory, setSelectedCategory] = useState("");
@@ -327,7 +336,7 @@ export function PostEditor({ opened, action, postData, close, categories, tags }
 
     // console.log(categories, tags);
     
-    useEffect(() => opened && actionMap[action][1](postData), [opened]);
+    useEffect(() => opened && actionMap[action][1](data), [opened]);
     const defaultValue = useMemo(() => post ? post.contents.replaceAll("script", "sсrірt") : "", [post]);
 
     useEffect(() => post ? setSelectedCategory(post.category) : null, [post]);
@@ -373,9 +382,9 @@ export function PostEditor({ opened, action, postData, close, categories, tags }
             const result = await PostListProvider.createPost({ ...data, date: new Date().toISOString() });
             console.log(result);
             if(result.success) {
-                alert("Новость успешно создана");
+                setSuccessCreateModalOpened(true);
                 // close();
-                Router.reload();
+                // Router.reload();
             } else switch(result.reason) {
                 case "db_error": return alert("Ошибка БД, попробуйте позже");
                 case "post_not_exist": return alert("Такой новости не существует");
@@ -390,9 +399,9 @@ export function PostEditor({ opened, action, postData, close, categories, tags }
         if(data) {
             const result = await PostListProvider.editPost(id, data);
             if(result.success) {
-                alert("Новость успешно изменена");
+                setSuccessEditModalOpened(true);
                 // close();
-                Router.reload();
+                // Router.reload();
             } else switch(result.reason) {
                 case "db_error": return alert("Ошибка БД, попробуйте позже");
                 case "post_not_exist": return alert("Такой новости не существует");
@@ -417,7 +426,6 @@ export function PostEditor({ opened, action, postData, close, categories, tags }
                         <input ref={titleRef} type="text" placeholder="Введите название новости" defaultValue={post ? post.title : ""} />
                     </div>
                     <div className="add-article-modal-text-editor-wrapper">
-                        {/* <textarea cols="30" rows="10" placeholder="введите что-нибудь интересное" /> */}
                         { textEditor }
                     </div>
                 </div>

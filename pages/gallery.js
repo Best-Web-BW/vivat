@@ -164,26 +164,6 @@ export default function Gallery() {
     );
 }
 
-// function ImageContainer({ isMulti, text, defaultImages }) {
-//     const [pictures, setPictures] = useState([]);
-//     const [files, setFiles] = useState([]);
-//     const filterFiles = files => files.filter(file => !(/^data:/.test(file)));
-
-//     return (
-//         <ImageUploader
-//             withIcon={false}
-//             withLabel={false}
-//             withPreview={true}
-//             singleImage={!isMulti}
-//             buttonText={text}
-//             onChange={(pictures, files) => (console.log(pictures, files), setPictures(pictures), setFiles(files))}
-//             imgExtension={[".jpg", ".jpeg", ".png"]}
-//             maxFileSize={10485760}
-//             defaultImages={defaultImages}
-//         />
-//     );
-// }
-
 export function AlbumEditor({ opened, action, data, close, setSuccessCreateModalOpened, setSuccessEditModalOpened }) {
     const [actionMap] = useState({ "create": ["Создать", () => setAlbum(undefined)], "edit": ["Изменить", data => setAlbum(data)] });
     const [album, setAlbum] = useState();
