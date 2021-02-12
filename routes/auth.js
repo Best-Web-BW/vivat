@@ -3,25 +3,33 @@ const ObjectID = require("mongodb").ObjectID;
 const SHA1 = require("crypto-js/sha1");
 const hmacSHA512 = require("crypto-js/hmac-sha512");
 const { v4: UUID } = require("uuid");
+const sendRegisterEmail = require("./mail").sendRegisterEmail;
 
-const PRIVATE_KEY = "saifjaw3p c5hga2j89~`dj.PR;OTH"; // Kicked my head with keyboard for this, it hurts
+// I hit my head on the keyboard for that. It hurts.
+// Why is there no another way to create a random string? 
+const PRIVATE_KEY = "saifjaw3p c5hga2j89~`dj.PR;OTH";
 const MAX_SESSIONS = 5;
 const ACCESS_KEY_MAX_AGE = 1000 * 60 * 15; // 15 minutes in ms
 const REFRESH_KEY_MAX_AGE = 1000 * 60 * 60 * 24 * 30; // 30 days in ms
 const COOKIE_CONFIG = { path: "/api/auth", secure: true, httpOnly: true, sameSite: "Strict" };
 
-let users/*, events*/;
+let users;
 new require("mongodb").MongoClient("mongodb://localhost:27017", { useUnifiedTopology: true, useNewUrlParser: true }).connect((err, client) => {
     if(err) return console.error(err);
 
     const db = client.db("vivat");
     users = db.collection("users");
-    // events = db.collection("events");
 });
 
 router.get("/", (_, res) => {
     res.end("This is not an auth API. :(");
 });
+
+// router.get("/reg_email", async (req, res) => {
+//     const { email, password } = req.query;
+//     const result = await sendRegisterEmail(email, password);
+//     res.json(result);
+// });
 
 router.post("/register", async (req, res) => {
     const { email, name: { first, second, middle }, birthdate } = req.body;
@@ -48,12 +56,18 @@ router.post("/register", async (req, res) => {
 
     await users.insertOne(user);
 
-    res.cookie("user_id", user._id.toString(), { maxAge: REFRESH_KEY_MAX_AGE, ...COOKIE_CONFIG });
-    res.cookie("access_key", session.access_key, { maxAge: ACCESS_KEY_MAX_AGE, ...COOKIE_CONFIG });
-    res.cookie("refresh_key", session.refresh_key, { maxAge: REFRESH_KEY_MAX_AGE, ...COOKIE_CONFIG });
-    const _user = { ...user, sessions: undefined, password_hash: undefined };
-    res.json({ status: "success", accessKeyLifetime: ACCESS_KEY_MAX_AGE, user: _user });
-    console.log(" - Password", password);
+    const sendEmailResult = await sendRegisterEmail(email, password);
+    if(sendEmailResult.status === "success") {
+        res.cookie("user_id", user._id.toString(), { maxAge: REFRESH_KEY_MAX_AGE, ...COOKIE_CONFIG });
+        res.cookie("access_key", session.access_key, { maxAge: ACCESS_KEY_MAX_AGE, ...COOKIE_CONFIG });
+        res.cookie("refresh_key", session.refresh_key, { maxAge: REFRESH_KEY_MAX_AGE, ...COOKIE_CONFIG });
+        const _user = { ...user, sessions: undefined, password_hash: undefined };
+        res.json({ status: "success", accessKeyLifetime: ACCESS_KEY_MAX_AGE, user: _user });
+        console.log(" - Password", password);
+    } else {
+        res.json(sendEmailResult);
+        console.log("Wtf?", { sendEmailResult });
+    }
 });
 
 router.post("/authenticate", async (req, res) => {
