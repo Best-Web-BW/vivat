@@ -29,4 +29,4 @@ yarn-error.log*
 .vs/vivat/v16/.suo
 .vs/VSWorkspaceState.json
 .vscode/settings.json
-routes/mail.js
+routes/secure.js
