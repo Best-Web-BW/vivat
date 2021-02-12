@@ -59,7 +59,7 @@ router.post("/load_images/:type", async (req, res) => {
     const { type } = req.params;
     if(["gallery"].includes(type)) {
         try {
-            let { images } = (req.files instanceof Array) ? req.files : [req.files];
+            let { images } = req.files;
             if(!(images instanceof Array)) images = [images];
             console.log({ type, images }); // Print arguments (just for debug);
 
@@ -94,7 +94,8 @@ router.post("/load_documents/:type", async (req, res) => {
     const { type } = req.params;
     if(["events"].includes(type)) {
         try {
-            let { documents } = (req.files instanceof Array) ? req.files : [req.files];
+            let { documents } = req.files;
+            if(!(documents instanceof Array)) documents = [documents];
             console.log({ type, documents });
 
             const serverDocuments = [];
