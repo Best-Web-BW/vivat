@@ -71,7 +71,7 @@ router.get("/posts/stats", async (_, res) => {
     const uniqueTags = new Set();
     const counts = result.reduce((acc, { tags, category }) => {
         for(let tag of tags) uniqueTags.add(tag);
-        return { ...acc, [category]: acc[category] ?? 0 + 1 };
+        return { ...acc, [category]: (acc[category] ?? 0) + 1 };
     }, { });
 
     res.json({ tags: [...uniqueTags], counts })
