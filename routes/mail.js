@@ -1,21 +1,20 @@
 const cors = require("cors");
 const router = require("express").Router();
 const nodemailer = require("nodemailer");
-const emailData = require("./secure").emailData;
-const address = emailData.address;
+const { address, password } = require("./secure").emailData;
 const mailer = {
     transporter: nodemailer.createTransport({
         host: "smtp.yandex.ru",
         port: 465,
         secure: true,
         auth: {
-            user: emailData.address,
-            pass: emailData.password
+            user: address,
+            pass: password
         },
     }),
     feedback: (name, email, phone, question) => ({
-        from: `Обратная связь <${emailData.address}>`,
-        to: emailData.address,
+        from: `Обратная связь <${address}>`,
+        to: address,
         subject: `${name}, ${email}, ${phone}`,
         html: `
             <div>
@@ -27,7 +26,7 @@ const mailer = {
         `
     }),
     register: (email, password) => ({
-        from: `КСК "Виват, Россия!" <${emailData.address}>`,
+        from: `КСК "Виват, Россия!" <${address}>`,
         to: email,
         subject: `Успешная регистрация на сайте`,
         html: `
