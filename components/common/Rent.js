@@ -1,14 +1,29 @@
 import { useState } from "react";
+import AuthProvider from "../../utils/providers/AuthProvider";
+import MailProvider from "../../utils/providers/MailProvider";
 
 const TimeButton = ({ time, turn, active }) => <button className={`order-service-time-button ${active && "active"}`} onClick={turn}>{ time }</button>;
 
 export default function Rent({ text, cost, minHours, hoursText }) {
     const [selectedTime, setSelectedTime] = useState("");
 
-    const submit = () => {
-        if(!selectedTime.length) alert("Не выбрано время аренды");
-        else alert("С вами свяжутся для уточнения деталей");
-        setSelectedTime("");
+    const submit = async () => {
+        if(!selectedTime.length) return alert("Не выбрано время аренды");
+        
+        try {
+            const email = AuthProvider.userData.email;
+            const result = await MailProvider.sendRentEmail(email, text, selectedTime);
+            if(result.success) {
+                alert("Успешная аренда, с вами свяжутся для уточнения деталей");
+                setSelectedTime("");
+            } else {
+                alert("Арендовать время не получилось, попробуйте позже");
+                console.log({ result });
+            }
+        } catch(e) {
+            alert("Внутренняя ошибка сервера, попробуйте позже");
+            console.log(e);
+        }
     };
 
     return (

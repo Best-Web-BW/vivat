@@ -27,7 +27,7 @@ const mailer = {
         `
     }),
     register: (email, password) => ({
-        from: `КСК "Виват, Россия!" <${address}>`,
+        from: `Аренда времени <${address}>`,
         to: email,
         subject: `Успешная регистрация на сайте`,
         html: `
@@ -40,7 +40,22 @@ const mailer = {
                 <p>Пожалуйста, запишите этот пароль. Он сгенерирован автоматически и предотвратит несанкционированный доступ к Вашему аккаунту</p>
             </div>
         `
-    }) 
+    }),
+    rent: (email, text, time) => ({
+        from: `КСК "Виват, Россия!" <${address}>`,
+        to: address,
+        subject: `Аренда времени ${time}`,
+        html: `
+            <div>
+                <h2>Аренда времени</h2>
+                <p>
+                    Email пользователя: ${email}<br />
+                    Услуга: "${text}"<br />
+                    Выбранное время: ${time}
+                </p>
+            </div>
+        `
+    })
 };
 
 router.get("/", cors(), (_, res) => {
@@ -51,6 +66,15 @@ router.post("/feedback", async (req, res) => {
     const { name, email, phone, question } = req.body;
     try{
         const result = await mailer.transporter.sendMail(mailer.feedback(name, email, phone, question));
+        res.json({ status: "success", result });
+    } catch(e) { console.log(e); res.json({ status: "error", error: e }); }
+    
+});
+
+router.post("/rent", async (req, res) => {
+    const { email, text, time } = req.body;
+    try{
+        const result = await mailer.transporter.sendMail(mailer.rent(email, text, time));
         res.json({ status: "success", result });
     } catch(e) { console.log(e); res.json({ status: "error", error: e }); }
     
