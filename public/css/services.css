@@ -224,6 +224,10 @@
     height: auto;
 }
 
+.order-service-day-datepicker {
+    width: 20vh;
+}
+
 /*service page end */
 
 /* media style */
