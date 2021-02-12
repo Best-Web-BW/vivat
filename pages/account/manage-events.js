@@ -102,6 +102,58 @@ export default function ManageEvents() {
         <AdminVariableComponent>
             <div className="profile-content content-block">
                 <ProfileMenu active="manage-events" />
+                {/* 
+                 <div className={`warning-delete-modal ${deleteModalOpened && "opened"}`}>
+                        <div className="warning-delete-modal-content">
+                            <p>Вы уверены, что хотите удалить эту статью безвозвратно?</p>
+                            <button
+                                className="warning-delete-button"
+                                onClick={() => {
+                                    removeAlbum(removeID);
+                                    setDeleteModalOpened(false);
+                                }}
+                            >Да</button>
+                            <button className="warning-delete-button-no" onClick={() => setDeleteModalOpened(false)}>Нет</button>
+                        </div>
+                    </div>
+                <div className={`warning-success-modal ${successCreateModalOpened && "opened"}`}>
+                        <div className="warning-success-modal-content">
+                            <span
+                                className="close-modal"
+                                onClick={() => {
+                                    setSuccessCreateModalOpened(false);
+                                    setTimeout(() => Router.reload(), 600);
+                                }}
+                            >X</span>
+                            <p>Событие успешно создано!</p>
+                            <button
+                                className="warrning-success-modal-button"
+                                onClick={() => {
+                                    setSuccessCreateModalOpened(false);
+                                    setTimeout(() => Router.reload(), 600);
+                                }}
+                            >Ок</button>
+                        </div>
+                    </div>
+                    <div className={`warning-success-modal ${successEditModalOpened && "opened"}`}>
+                        <div className="warning-success-modal-content">
+                            <span
+                                className="close-modal"
+                                onClick={() => {
+                                    setSuccessEditModalOpened(false);
+                                    setTimeout(() => Router.reload(), 600);
+                                }}
+                            >X</span>
+                            <p>Событие успешно изменено!</p>
+                            <button
+                                className="warrning-success-modal-button"
+                                onClick={() => {
+                                    setSuccessEditModalOpened(false);
+                                    setTimeout(() => Router.reload(), 600);
+                                }}
+                            >Ок</button>
+                        </div>
+                    </div> */}
                 <div className="admin-events-list">
                     <h2>Управление событиями</h2>
                     <div className="add-event-button-container">

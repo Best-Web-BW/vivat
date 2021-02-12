@@ -211,6 +211,58 @@ function News({ query: { categories: _categories, tags: _tags, search: _search }
                 </p>
             </ContentHeader>
             <div className="blog-content content-block">
+            {/* 
+             <div className={`warning-delete-modal ${deleteModalOpened && "opened"}`}>
+                        <div className="warning-delete-modal-content">
+                            <p>Вы уверены, что хотите удалить эту статью безвозвратно?</p>
+                            <button
+                                className="warning-delete-button"
+                                onClick={() => {
+                                    removeAlbum(removeID);
+                                    setDeleteModalOpened(false);
+                                }}
+                            >Да</button>
+                            <button className="warning-delete-button-no" onClick={() => setDeleteModalOpened(false)}>Нет</button>
+                        </div>
+                    </div>
+            <div className={`warning-success-modal ${successCreateModalOpened && "opened"}`}>
+                        <div className="warning-success-modal-content">
+                            <span
+                                className="close-modal"
+                                onClick={() => {
+                                    setSuccessCreateModalOpened(false);
+                                    setTimeout(() => Router.reload(), 600);
+                                }}
+                            >X</span>
+                            <p>Статья успешно создана!</p>
+                            <button
+                                className="warrning-success-modal-button"
+                                onClick={() => {
+                                    setSuccessCreateModalOpened(false);
+                                    setTimeout(() => Router.reload(), 600);
+                                }}
+                            >Ок</button>
+                        </div>
+                    </div>
+                    <div className={`warning-success-modal ${successEditModalOpened && "opened"}`}>
+                        <div className="warning-success-modal-content">
+                            <span
+                                className="close-modal"
+                                onClick={() => {
+                                    setSuccessEditModalOpened(false);
+                                    setTimeout(() => Router.reload(), 600);
+                                }}
+                            >X</span>
+                            <p>Статья успешно изменена!</p>
+                            <button
+                                className="warrning-success-modal-button"
+                                onClick={() => {
+                                    setSuccessEditModalOpened(false);
+                                    setTimeout(() => Router.reload(), 600);
+                                }}
+                            >Ок</button>
+                        </div>
+                    </div> */}
                 <div className="modile-blog-menu">
                     <div className="mobile-blog-menu-wrapper">
                         <div className="mobile-nav-button">
