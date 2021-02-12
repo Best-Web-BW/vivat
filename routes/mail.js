@@ -44,10 +44,10 @@ const mailer = {
     rent: (email, phone, service, time) => ({
         from: `КСК "Виват, Россия!" <${address}>`,
         to: address,
-        subject: `Аренда времени ${time}`,
+        subject: `Заказ услуги ${time}`,
         html: `
             <div>
-                <h2>Аренда времени</h2>
+                <h2>Заказана услуга</h2>
                 <p>
                     Email пользователя: ${email}<br />
                     Телефон пользователя: ${phone}<br />

@@ -1,6 +1,8 @@
 import { useState } from "react";
 import AuthProvider from "../../utils/providers/AuthProvider";
 import MailProvider from "../../utils/providers/MailProvider";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 const TimeButton = ({ time, turn, active }) => <button className={`order-service-time-button ${active && "active"}`} onClick={turn}>{ time }</button>;
 
@@ -26,6 +28,8 @@ export default function Rent({ text, cost, minHours, hoursText }) {
             console.log(e);
         }
     };
+    
+    const [startDate, setStartDate] = useState(new Date());
 
     return (
         <div className="order-service-wrapper content-block">
@@ -36,6 +40,19 @@ export default function Rent({ text, cost, minHours, hoursText }) {
                 <div className="order-service-price-wrapper">
                     <div className="order-service-price-title">Стоимость</div>
                     <div className="order-service-price-amount">{ cost }р/ч</div>
+                </div>
+                <div className="order-service-day-wrapper">
+                    <div className="order-service-day-title">Выбор дня</div>
+                    <div className="order-service-day-datepicker">
+                    <DatePicker 
+                            selected={startDate} 
+                            onChange={date => setStartDate(date)}
+                            peekNextMonth
+                            showYearDropdown
+                            dropdownMode="select"
+                            dateFormat="dd.MM.yyyy"
+                            />
+                    </div>
                 </div>
                 <div className="order-service-time-wrapper">
                     <div className="order-service-time-title">Выбор времени</div>

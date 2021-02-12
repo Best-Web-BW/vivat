@@ -155,7 +155,8 @@
     padding: 5vh;
 }
 
-.order-service-title-wrapper, .order-service-price-wrapper, .order-service-time-wrapper, .order-service-mintime-wrapper, .order-service-button-wrapper {
+.order-service-title-wrapper, .order-service-price-wrapper, .order-service-time-wrapper, .order-service-mintime-wrapper, .order-service-button-wrapper,
+.order-service-day-wrapper {
     width: 80%;
     color: whitesmoke;
     display: flex;
