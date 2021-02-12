@@ -79,12 +79,21 @@ export default function ManageEvents() {
     const switchEventEditor = (opened, action, data) => setEditorConfig({ opened, action, data })
     const closeEditor = () => setEditorConfig(({ action, data }) => ({ action, data, opened: false }));
 
+    const [deleteModalOpened, setDeleteModalOpened] = useState(false);
+    const [successCreateModalOpened, setSuccessCreateModalOpened] = useState(false);
+    const [successEditModalOpened, setSuccessEditModalOpened] = useState(false);
+
     const editEvent = async id => {
         const e = await EventListProvider.getEventDetails(id);
         console.log(id, e);
         switchEventEditor(true, "edit", e);
     }
 
+    const [removeID, setRemoveID] = useState();
+    const prepareToRemove = id => {
+        setRemoveID(id);
+        setDeleteModalOpened(true);
+    };
     const removeEvent = async id => {
         const result = await EventListProvider.removeEvent(id);
         if(result.success) {
@@ -102,72 +111,75 @@ export default function ManageEvents() {
         <AdminVariableComponent>
             <div className="profile-content content-block">
                 <ProfileMenu active="manage-events" />
-                {/* 
+                
                  <div className={`warning-delete-modal ${deleteModalOpened && "opened"}`}>
-                        <div className="warning-delete-modal-content">
-                            <p>Вы уверены, что хотите удалить эту статью безвозвратно?</p>
-                            <button
-                                className="warning-delete-button"
-                                onClick={() => {
-                                    removeAlbum(removeID);
-                                    setDeleteModalOpened(false);
-                                }}
-                            >Да</button>
-                            <button className="warning-delete-button-no" onClick={() => setDeleteModalOpened(false)}>Нет</button>
-                        </div>
+                    <div className="warning-delete-modal-content">
+                        <p>Вы уверены, что хотите удалить это событие безвозвратно?</p>
+                        <button
+                            className="warning-delete-button"
+                            onClick={() => {
+                                removeEvent(removeID);
+                                setDeleteModalOpened(false);
+                            }}
+                        >Да</button>
+                        <button className="warning-delete-button-no" onClick={() => setDeleteModalOpened(false)}>Нет</button>
                     </div>
+                </div>
+
                 <div className={`warning-success-modal ${successCreateModalOpened && "opened"}`}>
-                        <div className="warning-success-modal-content">
-                            <span
-                                className="close-modal"
-                                onClick={() => {
-                                    setSuccessCreateModalOpened(false);
-                                    setTimeout(() => Router.reload(), 600);
-                                }}
-                            >X</span>
-                            <p>Событие успешно создано!</p>
-                            <button
-                                className="warrning-success-modal-button"
-                                onClick={() => {
-                                    setSuccessCreateModalOpened(false);
-                                    setTimeout(() => Router.reload(), 600);
-                                }}
-                            >Ок</button>
-                        </div>
+                    <div className="warning-success-modal-content">
+                        <span
+                            className="close-modal"
+                            onClick={() => {
+                                setSuccessCreateModalOpened(false);
+                                setTimeout(() => Router.reload(), 600);
+                            }}
+                        >X</span>
+                        <p>Событие успешно создано!</p>
+                        <button
+                            className="warrning-success-modal-button"
+                            onClick={() => {
+                                setSuccessCreateModalOpened(false);
+                                setTimeout(() => Router.reload(), 600);
+                            }}
+                        >Ок</button>
                     </div>
-                    <div className={`warning-success-modal ${successEditModalOpened && "opened"}`}>
-                        <div className="warning-success-modal-content">
-                            <span
-                                className="close-modal"
-                                onClick={() => {
-                                    setSuccessEditModalOpened(false);
-                                    setTimeout(() => Router.reload(), 600);
-                                }}
-                            >X</span>
-                            <p>Событие успешно изменено!</p>
-                            <button
-                                className="warrning-success-modal-button"
-                                onClick={() => {
-                                    setSuccessEditModalOpened(false);
-                                    setTimeout(() => Router.reload(), 600);
-                                }}
-                            >Ок</button>
-                        </div>
-                    </div> */}
+                </div>
+
+                <div className={`warning-success-modal ${successEditModalOpened && "opened"}`}>
+                    <div className="warning-success-modal-content">
+                        <span
+                            className="close-modal"
+                            onClick={() => {
+                                setSuccessEditModalOpened(false);
+                                setTimeout(() => Router.reload(), 600);
+                            }}
+                        >X</span>
+                        <p>Событие успешно изменено!</p>
+                        <button
+                            className="warrning-success-modal-button"
+                            onClick={() => {
+                                setSuccessEditModalOpened(false);
+                                setTimeout(() => Router.reload(), 600);
+                            }}
+                        >Ок</button>
+                    </div>
+                </div>
+
                 <div className="admin-events-list">
                     <h2>Управление событиями</h2>
                     <div className="add-event-button-container">
                         <button className="add-event-button" onClick={() => switchEventEditor(true, "create")}>Создать событие</button>
                     </div>
-                    { events.map(event => <EventBlock key={event.id} {...event} edit={editEvent} remove={removeEvent} />) }
+                    { events.map(event => <EventBlock key={event.id} {...event} edit={editEvent} remove={prepareToRemove} />) }
                 </div>
-                <EventEditor categories={categories} opened={editorConfig.opened} action={editorConfig.action} eventData={editorConfig.data} close={closeEditor} />
+                <EventEditor categories={categories} opened={editorConfig.opened} action={editorConfig.action} eventData={editorConfig.data} close={closeEditor} {...{ setSuccessCreateModalOpened, setSuccessEditModalOpened }} />
             </div>
         </AdminVariableComponent>
     );
 }
 
-export function EventEditor({ opened, action, eventData, close, categories }) {
+export function EventEditor({ opened, action, eventData, close, categories, setSuccessCreateModalOpened, setSuccessEditModalOpened }) {
     const [actionMap] = useState({ "create": ["Создать", () => setEvent(undefined)], "edit": ["Изменить", data => setEvent(data)] });
     const [event, setEvent] = useState();
     const [selectedCategory, setSelectedCategory] = useState("");
@@ -237,9 +249,9 @@ export function EventEditor({ opened, action, eventData, close, categories }) {
             const result = await EventListProvider.createEvent(data);
             console.log(result);
             if(result.success) {
-                alert("Событие успешно создано");
+                setSuccessCreateModalOpened(true);
                 // close();
-                Router.reload();
+                // Router.reload();
             } else switch(result.reason) {
                 case "db_error": return alert("Ошибка БД, попробуйте позже");
                 case "event_not_exist": return alert("Такого события не существует");
@@ -254,9 +266,9 @@ export function EventEditor({ opened, action, eventData, close, categories }) {
         if(data) {
             const result = await EventListProvider.editEvent(id, data);
             if(result.success) {
-                alert("Событие успешно изменено");
+                setSuccessEditModalOpened(true);
                 // close();
-                Router.reload();
+                // Router.reload();
             } else switch(result.reason) {
                 case "db_error": return alert("Ошибка БД, попробуйте позже");
                 case "event_not_exist": return alert("Такого события не существует");
