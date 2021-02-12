@@ -21,7 +21,7 @@ export default function ProfileMenu({ active }) {
                 <ul className="profile-menu-list">
                     <ProfileMenuItem active={active} name="profile" title="Профиль" />
                     <ProfileMenuItem active={active} name="registration" title="Регистрация на событие" />
-                    <ProfileMenuItem active={active} name="my-events" title="Мои события" />
+                    { AuthProvider.userData && !AuthProvider.userData.admin && <ProfileMenuItem active={active} name="my-events" title="Мои события" /> }
                     {<AdminVariableComponent>
                         <ProfileMenuItem active={active} name="manage-events" title="Управление событиями" />
                     </AdminVariableComponent>}
