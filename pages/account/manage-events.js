@@ -111,7 +111,6 @@ export default function ManageEvents() {
         <AdminVariableComponent>
             <div className="profile-content content-block">
                 <ProfileMenu active="manage-events" />
-                
                  <div className={`warning-delete-modal ${deleteModalOpened && "opened"}`}>
                     <div className="warning-delete-modal-content">
                         <p>Вы уверены, что хотите удалить это событие безвозвратно?</p>
@@ -125,7 +124,6 @@ export default function ManageEvents() {
                         <button className="warning-delete-button-no" onClick={() => setDeleteModalOpened(false)}>Нет</button>
                     </div>
                 </div>
-
                 <div className={`warning-success-modal ${successCreateModalOpened && "opened"}`}>
                     <div className="warning-success-modal-content">
                         <span
@@ -145,7 +143,6 @@ export default function ManageEvents() {
                         >Ок</button>
                     </div>
                 </div>
-
                 <div className={`warning-success-modal ${successEditModalOpened && "opened"}`}>
                     <div className="warning-success-modal-content">
                         <span
@@ -165,7 +162,6 @@ export default function ManageEvents() {
                         >Ок</button>
                     </div>
                 </div>
-
                 <div className="admin-events-list">
                     <h2>Управление событиями</h2>
                     <div className="add-event-button-container">
