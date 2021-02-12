@@ -1,4 +1,37 @@
-import React, { useEffect, useRef } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { sleep } from "../../utils/common";
+import config2 from "./Unicorn.config";
+
+export function Unicorn2({ propMode, angle }) {
+    const [src, setSrc] = useState(config2.rest);
+    const [mode, setMode] = useState("rest");
+    
+    const rest = useCallback(() => setSrc(config2.rest), []);
+    const follow = useCallback((angle = 0) => setSrc(config2.find(({ min, max }) => min < angle && max >= angle).image), []);
+    const shy = useMemo(() => ({
+        animate: async shying => {
+            const images = shying ? config2.shy : [...config2.shy].reverse();
+            const count = images.length;
+            const frametime = config2.shyDuration / count;
+            for(let image of images) (setSrc(image), await sleep(frametime))
+        },
+        stop: async (after = rest) => (await shy.animate(false), after())
+    }), []);
+    
+    const transitions = useMemo(() => ({
+        "rest-follow": angle => (setMode("follow"), follow(angle)),
+        "rest-shy": () => (setMode("shy"), shy.animate()),
+        "follow-rest": () => (setMode("rest"), rest()),
+        "follow-follow": follow,
+        "follow-shy": () => (rest(), setMode("shy"), shy.animate()),
+        "shy-rest": () => (setMode("rest"), rest()),
+        "shy-follow": angle => (shy.stop(() => (setMode("follow"), follow(angle))))
+    }), []);
+    
+    const transit = useCallback(() => transitions[mode][propMode](angle), [propMode]);
+    
+    return <img src={src} alt="" width="100%" />;
+}
 
 let config = {
     extension: "png",
