@@ -41,7 +41,7 @@ const mailer = {
             </div>
         `
     }),
-    rent: (email, phone, service, time) => ({
+    rent: (email, phone, service, time, date) => ({
         from: `КСК "Виват, Россия!" <${address}>`,
         to: address,
         subject: `Заказ услуги ${time}`,
@@ -52,7 +52,7 @@ const mailer = {
                     Email пользователя: ${email}<br />
                     Телефон пользователя: ${phone}<br />
                     Услуга: "${service}"<br />
-                    Выбранное время: ${time}
+                    Выбранное время: ${time} ${date}
                 </p>
             </div>
         `
@@ -73,9 +73,9 @@ router.post("/feedback", async (req, res) => {
 });
 
 router.post("/rent", async (req, res) => {
-    const { email, phone, service, time } = req.body;
+    const { email, phone, service, time, date } = req.body;
     try{
-        const result = await mailer.transporter.sendMail(mailer.rent(email, phone, service, time));
+        const result = await mailer.transporter.sendMail(mailer.rent(email, phone, service, time, date));
         res.json({ status: "success", result });
     } catch(e) { console.log(e); res.json({ status: "error", error: e }); }
     
