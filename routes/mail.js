@@ -45,9 +45,8 @@ router.get("/", cors(), (_, res) => {
 	res.end("Please help me they force me to send email to users i am not a robot");
 });
 
-router.get("/feedback", async (req, res) => {
-    const { name, email, phone, question } = req.query;
-    // const { name, email, phone, question } = req.body;
+router.post("/feedback", async (req, res) => {
+    const { name, email, phone, question } = req.body;
     try{
         const result = await mailer.transporter.sendMail(mailer.feedback(name, email, phone, question));
         res.json({ status: "success", result });

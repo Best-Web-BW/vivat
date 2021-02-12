@@ -1,23 +1,35 @@
 import { useRef } from "react";
 import ContentHeader from "../components/common/ContentHeader";
+import MailProvider from "../utils/providers/MailProvider";
 
 export default function Contacts() {
     const nameRef = useRef();
     const emailRef = useRef();
     const phoneRef = useRef();
     const textRef = useRef();
-    const submit = () => {
+    const submit = async () => {
         const name = nameRef.current.value;
         const email = emailRef.current.value;
         const phone = phoneRef.current.value;
         const text = textRef.current.value;
 
-        if(/^[a-zа-яё]+$/gi.test(name) && /@/.test(email) && /(^\+7|8)\d{10}$/.test(phone) && /.+/.test(text)) {
-            alert("Мы с вами свяжемся");
-            nameRef.current.value = "";
-            emailRef.current.value = "";
-            phoneRef.current.value = "";
-            textRef.current.value = ""
+        if(/^[a-zа-яё ]+$/gi.test(name) && /@/.test(email) && /(^\+7|8)\d{10}$/.test(phone) && /[. ]+/.test(text)) {
+            try {
+                const result = await MailProvider.sendFeedbackEmail(name, email, phone, text);
+                if(result.success) {
+                    alert("Мы с вами свяжемся");
+                    nameRef.current.value = "";
+                    emailRef.current.value = "";
+                    phoneRef.current.value = "";
+                    textRef.current.value = ""
+                } else {
+                    alert("Произошла ошибка сервера, попробуйте позже");
+                    console.log({ result });
+                }
+            } catch(e) {
+                alert("Что-то пошло не так");
+                console.log({ result });
+            }
         }
         else alert("Неверно введено одно из полей")
     }
