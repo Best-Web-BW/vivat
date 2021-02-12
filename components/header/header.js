@@ -4,6 +4,7 @@ import Unicorn, { UnicornFollowInput, UnicornShyInput } from "../common/Unicorn"
 import AuthProvider, { AuthVariableComponent } from "../../utils/providers/AuthProvider";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { toISODate } from "../../utils/common";
 
 
 
@@ -20,7 +21,8 @@ export default class Header extends React.Component {
             isSignFormOpened: false,
             isLoginFormOpened: false,
             isRegisterFormOpened: false,
-            profilePreviewName: ""
+            profilePreviewName: "",
+            selectedRegisterDate: new Date()
         };
         global.header = this;
 
@@ -135,7 +137,7 @@ export default class Header extends React.Component {
             const firstName = this.authRefs.register.name.first.current.value;
             const secondName = this.authRefs.register.name.second.current.value;
             const middleName = this.authRefs.register.name.middle.current.value;
-            const birthdate = this.authRefs.register.birthdate.current.value;
+            const birthdate = toISODate(this.state.selectedRegisterDate);
             const errorMap = {
                 invalid_email: "Некорректный email",
                 invalid_first_name: "Некорректное имя",
@@ -157,8 +159,6 @@ export default class Header extends React.Component {
             }
         };
     }
-
-
 
     render() {
         const profilePreviewName = AuthProvider.userData ? (({ second, first, middle }) => `${second} ${first} ${middle}`)(AuthProvider.userData.name) : "";
@@ -385,7 +385,7 @@ export default class Header extends React.Component {
                                 Дата рождения
                                 <span className="required">*</span>
                                 {/* <input ref={this.authRefs.register.birthdate} type="date" name="birthdate" className="datepicker-here" /> */}
-                                <WrapperDatePicker />
+                                <WrapperDatePicker selected={this.state.selectedRegisterDate} onChange={date => this.setState({ selectedRegisterDate: date })} />
                             </label>
                             <label className="email-label">
                                 Адрес электронной почты
@@ -416,13 +416,15 @@ export default class Header extends React.Component {
     }
 }
 
-function WrapperDatePicker() {
-    const [startDate, setStartDate] = useState(new Date());
+function WrapperDatePicker({ selected, onChange }) {
+    // const [startDate, setStartDate] = useState(new Date());
     
     return (
         <DatePicker 
-            selected={startDate} 
-            onChange={date => setStartDate(date)}
+            // selected={startDate} 
+            // onChange={date => setStartDate(date)}
+            selected={selected}
+            onChange={onChange}
             peekNextMonth
             showYearDropdown
             dropdownMode="select"
