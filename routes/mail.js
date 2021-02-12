@@ -13,15 +13,16 @@ const mailer = {
         },
     }),
     feedback: (name, email, phone, question) => ({
-        from: `Обратная связь <${address}>`,
+        from: `Обратная связь на сайте КСК "Виват, Россия!" <${address}>`,
         to: address,
         subject: `${name}, ${email}, ${phone}`,
         html: `
             <div>
-                Имя: <b>${name}</b><br />
-                Email: <b>${email}</b><br />
-                Номер телефона: <b>${phone}</b><br />
-                Вопрос: <p>${question}</p>
+                <h2 style:"text-align: center;">Контактная информация</h2>
+                <p style:"font-weight: bold;">Имя:</p> <b>${name}</b><br />
+                <p style:"font-weight: bold;>Email:</p> <b>${email}</b><br />
+                <p style:"font-weight: bold;>Номер телефона:</p> <b>${phone}</b><br />
+                <p style:"font-weight: bold;>Вопрос:</p> <p>${question}</p>
             </div>
         `
     }),
@@ -31,11 +32,12 @@ const mailer = {
         subject: `Успешная регистрация на сайте`,
         html: `
             <div>
+                <h2> Вы успешно зарегистрировались на сайте <a href="https://kskvivat.com>"КСК "Виват, Россия!"</a> </h2>
                 <p>
-                    Вы успешно зарегистрировались на сайте конно-спортивного комплекса "Виват, Россия!".<br /><br />
                     Указанный email: ${email}<br />
                     Сгенерированный пароль: ${password}
                 </p>
+                <p>Пожалуйста, запишите этот пароль. Он сгенерирован автоматически и предотвратит несанкционированный доступ к Вашему аккаунту</p>
             </div>
         `
     }) 
