@@ -8,20 +8,21 @@ export function useAuth() {
 export default class AuthProvider {
     static userData;
     static accessKeyLifetime;
-    static refreshInterval;
+    static refreshTimeout;
     static REFRESH_PREEMPTION = 1000 * 15; // 15 seconds
 
     static startAutoRefresh() {
-        this.refreshInterval = setInterval(() => this.refreshTokens(), this.accessKeyLifetime - this.REFRESH_PREEMPTION);
+        this.refreshTimeout = setTimeout(() => this.refreshTokens(), this.accessKeyLifetime - this.REFRESH_PREEMPTION);
     }
 
     static stopAutoRefresh() {
-        clearInterval(this.refreshInterval);
+        clearTimeout(this.refreshTimeout);
     }
     
     static setUser(json) {
         this.userData = json.user;
         this.accessKeyLifetime = json.accessKeyLifetime;
+        this.stopAutoRefresh();
         this.startAutoRefresh();
         window.dispatchEvent(new CustomEvent("onauth"));
     }
@@ -30,7 +31,7 @@ export default class AuthProvider {
         this.stopAutoRefresh();
         this.userData = undefined;
         this.accessKeyLifetime = undefined;
-        this.refreshInterval = undefined;
+        this.refreshTimeout = undefined;
         window.dispatchEvent(new CustomEvent("onauth"));
     }
 
