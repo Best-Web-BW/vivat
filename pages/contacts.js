@@ -25,7 +25,7 @@ export default function Contacts() {
                 nameRef.current.value = "";
                 emailRef.current.value = "";
                 phoneRef.current.value = "";
-                textRef.current.value = ""
+                textRef.current.value = "";
             } else {
                 alert("Произошла ошибка сервера, попробуйте позже");
                 console.log({ result });
