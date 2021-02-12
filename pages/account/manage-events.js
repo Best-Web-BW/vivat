@@ -295,24 +295,24 @@ export function EventEditor({ opened, action, eventData, close, categories }) {
                                 Дата начала
                             </label>
                             <DatePicker
-                                    dateFormat="dd.MM.yyyy"
-                                    selected={startDate} 
-                                    onChange={date => setStartDate(date)}
-                                    peekNextMonth
-                                    showYearDropdown
-                                    dropdownMode="select"
-                                />
+                                dateFormat="dd.MM.yyyy"
+                                selected={startDate} 
+                                onChange={date => setStartDate(date)}
+                                peekNextMonth
+                                showYearDropdown
+                                dropdownMode="select"
+                            />
                             <label>
                                 Дата окончания
                             </label>
                             <DatePicker
-                                    dateFormat="dd.MM.yyyy"
-                                    selected={endDate} 
-                                    onChange={date => setEndDate(date)}
-                                    peekNextMonth
-                                    showYearDropdown
-                                    dropdownMode="select"
-                                />
+                                dateFormat="dd.MM.yyyy"
+                                selected={endDate} 
+                                onChange={date => setEndDate(date)}
+                                peekNextMonth
+                                showYearDropdown
+                                dropdownMode="select"
+                            />
                         </div>
                     </div>
                     <div className="edit-event-modal-col-right">
