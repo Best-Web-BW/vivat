@@ -13,25 +13,27 @@ export default function Contacts() {
         const phone = phoneRef.current.value;
         const text = textRef.current.value;
 
-        if(/^[a-zа-яё ]+$/gi.test(name) && /@/.test(email) && /(^\+7|8)\d{10}$/.test(phone) && /[. ]+/.test(text)) {
-            try {
-                const result = await MailProvider.sendFeedbackEmail(name, email, phone, text);
-                if(result.success) {
-                    alert("Мы с вами свяжемся");
-                    nameRef.current.value = "";
-                    emailRef.current.value = "";
-                    phoneRef.current.value = "";
-                    textRef.current.value = ""
-                } else {
-                    alert("Произошла ошибка сервера, попробуйте позже");
-                    console.log({ result });
-                }
-            } catch(e) {
-                alert("Что-то пошло не так");
+        if(!/@/.test(email)) return alert("Неверно введена почта");
+        else if(!/^[a-zа-яё ]+$/gi.test(name)) return alert("Неверно введено имя");
+        else if(!/(.|[\r\n \s\t])+/.test(text)) return alert("Неверно введён текст вопроса");
+        else if(!/^(\+7|8)\d{10}$/.test(phone)) return alert("Неверно введён номер телефона");
+
+        try {
+            const result = await MailProvider.sendFeedbackEmail(name, email, phone, text);
+            if(result.success) {
+                alert("Мы с вами свяжемся");
+                nameRef.current.value = "";
+                emailRef.current.value = "";
+                phoneRef.current.value = "";
+                textRef.current.value = ""
+            } else {
+                alert("Произошла ошибка сервера, попробуйте позже");
                 console.log({ result });
             }
+        } catch(e) {
+            alert("Что-то пошло не так");
+            console.log({ result });
         }
-        else alert("Неверно введено одно из полей")
     }
 
     return (
