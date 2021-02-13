@@ -1212,6 +1212,34 @@ header {
         padding: 0 1vh;
     }
 
+    .modal-enter-wrapper.opened {
+        top: 6vh;
+        width: 100%;
+        height: calc(100% - 6vh);
+    }
+
+    .modal-enter-content {
+        width: calc(100% - 2vh);
+        height: calc(100% - 2vh);
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .login-input, .password-input, .surname-input, .name-input, .middle-name-input, .email-input, 
+    .birth-date-label .react-datepicker__input-container input, .order-service-day-datepicker input {
+        height: 10vw;
+    }
+
+    .modal-enter-content-wrapper, .modal-register-content-wrapper {
+        align-self: flex-start;
+    }
+
+    .unicorn-wrapper {
+        display: none;
+    }
+
 }
 
 /* ipad */

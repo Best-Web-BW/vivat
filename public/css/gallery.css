@@ -293,6 +293,17 @@
     .album-list-element {
         height: 25vh;
     }
+
+    .modal-gallery-wrapper {
+        padding: 0;
+        width: 100%;
+        height: 100%;
+    }
+
+    .modal-gallery-wrapper .close-modal {
+        z-index: 1;
+    }
+    
 }
 
 /* ipad */
