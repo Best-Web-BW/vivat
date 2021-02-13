@@ -41,7 +41,9 @@ const admin = require("./routes/admin.js");
         server.use(bodyParser.urlencoded({ extended: false }));
         
         const dynamicFileHandler = (req, res) => res.sendFile(__dirname + path.normalize(req.path));
+        server.post("/documents/*", dynamicFileHandler);
         server.get("/documents/*", dynamicFileHandler);
+        server.post("/images/*", dynamicFileHandler);
         server.get("/images/*", dynamicFileHandler);
 
         server.use("/api/admin", admin);
