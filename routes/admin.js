@@ -22,8 +22,8 @@ async function getMaxID(collection) {
 
 router.get("/", (_, res) => res.end("Are you my adminny?"));
 
-const getRawImagePath = (type, fullName) => path.join("public", "images", type, "tmp", fullName);
-const getWebpImagePath = (type, name) => path.join("public", "images", type, "webp", name);
+const getRawImagePath = (type, fullName) => path.join("images", type, "tmp", fullName);
+const getWebpImagePath = (type, name) => path.join("images", type, "webp", name);
 const getWebpImageUrl = (type, name) => `/images/${type}/webp/${name}`;
 
 const getImageSize = async path => (await fs.promises.stat(path)).size;
@@ -36,7 +36,7 @@ router.post("/load_image/:type", async (req, res) => {
             console.log(type, { rawImage }); // Print arguments (just for debug);
 
             const rawPath = getRawImagePath(type, rawImage.name);
-            rawImage.mv(rawPath);
+            await rawImage.mv(rawPath);
     
             const webpName = UUID() + ".webp";
             const webpPath = getWebpImagePath(type, webpName);
@@ -67,7 +67,7 @@ router.post("/load_images/:type", async (req, res) => {
 
             for(let rawImage of images) {
                 const rawPath = getRawImagePath(type, rawImage.name)
-                rawImage.mv(rawPath);
+                await rawImage.mv(rawPath);
         
                 const webpName = UUID() + ".webp";
                 const webpPath = getWebpImagePath(type, webpName);
@@ -87,7 +87,7 @@ router.post("/load_images/:type", async (req, res) => {
     else return res.json({ errorMessage: "Invalid load type" });
 });
 
-const getDocumentPath = (type, name) => path.join("public", "documents", type, name);
+const getDocumentPath = (type, name) => path.join("documents", type, name);
 const getDocumentUrl = (type, name) => `/documents/${type}/${name}`;
 
 router.post("/load_documents/:type", async (req, res) => {
@@ -98,11 +98,12 @@ router.post("/load_documents/:type", async (req, res) => {
             if(!(documents instanceof Array)) documents = [documents];
             console.log({ type, documents });
 
-            const serverDocuments = documents.map(document => {
+            const serverDocuments = [];
+            for(let document of documents) {
                 const name = document.name;
-                document.mv(getDocumentPath(type, name));
-                return { url: getDocumentUrl(type, name), name }
-            });
+                await document.mv(getDocumentPath(type, name));
+                serverDocuments.push({ url: getDocumentUrl(type, name), name });
+            }
 
             console.log("Documents are loaded, result is", JSON.stringify(serverDocuments));
 

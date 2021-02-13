@@ -1,16 +1,12 @@
-import React, { useState } from "react";
+import React from "react";
 import Link from "next/link";
-import Unicorn, { UnicornFollowInput, UnicornShyInput } from "../common/Unicorn";
+import Unicorn, { UnicornFollowInput, UnicornShyInput } from "./Unicorn";
 import AuthProvider, { AuthVariableComponent } from "../../utils/providers/AuthProvider";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { toISODate } from "../../utils/common";
 
-
-
 export default class Header extends React.Component {
-
-    
     constructor(props) {
         super(props);
         this.state = {
@@ -22,9 +18,11 @@ export default class Header extends React.Component {
             isLoginFormOpened: false,
             isRegisterFormOpened: false,
             profilePreviewName: "",
-            selectedRegisterDate: new Date()
+            selectedRegisterDate: new Date(),
+            restUnicorn: undefined,
+            followUnicorn: undefined,
+            shyUnicorn: undefined
         };
-        global.header = this;
 
         this.loginFormRef = React.createRef();
         this.registerFormRef = React.createRef();
@@ -65,35 +63,6 @@ export default class Header extends React.Component {
             });
         };
 
-        this.unicorn = {
-            commitTimeout: undefined,
-            mode: "default",
-            followAngle: 0,
-            onFollow: (ratio = 0) => {
-                this.unicorn.mode = "follow"
-                this.unicorn.followAngle = (ratio - 0.42) * 90;
-                this.unicorn.commit(false);
-            },
-            onShy: () => {
-                clearTimeout(this.unicorn.blurTimeout);
-                this.unicorn.mode = "shy";
-                this.unicorn.commit();
-            },
-            onBlur: () => {
-                this.unicorn.mode = "default";
-                this.unicorn.commit();
-            },
-            commit: (doTimeout = true) => {
-                clearTimeout(this.unicorn.commitTimeout);
-                this.unicorn.commitTimeout = setTimeout(() => {
-                    window.unicorn?.directlyUpdateProps({
-                        mode: this.unicorn.mode,
-                        angle: this.unicorn.followAngle
-                    });
-                }, doTimeout ? 200 : 0);
-            }
-        };
-
         // Aw shit, here we go again...
         this.authRefs = {
             login: {
@@ -120,7 +89,7 @@ export default class Header extends React.Component {
             else {
                 const [success, reason] = await AuthProvider.authenticate(email, password);
 
-                if(success) (this.toggleSignForm(), alert("Успешный вход!"));
+                if(success) (alert("Успешный вход!"), this.toggleSignForm());
                 else if(reason === "invalid_email") alert("Пользователь с таким email не зарегистрирован");
                 else if(reason === "invalid_password") alert("Неверный пароль");
                 else alert("Произошла ошибка, попробуйте позже");
@@ -134,9 +103,11 @@ export default class Header extends React.Component {
 
         this.doRegister = async () => {
             const email = this.authRefs.register.email.current.value;
-            const firstName = this.authRefs.register.name.first.current.value;
-            const secondName = this.authRefs.register.name.second.current.value;
-            const middleName = this.authRefs.register.name.middle.current.value;
+            const name = {
+                first: this.authRefs.register.name.first.current.value,
+                second: this.authRefs.register.name.second.current.value,
+                middle: this.authRefs.register.name.middle.current.value
+            };
             const birthdate = toISODate(this.state.selectedRegisterDate);
             const errorMap = {
                 invalid_email: "Некорректный email",
@@ -147,14 +118,14 @@ export default class Header extends React.Component {
             };
 
             if(!/@/.test(email)) alert(errorMap.invalid_email);
-            else if(!/^[a-zа-яё]{2,}$/gi.test(firstName)) alert(errorMap.invalid_first_name);
-            else if(!/^[a-zа-яё]{2,}$/gi.test(secondName)) alert(errorMap.invalid_second_name);
-            else if(!/^[a-zа-яё]{2,}$/gi.test(middleName)) alert(errorMap.invalid_middle_name);
+            else if(!/^[a-zа-яё]{2,}$/gi.test(name.first)) alert(errorMap.invalid_first_name);
+            else if(!/^[a-zа-яё]{2,}$/gi.test(name.second)) alert(errorMap.invalid_second_name);
+            else if(!/^[a-zа-яё]{2,}$/gi.test(name.middle)) alert(errorMap.invalid_middle_name);
             else if(!/./.test(birthdate)) alert(errorMap.invalid_birthdate);
             else {
-                const [success, reasons] = await AuthProvider.register(email, { first: firstName, second: secondName, middle: middleName }, birthdate);
+                const [success, reasons] = await AuthProvider.register(email, name, birthdate);
 
-                if(success) (this.toggleSignForm(), alert("Успешная регистрация!"));
+                if(success) (alert("Успешная регистрация!"), this.toggleSignForm());
                 else alert(reasons.map((reason, index) => `${index}. ${errorMap[reason]}`));
             }
         };
@@ -287,7 +258,7 @@ export default class Header extends React.Component {
                 <div className={`modal-enter-wrapper ${this.state.isSignFormOpened ? "opened" : ""}`}>
                     <div className="unicorn-wrapper">
                         <div className="unicorn-content">
-                            <Unicorn />
+                            <Unicorn setListeners={listeners => this.setState(listeners)} />
                         </div>
                     </div>
                     <div className="modal-enter-content">
@@ -303,108 +274,75 @@ export default class Header extends React.Component {
                             >Регистрация</button>
                         </div>
                         <div
-                            ref={this.loginFormRef}
-                            className={`modal-enter-content-wrapper`}
+                            ref={this.loginFormRef} className={`modal-enter-content-wrapper`}
                             style={{ height: (this.state.isLoginFormOpened ? this.loginFormRef.current.scrollHeight : 0) + "px" }}
                         >
-                            <p className={`login-title ${this.isLoginFormOpened ? "active" : ""}`}>Войти</p>
-                            <label className="login-label">
-                                Логин/email
+                            <p className={`login-title ${this.isLoginFormOpened && "active"}`}>Войти</p>
+                            <div className="login-label">
+                                <span>Логин/email</span>
                                 <UnicornFollowInput
-                                    inputRef={this.authRefs.login.email}
-                                    onChange={this.unicorn.onFollow}
-                                    onBlur={this.unicorn.onBlur}
-                                    inputClassName="login-input"
-                                    type="email"
-                                    name="email"
-                                    placeholder="example@gmail.com"
+                                    props={{ className: "login-input", type: "email", name: "email", placeholder: "example@gmail.com" }}
+                                    inputRef={this.authRefs.login.email} follow={this.state.followUnicorn} rest={this.state.restUnicorn}
                                 />
-                            </label>
-                            <label className="password-label">Пароль
+                            </div>
+                            <div className="password-label">
+                                <span>Пароль</span>
                                 <UnicornShyInput
-                                    inputRef={this.authRefs.login.password}
-                                    onFocus={this.unicorn.onShy}
-                                    onBlur={this.unicorn.onBlur}
-                                    inputClassName="password-input"
-                                    type="password"
-                                    name="password"
-                                    autoComplete="current-password"
+                                    props={{ className: "password-input", type:"password", name: "password", autoComplete:"current-password" }}
+                                    inputRef={this.authRefs.login.password} shy={this.state.shyUnicorn} rest={this.state.restUnicorn}
                                 />
-                            </label>
+                            </div>
                             <div className="forgot-password-wrapper">
                                 <a href="!!forgot" className="forgot-password">Забыли пароль?</a>
                             </div>
                             <button className="login-button" onClick={this.doLogin}>Войти</button>
                         </div>
                         <div
-                            ref={this.registerFormRef}
-                            className={`modal-register-content-wrapper`}
+                            ref={this.registerFormRef} className="modal-register-content-wrapper"
                             style={{ height: (this.state.isRegisterFormOpened ? this.registerFormRef.current.scrollHeight : 0) + "px" }}
                         >
-                            <p className={`register-title ${this.isRegisterFormOpened ? "active" : ""}`}>Регистрация</p>
-                            <label className="surname-label">
-                                Имя
-                                <span className="required">*</span>
+                            <p className={`register-title ${this.isRegisterFormOpened && "active"}`}>Регистрация</p>
+                            <div className="surname-label">
+                                <span>Фамилия</span>&nbsp;<span className="required">*</span>
                                 <UnicornFollowInput
-                                    inputRef={this.authRefs.register.name.first}
-                                    onChange={this.unicorn.onFollow}
-                                    onBlur={this.unicorn.onBlur}
-                                    inputClassName="surname-input"
-                                    type="text"
-                                    name="firstname"
-                                    placeholder="Иванов"
+                                    props={{ className: "surname-input", type: "text", name: "name", placeholder: "Иванов" }}
+                                    inputRef={this.authRefs.register.name.second} follow={this.state.followUnicorn} rest={this.state.restUnicorn}
                                 />
-                            </label>
-                            <label className="name-label">
-                                Фамилия
-                                <span className="required">*</span>
+                            </div>
+                            <div className="name-label">
+                                <span>Имя</span>&nbsp;<span className="required">*</span>
                                 <UnicornFollowInput
-                                    inputRef={this.authRefs.register.name.second}
-                                    onChange={this.unicorn.onFollow}
-                                    onBlur={this.unicorn.onBlur}
-                                    inputClassName="name-input"
-                                    type="text"
-                                    name="surname"
-                                    placeholder="Иван"
+                                    props={{ className: "name-input", type: "text", name: "surname", placeholder: "Иван" }}
+                                    inputRef={this.authRefs.register.name.first} follow={this.state.followUnicorn} rest={this.state.restUnicorn}
                                 />
-                            </label>
-                            <label className="middle-name-label">
-                                Отчество
-                                <span className="required">*</span>
+                            </div>
+                            <div className="middle-name-label">
+                                <span>Отчество</span>&nbsp;<span className="required">*</span>
                                 <UnicornFollowInput
-                                    inputRef={this.authRefs.register.name.middle}
-                                    onChange={this.unicorn.onFollow}
-                                    onBlur={this.unicorn.onBlur}
-                                    inputClassName="middle-name-input"
-                                    type="text"
-                                    name="middlename"
-                                    placeholder="Иванович"
+                                    props={{ className: "middle-name-input", type: "text", name: "middlename", placeholder: "Иванович" }}
+                                    inputRef={this.authRefs.register.name.middle} follow={this.state.followUnicorn} rest={this.state.restUnicorn}
                                 />
-                            </label>
-                            <label className="birth-date-label">
-                                Дата рождения
-                                <span className="required">*</span>
-                                {/* <input ref={this.authRefs.register.birthdate} type="date" name="birthdate" className="datepicker-here" /> */}
-                                <WrapperDatePicker selected={this.state.selectedRegisterDate} onChange={date => this.setState({ selectedRegisterDate: date })} />
-                            </label>
-                            <label className="email-label">
-                                Адрес электронной почты
-                                <span className="required">*</span>
+                            </div>
+                            <div className="birth-date-label">
+                                <span>Дата рождения</span>&nbsp;<span className="required">*</span>
+                                <DatePicker
+                                    dropdownMode="select" dateFormat="dd.MM.yyyy" peekNextMonth showYearDropdown
+                                    onChange={date => this.setState({ selectedRegisterDate: date })}
+                                    selected={this.state.selectedRegisterDate}
+                                />
+                            </div>
+                            <div className="email-label">
+                                <span>Адрес электронной почты</span>&nbsp;<span className="required">*</span>
                                 <UnicornFollowInput
-                                    inputRef={this.authRefs.register.email}
-                                    onChange={this.unicorn.onFollow}
-                                    onBlur={this.unicorn.onBlur}
-                                    inputClassName="email-input"
-                                    type="email"
-                                    name="email"
-                                    placeholder="example@gmail.com"
+                                    props={{ className: "login-input", type: "email", name: "email", placeholder: "example@gmail.com" }}
+                                    inputRef={this.authRefs.register.email} follow={this.state.followUnicorn} rest={this.state.restUnicorn}
                                 />
-                            </label>
+                            </div>
                             <button className="login-button" onClick={this.doRegister}>Регистрация</button>
                         </div>
                     </div>
                 </div>
-                <div className={`search-wrapper ${this.state.isSearchOpened ? "opened" /*wtf*/ : ""}`}>
+                <div className={`search-wrapper ${this.state.isSearchOpened && "opened"}`}>
                     <div className="search-container">
                         <input type="text" className="search-input" placeholder="Введите поисковой запрос" />
                         <span className="search-icon" />
@@ -414,21 +352,4 @@ export default class Header extends React.Component {
             </header>
         );
     }
-}
-
-function WrapperDatePicker({ selected, onChange }) {
-    // const [startDate, setStartDate] = useState(new Date());
-    
-    return (
-        <DatePicker 
-            // selected={startDate} 
-            // onChange={date => setStartDate(date)}
-            dateFormat="dd.MM.yyyy"
-            selected={selected}
-            onChange={onChange}
-            peekNextMonth
-            showYearDropdown
-            dropdownMode="select"
-        />
-    );
 }
