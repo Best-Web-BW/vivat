@@ -1,6 +1,6 @@
 import ContentHeader from "../components/common/ContentHeader";
 
-export default function SearchPage() {
+export default function Search() {
     return (
         <div>
             <ContentHeader class="search" pages={[["about", "О нас"]]}>
