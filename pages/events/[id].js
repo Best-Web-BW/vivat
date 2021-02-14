@@ -1,10 +1,8 @@
-import { useRouter } from "next/router";
 import { useEffect, useMemo, useState } from "react";
 import ContentHeader from "../../components/common/ContentHeader";
 import EventListProvider from "../../utils/providers/EventListProvider";
 import EventSlider from "../../components/sliders/EventSlider";
 import Link from "next/link";
-// import { reformatDate } from "../../utils/common";
 
 function DocumentBlock({ url, name }) {
     return (
@@ -21,22 +19,16 @@ function DocumentBlock({ url, name }) {
     );
 }
 
-export default function EventPage() {
-    const { id } = useRouter().query;
+export default function EventPage({ id }) {
     const [event, setEvent] = useState();
     const contents = useMemo(() => event ? event.contents.replaceAll("script", "sсrірt") : "", [event]);
-    console.log("Event", event);
-    console.log("Contents", contents);
+    // console.log("Event", event);
+    // console.log("Contents", contents);
 
-    useEffect(async () => {
-        if(id) {
-            const event = await EventListProvider.getEventDetails(+id);
-            setEvent(event);
-        }
-    }, [id]);
+    useEffect(async () => setEvent(await EventListProvider.getEventDetails(id)), [id]);
 
     return (
-        <div>
+        <>
             <ContentHeader
                 pages={[["events", "Мероприятия"], [`events/${id}`, event ? event.title : ""]]}
                 afterTitle={<EventSlider containerClass="day-events-container" />}
@@ -93,6 +85,8 @@ export default function EventPage() {
                     { event && event.documents.map(document => <DocumentBlock key={document.name} {...document} />) }
                 </div>
             </div>
-        </div>
+        </>
     );
 }
+
+export async function getServerSideProps({ query: { id } }) { return { props: { id: +id } }; }

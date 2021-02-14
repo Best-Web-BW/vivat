@@ -1,8 +1,7 @@
 import AuthProvider from "../../utils/providers/AuthProvider";
 import MailProvider from "../../utils/providers/MailProvider";
-import "react-datepicker/dist/react-datepicker.css";
 import { reformatDate } from "../../utils/common";
-import DatePicker from "react-datepicker";
+import DatePicker from "./DatePicker";
 import { useState } from "react";
 
 const TimeButton = ({ time, turn, active }) => <button className={`order-service-time-button ${active && "active"}`} onClick={turn}>{ time }</button>;

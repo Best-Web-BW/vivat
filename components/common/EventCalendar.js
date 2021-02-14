@@ -1,10 +1,19 @@
-import moment from "moment";
 import Router from "next/router";
 import { useState, useEffect, useMemo } from "react";
-import { Calendar, momentLocalizer } from "react-big-calendar";
 import EventListProvider from "../../utils/providers/EventListProvider";
 
-export default function EventCalendar() {
+export default function _EventCalendar(props) {
+    const [imported, setImported] = useState();
+    useEffect(async () => {
+        const moment = (await import("moment")).default;
+        const { Calendar, momentLocalizer } = await import("react-big-calendar");
+        setImported({ Calendar, momentLocalizer, moment });
+    }, []);
+
+    return imported ? <EventCalendar {...imported} props={props} /> : null;
+}
+
+function EventCalendar({ Calendar, momentLocalizer, moment, props }) {
     const localizer = useMemo(() => momentLocalizer(moment), []);
     const [config, setConfig] = useState({ localizer, events: [] });
 
@@ -23,5 +32,5 @@ export default function EventCalendar() {
         setConfig(config);
     }, []);
 
-    return <Calendar {...config} />;
+    return <Calendar {...config} {...props} />;
 }

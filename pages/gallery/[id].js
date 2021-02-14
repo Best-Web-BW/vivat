@@ -1,4 +1,3 @@
-import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import ContentHeader from "../../components/common/ContentHeader";
 import AlbumListProvider from "../../utils/providers/AlbumListProvider";
@@ -20,21 +19,15 @@ function Album({ images, openSlider }) {
     );
 }
 
-export default function AlbumPage() {
-    const { id } = useRouter().query;
+export default function AlbumPage({ id }) {
     const [album, setAlbum] = useState({ });
     const [isSliderOpened, setIsSliderOpened] = useState(false);
     const [activeSlide, setActiveSlide] = useState(0);
 
-    useEffect(async () => {
-        if(id) {
-            const album = await AlbumListProvider.getAlbumDetails(+id);
-            setAlbum(album);
-        }
-    }, [id]);
+    useEffect(async () => setAlbum(await AlbumListProvider.getAlbumDetails(id)), [id]);
 
     return (
-        <div>
+        <>
             <ContentHeader pages={[["gallery", "Галерея"], [`gallery/${id}`, album.title]]}>
                 <p>
                     Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsam illo id beatae dolores recusandae
@@ -62,6 +55,8 @@ export default function AlbumPage() {
                 switchSlide={setActiveSlide}
                 closeSlider={() => setIsSliderOpened(false)}
             />
-        </div>
+        </>
     );
 }
+
+export async function getServerSideProps({ query: { id } }) { return { props: { id: +id } } }

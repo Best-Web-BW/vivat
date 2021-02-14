@@ -1,10 +1,10 @@
-import ProfileMenu from "../../components/common/ProfileMenu";
-import Select from "react-select";
-import Link from "next/link";
 import { AuthVariableComponent, useAuth } from "../../utils/providers/AuthProvider";
-import { useEffect, useMemo, useState } from "react";
 import EventListProvider from "../../utils/providers/EventListProvider";
+import ProfileMenu from "../../components/common/ProfileMenu";
+import { useEffect, useMemo, useState } from "react";
 import { currentISODate } from "../../utils/common";
+import Link from "next/link";
+// import Select from "react-select";
 
 const categoryOptions = [
     { value: "chocolate", label: "По расписанию" },
@@ -71,16 +71,9 @@ function EventEntry({ id, title, category, type }) {
     );
 }
 
-// function TagButton({ text, turn, defaultActive }) {
-//     const [active, setActive] = useState(defaultActive);
-//     const toggle = () => setActive(prev => (turn(!prev, text), !prev));
-
-//     return <span className={`${active && "active"}`} onClick={toggle}>{ text }</span>;
-// }
-
 const DateButton = ({ date, turn, active }) => <a className={`choose-date-element ${active && "active"}`} onClick={turn}>{ date }</a>;
 
-function EventEntryContainer() {
+function EventEntryContainer({ Select }) {
     const [events, setEvents] = useState([]);
     const [dates, setDates] = useState([]);
     const [selectedDate, setSelectedDate] = useState();
@@ -106,11 +99,11 @@ function EventEntryContainer() {
             <div className="my-events-container">
                 <div className="my-events-sorting-container">
                     <Select
-                        defaultValue={categoryOptions[0]}
-                        options={categoryOptions}
-                        formatGroupLabel={formatGroupLabel}
                         theme={theme => ({ ...theme, borderRadius: 0, colors: { ...theme.colors, primary: "" } })}
+                        formatGroupLabel={formatGroupLabel}
+                        defaultValue={categoryOptions[0]}
                         placeholder="Выберите из списка"
+                        options={categoryOptions}
                     />
                 </div>
                 <div className="my-events-element-container">{
@@ -121,7 +114,13 @@ function EventEntryContainer() {
     );
 }
 
-export default function MyEvents() {
+export default function _MyEvents() {
+    const [imported, setImported] = useState();
+    useEffect(async () => setImported({ Select: (await import("react-select")).default }), []);
+    return imported ? <MyEvents {...imported} /> : null;
+}
+
+function MyEvents({ Select }) {
     return (
         <AuthVariableComponent>
             <div className="profile-content content-block">
@@ -129,7 +128,7 @@ export default function MyEvents() {
                 <div className="block-title">
                     <h2>Мои события</h2>
                 </div>
-                <EventEntryContainer />
+                <EventEntryContainer Select={Select} />
             </div>
             <div />
         </AuthVariableComponent>

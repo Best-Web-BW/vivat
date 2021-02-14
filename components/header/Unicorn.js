@@ -1,8 +1,14 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { sleep } from "../../utils/common";
-import config from "./Unicorn.config";
 
-export default function Unicorn({ setListeners }) {
+export default function _Unicorn(props) {
+    const [config, setConfig] = useState();
+    useEffect(async () => setConfig((await import("./Unicorn.config")).default), []);
+
+    return config ? <Unicorn config={config} {...props} /> : null;
+}
+
+function Unicorn({ config, setListeners }) {
     const [src, setSrc] = useState(config.rest);
     const [mode, setMode] = useState("rest");
 

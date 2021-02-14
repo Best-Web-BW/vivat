@@ -1,16 +1,16 @@
-import ProfileMenu from "../../components/common/ProfileMenu";
-import Link from "next/link";
-import Select from "react-select";
-import Router from "next/router";
-import CreatableSelect from 'react-select/creatable';
-import { convertDate } from "../../components/sliders/EventSlider";
 import { AdminVariableComponent } from "../../utils/providers/AuthProvider";
-import { useEffect, useMemo, useRef, useState } from "react";
 import EventListProvider from "../../utils/providers/EventListProvider";
-import TextEditor from "../../components/common/TextEditor";
-import DatePicker from "react-datepicker";
 import DocumentLoader from "../../components/common/DocumentLoader";
+import { convertDate } from "../../components/sliders/EventSlider";
+import ProfileMenu from "../../components/common/ProfileMenu";
+import { useEffect, useMemo, useRef, useState } from "react";
+import TextEditor from "../../components/common/TextEditor";
+import DatePicker from "../../components/common/DatePicker";
 import { toISODate } from "../../utils/common";
+import Router from "next/router";
+import Link from "next/link";
+// import CreatableSelect from 'react-select/creatable';
+// import Select from "react-select";
 
 const groupStyles = {
     display: "flex",
@@ -60,7 +60,13 @@ function EventBlock({ id, title, dates: [start, end], edit, remove }) {
     );
 }
 
-export default function ManageEvents() {
+export default function _ManageEvents() {
+    const [imported, setImported] = useState();
+    useEffect(async () => setImported({ CreatableSelect: (await import("react-select/creatable")).default }), []);
+    return imported ? <ManageEvents {...imported} /> : null;
+}
+
+function ManageEvents({ CreatableSelect }) {
     const [events, setEvents] = useState([]);
     const [categories, setCategories] = useState([]);
     useEffect(async () => {
@@ -169,13 +175,21 @@ export default function ManageEvents() {
                     </div>
                     { events.map(event => <EventBlock key={event.id} {...event} edit={editEvent} remove={prepareToRemove} />) }
                 </div>
-                <EventEditor categories={categories} opened={editorConfig.opened} action={editorConfig.action} eventData={editorConfig.data} close={closeEditor} {...{ setSuccessCreateModalOpened, setSuccessEditModalOpened }} />
+                <EventEditor
+                    {...{ setSuccessCreateModalOpened, setSuccessEditModalOpened }}
+                    CreatableSelect={CreatableSelect}
+                    eventData={editorConfig.data}
+                    opened={editorConfig.opened}
+                    action={editorConfig.action}
+                    categories={categories}
+                    close={closeEditor}
+                />
             </div>
         </AdminVariableComponent>
     );
 }
 
-export function EventEditor({ opened, action, eventData, close, categories, setSuccessCreateModalOpened, setSuccessEditModalOpened }) {
+export function EventEditor({ CreatableSelect, opened, action, eventData, close, categories, setSuccessCreateModalOpened, setSuccessEditModalOpened }) {
     const [actionMap] = useState({ "create": ["Создать", () => setEvent(undefined)], "edit": ["Изменить", data => setEvent(data)] });
     const [event, setEvent] = useState();
     const [selectedCategory, setSelectedCategory] = useState("");

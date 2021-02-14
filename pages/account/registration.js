@@ -1,12 +1,10 @@
-import ProfileMenu from "../../components/common/ProfileMenu";
-import Select from "react-select";
 import AuthProvider, { AuthVariableComponent, useAuth } from "../../utils/providers/AuthProvider";
 import EventListProvider from "../../utils/providers/EventListProvider";
 import { currentISODate, toISODate } from "../../utils/common";
+import ProfileMenu from "../../components/common/ProfileMenu";
+import DatePicker from "../../components/common/DatePicker";
 import { useEffect, useRef, useState } from "react";
 import Router from "next/router";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
 // import makeAnimated from "react-select/animated";
 // import { css, cx } from "@emotion/css";
 
@@ -36,8 +34,13 @@ const formatGroupLabel = data => (
     </div>
 );
 
+export default function _Registration() {
+    const [imported, setImported] = useState();
+    useEffect(async () => setImported({ Select: (await import("react-select")).default }), []);
+    return imported ? <Registration {...imported} /> : null;
+}
 
-export default function Registration() {
+function Registration({ Select }) {
     const [events, setEvents] = useState();
     const [user, setUser] = useState(useAuth());
     useEffect(() => {
@@ -149,7 +152,6 @@ export default function Registration() {
                         <div className="registration-element">
                             <span className="required">*</span>
                             <p className="registration-element-title">Дата рождения всадника</p>
-                            {/* <input ref={refs.rider.birthdate} type="text" className="datepicker-here registration-element-input " placeholder="11.02.1996" /> */}
                             <DatePicker
 								dateFormat="dd.MM.yyyy"
 								selected={riderBirthdate}

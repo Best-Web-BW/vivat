@@ -2,9 +2,9 @@ import React from "react";
 import Link from "next/link";
 import Unicorn, { UnicornFollowInput, UnicornShyInput } from "./Unicorn";
 import AuthProvider, { AuthVariableComponent } from "../../utils/providers/AuthProvider";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
+import DatePicker from "../common/DatePicker";
 import { toISODate } from "../../utils/common";
+import { QueryInput } from "../common/YandexSearch";
 
 export default class Header extends React.Component {
     constructor(props) {
@@ -148,9 +148,9 @@ export default class Header extends React.Component {
                             </button>
                         </div>
                         <div className="col-1-2 login-button-container">
-                            {/* <button className="search-button" onClick={this.toggleSearch}>
+                            <button className="search-button" onClick={this.toggleSearch}>
                                 <span className="search-icon" />
-                            </button> */}
+                            </button>
                             <AuthVariableComponent>
                                 <Link href="/account/profile">
                                     <a>
@@ -344,8 +344,9 @@ export default class Header extends React.Component {
                 </div>
                 <div className={`search-wrapper ${this.state.isSearchOpened && "opened"}`}>
                     <div className="search-container">
-                        <input type="text" className="search-input" placeholder="Введите поисковой запрос" />
-                        <span className="search-icon" />
+                        <QueryInput />
+                        {/* <input type="text" className="search-input" placeholder="Введите поисковой запрос" />
+                        <span className="search-icon" /> */}
                     </div>
                     <span className="close-modal" onClick={this.toggleSearch}>x</span>
                 </div>

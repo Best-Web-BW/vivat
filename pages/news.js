@@ -1,9 +1,7 @@
 import Router, { useRouter } from "next/router"
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
-import Select from "react-select";
-import CreatableSelect from 'react-select/creatable';
-import makeAnimated from "react-select/animated";
+// import Select from "react-select";
 import ContentHeader from "../components/common/ContentHeader";
 import DBProvider from "../utils/providers/DBProvider";
 import PostListProvider from "../utils/providers/PostListProvider";
@@ -36,8 +34,6 @@ const formatGroupLabel = data => (
         <span style={groupBadgeStyles}>{data.options.length}</span>
     </div>
 );
-
-const animatedComponents = makeAnimated();
 
 export function Tag({ name }) {
     return (
@@ -324,7 +320,18 @@ News.getInitialProps = ({ query }) => ({ query });
 
 export default News;
 
-export function PostEditor({ opened, action, data, close, categories, tags, setSuccessCreateModalOpened, setSuccessEditModalOpened }) {
+export function PostEditor(props) {
+    const [imported, setImported] = useState();
+    useEffect(async () => {
+        const CreatableSelect = (await import("react-select/creatable")).default;
+        const animatedComponents = ((await import("react-select/animated")).default)();
+        setImported({ CreatableSelect, animatedComponents });
+    }, []);
+
+    return imported ? <RawPostEditor {...imported} {...props} /> : null;
+}
+
+function RawPostEditor({ CreatableSelect, animatedComponents, opened, action, data, close, categories, tags, setSuccessCreateModalOpened, setSuccessEditModalOpened }) {
     const [actionMap] = useState({ "create": ["Создать", () => setPost(undefined)], "edit": ["Изменить", data => setPost(data)] });
     const [post, setPost] = useState();
     const [selectedCategory, setSelectedCategory] = useState("");
