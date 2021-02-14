@@ -594,7 +594,7 @@ header {
 
 .modal-error-wrapper {
     position: fixed;
-    top: 0;
+    top: -100vh;
     left: 50%;
     background-color: rgb(249 159 168);
     transform: translateX(-50%);
@@ -602,6 +602,10 @@ header {
     z-index: 1000;
     padding: 2vh 5vh;
     transition: 0.6s ease-in-out;
+}
+
+.modal-error-wrapper.opened {
+    top: 0;
 }
 
 .modal-error-content {
@@ -1100,6 +1104,67 @@ header {
     background-image: url('/images/icons/check-mark.png');
 }
 
+/* forgot password */
+
+.content-block.forgot-password-block {
+    color: whitesmoke;
+    height: max-content;
+    padding: 5vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 2vh;
+}
+
+.forgot-password-input-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2vh;
+}
+
+.forgot-password-input {
+    background-color: transparent;
+    border: 1px solid whitesmoke;
+    color: whitesmoke;
+    font-size: 100%;
+    padding: 1vh 0;
+    padding-left: 1vh;
+}
+
+.forgot-password-input:hover {
+    color: #ff0a0a;
+    border-color: #ff0a0a;
+    text-shadow: 0 0 10px #ff0a0a;
+    box-shadow: 0 0 10px 1px #ff0a0a;
+}
+
+.forgot-password-input:hover::placeholder {
+    color: #ff0a0a;
+}
+
+.forgot-password-button {
+    border: 1px solid whitesmoke;
+    padding: 1vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: transparent;
+    color: whitesmoke;
+    font-size: 100%
+}
+
+.forgot-password-button:hover {
+    color: #ff0a0a;
+    border-color: #ff0a0a;
+    text-shadow: 0 0 10px #ff0a0a;
+    box-shadow: 0 0 10px 1px #ff0a0a;
+}
+
+/* forgot password end */
+
 /* pages end */
 
 /* media style */
@@ -1229,7 +1294,7 @@ header {
 
     .login-input, .password-input, .surname-input, .name-input, .middle-name-input, .email-input, 
     .birth-date-label .react-datepicker__input-container input, .order-service-day-datepicker input {
-        height: 10vw;
+        height: 6vw;
     }
 
     .modal-enter-content-wrapper, .modal-register-content-wrapper {
@@ -1238,6 +1303,11 @@ header {
 
     .unicorn-wrapper {
         display: none;
+    }
+
+    .forgot-password-input-wrapper {
+        flex-wrap: wrap;
+        text-align: center;
     }
 
 }
@@ -1265,6 +1335,10 @@ header {
     .footer-copyright, .footer-developer {
         justify-content: center;
         align-items: center;
+    }
+
+    .login-label, .password-label, .surname-label, .name-label, .middle-name-label, .birth-date-label, .email-label {
+        margin-bottom: 0;
     }
 }
 

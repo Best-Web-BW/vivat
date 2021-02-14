@@ -338,6 +338,20 @@ export default class Header extends React.Component {
                                     inputRef={this.authRefs.register.email} follow={this.state.followUnicorn} rest={this.state.restUnicorn}
                                 />
                             </div>
+                            <div className="password-label">
+                                <span>Придумайте пароль</span>&nbsp;<span className="required">*</span>
+                                <UnicornShyInput
+                                    props={{ className: "password-input", type:"password", name: "password", autoComplete:"current-password" }}
+                                    inputRef={this.authRefs.login.password} shy={this.state.shyUnicorn} rest={this.state.restUnicorn}
+                                />
+                            </div>
+                            <div className="password-label">
+                                <span>Подтвердите пароль</span>&nbsp;<span className="required">*</span>
+                                <UnicornShyInput
+                                    props={{ className: "password-input", type:"password", name: "password", autoComplete:"current-password" }}
+                                    inputRef={this.authRefs.login.password} shy={this.state.shyUnicorn} rest={this.state.restUnicorn}
+                                />
+                            </div>
                             <button className="login-button" onClick={this.doRegister}>Регистрация</button>
                         </div>
                     </div>

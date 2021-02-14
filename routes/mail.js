@@ -14,7 +14,7 @@ const mailer = {
         },
     }),
     register: (email, password) => ({
-        from: `Регистрация на сайте ${ksk} <${address}>`,
+        from: `Успешная регистрация на сайте ${ksk} <${address}>`,
         to: email,
         subject: `Успешная регистрация на сайте`,
         html: `
