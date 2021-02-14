@@ -113,6 +113,7 @@
     justify-content: space-between;
     padding: 4vh 0;
     flex-wrap: wrap;
+    color: whitesmoke;
 }
 
 .personal-wrapper {

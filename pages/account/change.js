@@ -121,6 +121,21 @@ export default function Change() {
                             Женский
                         </label>
                     </div>
+                    <br/>
+                    <p>Настройки безопасности</p>
+                    <br/>
+                    <label className="profile-element-wrapper">
+                        <p className="email-title">Старый пароль:</p>
+                        <input ref={refs.email} type="email" name="email" className="email-data-input" placeholder="" defaultValue={user ? user.email : ""} />
+                    </label>
+                    <label className="profile-element-wrapper">
+                        <p className="email-title">Новый пароль:</p>
+                        <input ref={refs.email} type="email" name="email" className="email-data-input" placeholder="" defaultValue={user ? user.email : ""} />
+                    </label>
+                    <label className="profile-element-wrapper">
+                        <p className="email-title">Новый пароль еще раз:</p>
+                        <input ref={refs.email} type="email" name="email" className="email-data-input" placeholder="" defaultValue={user ? user.email : ""} />
+                    </label>
                 </div>
                 <div className="profile-row flex-row">
                     <div className="change-button-wrapper">
@@ -128,6 +143,51 @@ export default function Change() {
                     </div>
                 </div>
             </div>
+
+            <div className="modal-error-wrapper">
+                        <div className="modal-error-content">
+                            <p>Произошла ошибка. Обновите страницу и попробуйте позже.</p>
+                            <button
+                                className="warning-delete-button"
+                                onClick={() => {
+                                    removeAlbum(removeID);
+                                    setDeleteModalOpened(false);
+                                }}
+                            >Ок</button>
+                        </div>
+                    </div>
+                    <div className="modal-error-wrapper">
+                        <div className="modal-error-content">
+                            <p>Неправильно заполненое поле "input-name"</p>
+                            <button
+                                className="warning-delete-button"
+                                onClick={() => {
+                                    removeAlbum(removeID);
+                                    setDeleteModalOpened(false);
+                                }}
+                            >Ок</button>
+                        </div>
+                    </div>
+                    <div className="warning-success-modal">
+                        <div className="warning-success-modal-content">
+                            <span
+                                className="close-modal"
+                                onClick={() => {
+                                    setSuccessCreateModalOpened(false);
+                                    setTimeout(() => Router.reload(), 600);
+                                }}
+                            >X</span>
+                            <p>Данные успешно изменены!</p>
+                            <button
+                                className="warrning-success-modal-button"
+                                onClick={() => {
+                                    setSuccessCreateModalOpened(false);
+                                    setTimeout(() => Router.reload(), 600);
+                                }}
+                            >Ок</button>
+                        </div>
+                    </div>
+
             <div />
         </AuthVariableComponent>
     );
