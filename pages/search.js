@@ -1,10 +1,11 @@
 import ContentHeader from "../components/common/ContentHeader";
+import { ResultPage } from "../components/common/YandexSearch";
 
 export default function Search() {
     return (
         <div>
-            <ContentHeader class="search" pages={[["about", "О нас"]]}>
-                <p>
+            <ContentHeader class="search" pages={[["search", "Результаты поиска"]]}>
+                {/* <p>
                     Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsam illo id beatae dolores recusandae
                     et repellat ratione! Culpa accusamus consequatur quae ipsam quidem, reiciendis distinctio
                     ratione aut dolore praesentium omnis quis nam modi ea architecto eveniet sunt exercitationem,
@@ -23,8 +24,9 @@ export default function Search() {
                     dolor odit repudiandae possimus tempora eveniet autem, reprehenderit voluptatum consectetur nemo
                     ipsam nesciunt consequuntur sequi fuga odio voluptatem, natus pariatur ullam temporibus sint
                     rerum consequatur. Quibusdam quod sapiente debitis nulla, ad omnis ratione minima.
-                </p>
+                </p> */}
             </ContentHeader>
+            <ResultPage />
         </div>
     );
 }
