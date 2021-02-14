@@ -11,64 +11,25 @@ export default function Footer() {
             </div>
             <div className="footer-navigation-block">
                 <p className="footer-title">Навигация</p>
-                <ul className="footer-menu-list">{
-                    [
-                        ["home", "Главная"],
-                        ["about", "О нас"],
-                        ["gallery", "Галерея"],
-                        ["services", "Услуги и аренда"],
-                        ["events", "Мероприятия"],
-                        ["news", "Новости"],
-                        ["contacts", "Контакты"],
-                        ["privacy-policy", "Политика конфиденциальности"]
-                    ].map(([name, title]) => (
-                        <li key={name}>
-                            <Link href={`/${name}`}>
-                                <a>{ title }</a>
-                            </Link>
-                        </li>
-                    ))
-                }
-                    {/* <li>
-                        <Link href="/home">
-                            <a>Главная</a>
-                        </Link>
-                    </li>
-                    <li>
-                        <Link href="/about">
-                            <a>О нас</a>
-                        </Link>
-                    </li>
-                    <li>
-                        <Link href="/gallery">
-                            <a>Галерея</a>
-                        </Link>
-                    </li>
-                    <li>
-                        <Link href="/services">
-                            <a>Услуги и аренда</a>
-                        </Link>
-                    </li>
-                    <li>
-                        <Link href="/events">
-                            <a>Мероприятия</a>
-                        </Link>
-                    </li>
-                    <li>
-                        <Link href="/news">
-                            <a>Новости</a>
-                        </Link>
-                    </li>
-                    <li>
-                        <Link href="/contacts">
-                            <a>Контакты</a>
-                        </Link>
-                    </li>
-                    <li>
-                        <Link href="/privacy-policy">
-                            <a>Политика конфиденциальности</a>
-                        </Link>
-                    </li> */}
+                <ul className="footer-menu-list">
+                    {
+                        [
+                            [          "/home", "Главная"                    ],
+                            [         "/about", "О нас"                      ],
+                            [       "/gallery", "Галерея"                    ],
+                            [      "/services", "Услуги и аренда"            ],
+                            [        "/events", "Мероприятия"                ],
+                            [          "/news", "Новости"                    ],
+                            [      "/contacts", "Контакты"                   ],
+                            ["/privacy-policy", "Политика конфиденциальности"]
+                        ].map(([          name, title                        ]) => (
+                            <li key={name}>
+                                <Link href={name}>
+                                    <a>{ title }</a>
+                                </Link>
+                            </li>
+                        ))
+                    }
                 </ul>
             </div>
             <div className="footer-contacts-block">

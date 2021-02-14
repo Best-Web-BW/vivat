@@ -139,7 +139,7 @@ export default class Header extends React.Component {
                 <div className="header-container">
                     <div className="flex-row">
                         <div className="col-1-2 menu-button-container">
-                            <button className={`menu-button ${this.state.isMenuOpened ? "active" : ""}`} onClick={this.toggleMenu}>
+                            <button className={`menu-button ${this.state.isMenuOpened && "active"}`} onClick={this.toggleMenu}>
                                 <div className="menu-ind">
                                     <div className="line" />
                                     <div className="line" />
@@ -162,7 +162,7 @@ export default class Header extends React.Component {
                                 <button id="open-enter-form" className="login-button" onClick={this.toggleSignForm}>Войти</button>
                             </AuthVariableComponent>
                             <div
-                                className={`profile-preview-wrapper ${this.state.isProfileMenuShowed ? "showed" : ""}`}
+                                className={`profile-preview-wrapper ${this.state.isProfileMenuShowed && "showed"}`}
                                 style={{ display: this.state.isProfileMenuOpened ? "block" : "none" }}
                                 onMouseEnter={this.openProfileMenu}
                                 onMouseLeave={this.closeProfileMenu}
@@ -190,44 +190,26 @@ export default class Header extends React.Component {
                         </div>
                     </div>
                 </div>
-                <div className={`modal-menu ${this.state.isMenuOpened ? "opened" : ""}`} style={{ paddingTop: "6vh" }}>
+                <div className={`modal-menu ${this.state.isMenuOpened && "opened"}`} style={{ paddingTop: "6vh" }}>
                     <div className="menu-list-wrapper">
                         <ul className="menu-list">
-                            <li>
-                                <Link href="/home">
-                                    <a onClick={this.toggleMenu}>Главная</a>
-                                </Link>
-                            </li>
-                            <li>
-                                <Link href="/about">
-                                    <a onClick={this.toggleMenu}>О нас</a>
-                                </Link>
-                            </li>
-                            <li>
-                                <Link href="/gallery">
-                                    <a onClick={this.toggleMenu}>Галерея</a>
-                                </Link>
-                            </li>
-                            <li>
-                                <Link href="/services">
-                                    <a onClick={this.toggleMenu}>Услуги и аренда</a>
-                                </Link>
-                            </li>
-                            <li>
-                                <Link href="/events">
-                                    <a onClick={this.toggleMenu}>Мероприятия</a>
-                                </Link>
-                            </li>
-                            <li>
-                                <Link href="/news">
-                                    <a onClick={this.toggleMenu}>Новости</a>
-                                </Link>
-                            </li>
-                            <li>
-                                <Link href="/contacts">
-                                    <a onClick={this.toggleMenu}>Контакты</a>
-                                </Link>
-                            </li>
+                            {
+                                [
+                                    [    "/home", "Главная"        ],
+                                    [   "/about", "О нас"          ],
+                                    [ "/gallery", "Галерея"        ],
+                                    ["/services", "Услуги и аренда"],
+                                    [  "/events", "Мероприятия"    ],
+                                    [    "/news", "Новости"        ],
+                                    ["/contacts", "Контакты"       ]
+                                ].map(([    name, title            ]) => (
+                                    <li key={name}>
+                                        <Link href={name}>
+                                            <a onClick={this.toggleMenu}>{ title }</a>
+                                        </Link>
+                                    </li>
+                                ))
+                            }
                         </ul>
                     </div>
                     <div className="menu-contacts-wrapper">
@@ -244,18 +226,18 @@ export default class Header extends React.Component {
                         </ul>
                         <ul className="social-links">
                             <li>
-                                <a href="vk.com" className="vk-button"></a>
+                                <a href="vk.com" className="vk-button" />
                             </li>
                             <li>
-                                <a href="facebook.com" className="facebook-icon"></a>
+                                <a href="facebook.com" className="facebook-icon" />
                             </li>
                             <li>
-                                <a href="instagram.com" className="instagram-icon"></a>
+                                <a href="instagram.com" className="instagram-icon" />
                             </li>
                         </ul>
                     </div>
                 </div>
-                <div className={`modal-enter-wrapper ${this.state.isSignFormOpened ? "opened" : ""}`}>
+                <div className={`modal-enter-wrapper ${this.state.isSignFormOpened && "opened"}`}>
                     <div className="unicorn-wrapper">
                         <div className="unicorn-content">
                             <Unicorn setListeners={listeners => this.setState(listeners)} />
@@ -265,17 +247,17 @@ export default class Header extends React.Component {
                         <span className="close-modal" onClick={this.toggleSignForm}>x</span>
                         <div className="modal-enter-header">
                             <button
-                                className={`modal-enter-choose ${this.state.isLoginFormOpened ? "active" : ""}`}
+                                className={`modal-enter-choose ${this.state.isLoginFormOpened && "active"}`}
                                 onClick={() => { this.switchSignForm(false); }}
                             >Войти</button>
                             <button
-                                className={`modal-enter-choose ${this.state.isRegisterFormOpened ? "active" : ""}`}
+                                className={`modal-enter-choose ${this.state.isRegisterFormOpened && "active"}`}
                                 onClick={() => { this.switchSignForm(true); }}
                             >Регистрация</button>
                         </div>
                         <div
                             ref={this.loginFormRef} className={`modal-enter-content-wrapper`}
-                            style={{ height: (this.state.isLoginFormOpened ? this.loginFormRef.current.scrollHeight : 0) + "px" }}
+                            style={{ height: `${this.state.isLoginFormOpened ? this.loginFormRef.current.scrollHeight : 0}px` }}
                         >
                             <p className={`login-title ${this.isLoginFormOpened && "active"}`}>Войти</p>
                             <div className="login-label">
@@ -342,14 +324,14 @@ export default class Header extends React.Component {
                                 <span>Придумайте пароль</span>&nbsp;<span className="required">*</span>
                                 <UnicornShyInput
                                     props={{ className: "password-input", type:"password", name: "password", autoComplete:"current-password" }}
-                                    inputRef={this.authRefs.login.password} shy={this.state.shyUnicorn} rest={this.state.restUnicorn}
+                                    inputRef={this.authRefs.register.password1} shy={this.state.shyUnicorn} rest={this.state.restUnicorn}
                                 />
                             </div>
                             <div className="password-label">
                                 <span>Подтвердите пароль</span>&nbsp;<span className="required">*</span>
                                 <UnicornShyInput
                                     props={{ className: "password-input", type:"password", name: "password", autoComplete:"current-password" }}
-                                    inputRef={this.authRefs.login.password} shy={this.state.shyUnicorn} rest={this.state.restUnicorn}
+                                    inputRef={this.authRefs.register.password2} shy={this.state.shyUnicorn} rest={this.state.restUnicorn}
                                 />
                             </div>
                             <button className="login-button" onClick={this.doRegister}>Регистрация</button>

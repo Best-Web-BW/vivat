@@ -25,7 +25,10 @@ export default function Change() {
         sex: {
             male: useRef(),
             female: useRef()
-        }
+        },
+        password: useRef(),
+        newPassword1: useRef(),
+        newPassword2: useRef()
     };
 
     const crawl = () => ({
@@ -56,7 +59,6 @@ export default function Change() {
 
     return (
         <AuthVariableComponent>
-
             <div className="profile-content content-block">
                 <ProfileMenu active="change" />
                 <div className="profile-row flex-row">
@@ -68,9 +70,7 @@ export default function Change() {
                             <span className="change-photo"></span>
                         </div> */}
                         <div className="profile-name">
-                            <p className="name-p">{
-                                user && (({ second, first, middle }) => `${second} ${first} ${middle}`)(user.name)
-                            }</p>
+                            <p className="name-p">{ user && (({ second, first, middle }) => `${second} ${first} ${middle}`)(user.name) }</p>
                             <p className="state-p"><span>RU</span>,<span>Moscow</span></p>
                         </div>
                     </div>
@@ -123,16 +123,16 @@ export default function Change() {
                     <p>Настройки безопасности</p>
                     <br/>
                     <label className="profile-element-wrapper">
-                        <p className="email-title">Старый пароль:</p>
-                        <input ref={refs.email} type="email" name="email" className="email-data-input" placeholder="" defaultValue={user ? user.email : ""} />
+                        <p className="password-title">Старый пароль:</p>
+                        <input ref={refs.password} type="password" name="password" className="password-data-input" placeholder="" />
                     </label>
                     <label className="profile-element-wrapper">
-                        <p className="email-title">Новый пароль:</p>
-                        <input ref={refs.email} type="email" name="email" className="email-data-input" placeholder="" defaultValue={user ? user.email : ""} />
+                        <p className="password-title">Новый пароль:</p>
+                        <input ref={refs.newPassword1} type="password" name="new-password" className="password-data-input" placeholder="" />
                     </label>
                     <label className="profile-element-wrapper">
-                        <p className="email-title">Новый пароль еще раз:</p>
-                        <input ref={refs.email} type="email" name="email" className="email-data-input" placeholder="" defaultValue={user ? user.email : ""} />
+                        <p className="password-title">Новый пароль еще раз:</p>
+                        <input ref={refs.newPassword2} type="password" name="new-password" className="password-data-input" placeholder="" />
                     </label>
                 </div>
                 <div className="profile-row flex-row">
@@ -143,49 +143,48 @@ export default function Change() {
             </div>
 
             <div className="modal-error-wrapper">
-                        <div className="modal-error-content">
-                            <p>Произошла ошибка. Обновите страницу и попробуйте позже.</p>
-                            <button
-                                className="warning-delete-button"
-                                onClick={() => {
-                                    removeAlbum(removeID);
-                                    setDeleteModalOpened(false);
-                                }}
-                            >Ок</button>
-                        </div>
-                    </div>
-                    <div className="modal-error-wrapper">
-                        <div className="modal-error-content">
-                            <p>Неправильно заполненое поле "input-name"</p>
-                            <button
-                                className="warning-delete-button"
-                                onClick={() => {
-                                    removeAlbum(removeID);
-                                    setDeleteModalOpened(false);
-                                }}
-                            >Ок</button>
-                        </div>
-                    </div>
-                    <div className="warning-success-modal">
-                        <div className="warning-success-modal-content">
-                            <span
-                                className="close-modal"
-                                onClick={() => {
-                                    setSuccessCreateModalOpened(false);
-                                    setTimeout(() => Router.reload(), 600);
-                                }}
-                            >X</span>
-                            <p>Данные успешно изменены!</p>
-                            <button
-                                className="warrning-success-modal-button"
-                                onClick={() => {
-                                    setSuccessCreateModalOpened(false);
-                                    setTimeout(() => Router.reload(), 600);
-                                }}
-                            >Ок</button>
-                        </div>
-                    </div>
-
+                <div className="modal-error-content">
+                    <p>Произошла ошибка. Обновите страницу и попробуйте позже.</p>
+                    <button
+                        className="warning-delete-button"
+                        onClick={() => {
+                            // removeAlbum(removeID);
+                            // setDeleteModalOpened(false);
+                        }}
+                    >Ок</button>
+                </div>
+            </div>
+            <div className="modal-error-wrapper">
+                <div className="modal-error-content">
+                    <p>Неправильно заполненное поле "input-name"</p>
+                    <button
+                        className="warning-delete-button"
+                        onClick={() => {
+                            // removeAlbum(removeID);
+                            // setDeleteModalOpened(false);
+                        }}
+                    >Ок</button>
+                </div>
+            </div>
+            <div className="warning-success-modal">
+                <div className="warning-success-modal-content">
+                    <span
+                        className="close-modal"
+                        onClick={() => {
+                            // setSuccessCreateModalOpened(false);
+                            // setTimeout(() => Router.reload(), 600);
+                        }}
+                    >X</span>
+                    <p>Данные успешно изменены!</p>
+                    <button
+                        className="warrning-success-modal-button"
+                        onClick={() => {
+                            // setSuccessCreateModalOpened(false);
+                            // setTimeout(() => Router.reload(), 600);
+                        }}
+                    >Ок</button>
+                </div>
+            </div>
             <div />
         </AuthVariableComponent>
     );
