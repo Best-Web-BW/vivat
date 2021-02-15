@@ -1,11 +1,14 @@
+import { isDev, isServer } from "../common";
+
 export default class DBProvider {
-    static createPromise(url, defaultValue) {
+    static createPromise(_url, defaultValue) {
         return new Promise(async (resolve, reject) => {
             try {
+                const url = isServer() ? `http${isDev() ? "" : "s"}://localhost${_url}` : _url;
                 const response = await fetch(url);
                 const json = await response.json();
                 resolve(json);
-            } catch(e) { reject(defaultValue) }
+            } catch(e) { console.error(e); reject(defaultValue) }
         });
     }
 

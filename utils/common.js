@@ -7,3 +7,5 @@ export const toISODate = _date => {
     const day = date.getDate();
     return `${date.getFullYear()}-${month < 10 ? "0" : ""}${month}-${day < 10 ? "0" : ""}${day}`;
 }
+export const isServer = () => typeof window === "undefined";
+export const isDev = () => process.env.NODE_ENV !== "production";

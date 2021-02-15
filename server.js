@@ -32,9 +32,11 @@ const admin = require("./routes/admin.js");
         }
         
         http.createServer(server).listen(HTTP_PORT);
-        https.createServer(options, server).listen(HTTPS_PORT);
+        if(!dev) {
+            https.createServer(options, server).listen(HTTPS_PORT);
+            server.use(forceSSL);
+        }
 
-        server.use(forceSSL);
         server.use(fileUpload({}));
         server.use(cookieParser());
         server.use(bodyParser.json());
@@ -55,7 +57,7 @@ const admin = require("./routes/admin.js");
         console.log(`--> Process environment: '${process.env.NODE_ENV}'`);
         console.log(`--> Is app in development mode: ${dev}`);
         console.log(`-> Ready on port ${HTTP_PORT} for HTTP`);
-        console.log(`-> Ready on port ${HTTPS_PORT} for HTTPS`);
+        !dev && console.log(`-> Ready on port ${HTTPS_PORT} for HTTPS`);
 	} catch(e) {
 		console.error(e.stack);
 		process.exit(1);
