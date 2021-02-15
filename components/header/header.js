@@ -48,8 +48,8 @@ export default class Header extends React.Component {
         };
         this.toggleMenu = () => { this.setState({ isMenuOpened: !this.state.isMenuOpened }); };
         this.toggleSearch = () => { this.setState({ isSearchOpened: !this.state.isSearchOpened }); };
-        this.toggleSignForm = () => {
-            let newState = !this.state.isSignFormOpened;
+        this.toggleSignForm = (newState) => {
+            if(typeof newState !== "boolean") newState = !this.state.isSignFormOpened;
             this.setState({
                 isSignFormOpened: newState,
                 isLoginFormOpened: newState,
@@ -274,8 +274,10 @@ export default class Header extends React.Component {
                                     inputRef={this.authRefs.login.password} shy={this.state.shyUnicorn} rest={this.state.restUnicorn}
                                 />
                             </div>
-                            <div className="forgot-password-wrapper">
-                                <a href="!!forgot" className="forgot-password">Забыли пароль?</a>
+                            <div className="forgot-password-wrapper" onClick={() => this.toggleSignForm(false)}>
+                                <Link href="/forgot-password">
+                                    <a className="forgot-password">Забыли пароль?</a>
+                                </Link>
                             </div>
                             <button className="login-button" onClick={this.doLogin}>Войти</button>
                         </div>
