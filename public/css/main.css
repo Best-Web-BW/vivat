@@ -1185,6 +1185,19 @@ header {
     font-size: 100%
 }
 
+.forgot-password-create-new, .forgot-password-input-email {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 2vh;
+}
+
+.forgot-password-input-wrapper p {
+    width: 15%;
+}
+
 .forgot-password-button:hover {
     color: #ff0a0a;
     border-color: #ff0a0a;
