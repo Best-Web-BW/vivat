@@ -1,8 +1,10 @@
-import EventSlider from "../components/sliders/EventSlider";
-import ServicesList from "../components/common/ServicesList";
-import Translator from "../components/common/Translator";
-import Head from "next/head";
+import EventListProvider from "../utils/providers/EventListProvider";
 import EventCalendar from "../components/common/EventCalendar";
+import ServicesList from "../components/common/ServicesList";
+import EventSlider from "../components/sliders/EventSlider";
+import Translator from "../components/common/Translator";
+import { useEffect, useState } from "react";
+import Head from "next/head";
 
 let translator = new Translator({
     ru: {
@@ -31,7 +33,19 @@ let translator = new Translator({
     }
 });
 
-export default function Home() {
+export default function Home({ events }) {
+    const [calendar, setCalendar] = useState(null);
+    useEffect(() => setCalendar(
+        <div className="calendar-wrapper content-block">
+            <div className="block-title">
+                <h2>{translator.get("calendar_title")}</h2>
+            </div>
+            <div className="event-calendar-wrapper">
+                <EventCalendar events={events} />
+            </div>
+        </div>
+    ), [events]);
+
     return (
         <div>
             <Head>
@@ -61,17 +75,17 @@ export default function Home() {
                         </div>
                     </div>
                 </div>
-                <EventSlider containerClass="events-wrapper" />
+                <EventSlider events={events} containerClass="events-wrapper" />
             </div>
-            <div className="calendar-wrapper content-block">
-                <div className="block-title">
-                    <h2>{translator.get("calendar_title")}</h2>
-                </div>
-                <div className="event-calendar-wrapper">
-                    <EventCalendar />
-                </div>
-            </div>
+            { calendar }
             <ServicesList containerClass="services-wrapper" />
         </div>
     );
+}
+
+export async function getServerSideProps() {
+    const result = { props: { events: [] } };
+    try { result.props.events = await EventListProvider.getEventList() }
+    catch(e) { console.error(e) }
+    finally { return result }
 }

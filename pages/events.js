@@ -1,8 +1,22 @@
 import ContentHeader from "../components/common/ContentHeader";
 import EventSlider from "../components/sliders/EventSlider";
 import EventCalendar from "../components/common/EventCalendar";
+import EventListProvider from "../utils/providers/EventListProvider";
+import { useEffect, useState } from "react";
 
-export default function Events() {
+export default function Events({ events }) {
+    const [calendar, setCalendar] = useState(null);
+    useEffect(() => setCalendar(
+        <div className="calendar-wrapper content-block">
+            <div className="block-title">
+                <h2>Календарь событий</h2>
+            </div>
+            <div className="event-calendar-wrapper">
+                <EventCalendar events={events} />
+            </div>
+        </div>
+    ), [events]);
+    
     return (
         <div>
             <ContentHeader class="events" pages={[["events", "Мероприятия"]]}>
@@ -17,17 +31,17 @@ export default function Events() {
                     rerum consequatur. Quibusdam quod sapiente debitis nulla, ad omnis ratione minima.
                 </p>
             </ContentHeader>
-            <div className="calendar-wrapper content-block">
-                <div className="block-title">
-                    <h2>Календарь событий</h2>
-                </div>
-                <div className="event-calendar-wrapper">
-                    <EventCalendar />
-                </div>
-            </div>
+            { calendar }
             <div className="day-events-content-wrapper content-block">
-                <EventSlider containerClass="day-events-container" />
+                <EventSlider events={events} containerClass="day-events-container" />
             </div>
         </div>
     );
+}
+
+export async function getServerSideProps() {
+    const result = { props: { events: [] } };
+    try { result.props.events = await EventListProvider.getEventList() }
+    catch(e) { console.error(e) }
+    finally { return result }
 }

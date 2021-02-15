@@ -1,12 +1,11 @@
-import { useEffect, useMemo, useRef, useState } from "react";
-import Link from "next/link";
-import ContentHeader from "../components/common/ContentHeader";
-import AlbumListProvider from "../utils/providers/AlbumListProvider";
 import { AdminVariableComponent } from "../utils/providers/AuthProvider";
-import { currentISODate, reformatDate } from "../utils/common";
-// import ImageUploader from "react-images-upload";
-import Router from "next/router";
+import AlbumListProvider from "../utils/providers/AlbumListProvider";
+import ContentHeader from "../components/common/ContentHeader";
+import { useEffect, useMemo, useRef, useState } from "react";
 import ImageLoader from "../components/common/ImageLoader";
+import { reformatDate } from "../utils/common";
+import Router from "next/router";
+import Link from "next/link";
 
 function Album({ id, cover, date, title, edit, remove }) {
     return (
@@ -34,41 +33,30 @@ function Album({ id, cover, date, title, edit, remove }) {
     );
 }
 
-export default function Gallery() {
-    const [albums, setAlbums] = useState([]);
+export async function getServerSideProps() {
+    const result = { props: { albums: [] } };
+    try { result.props.albums = await AlbumListProvider.getAlbumList() }
+    catch(e) { console.error(e) }
+    finally { return result }
+}
+
+export default function Gallery({ albums }) {
     const [deleteModalOpened, setDeleteModalOpened] = useState(false);
     const [successCreateModalOpened, setSuccessCreateModalOpened] = useState(false);
     const [successEditModalOpened, setSuccessEditModalOpened] = useState(false);
 
-    useEffect(async () => {
-        const list = await AlbumListProvider.getAlbumList();
-        setAlbums(list);
-    }, []);
-
-    const [editorConfig, setEditorConfig] = useState({
-        opened: false,
-        action: "create",
-        data: undefined
-    });
-    const switchAlbumEditor = (opened, action, data) => setEditorConfig({ opened, action, data })
+    const [editorConfig, setEditorConfig] = useState({ opened: false, action: "create", data: undefined });
+    const switchEditor = (opened, action, data) => setEditorConfig({ opened, action, data })
     const closeEditor = () => setEditorConfig(({ action, data }) => ({ action, data, opened: false }));
 
-    const editAlbum = async id => {
-        const a = await AlbumListProvider.getAlbumDetails(id);
-        console.log(id, a);
-        switchAlbumEditor(true, "edit", a);
-    }
+    const editAlbum = async id => switchEditor(true, "edit", await AlbumListProvider.getAlbumDetails(id));
 
     const [removeID, setRemoveID] = useState();
-    const prepareToRemove = id => {
-        setRemoveID(id);
-        setDeleteModalOpened(true);
-    };
+    const prepareToRemove = id => (setRemoveID(id), setDeleteModalOpened(true));
     const removeAlbum = async id => {
         const result = await AlbumListProvider.removeAlbum(id);
         if(result.success) {
             alert("Альбом успешно удалён");
-            // close();
             Router.reload();
         } else switch(result.reason) {
             case "db_error": return alert("Ошибка БД, попробуйте позже");
@@ -96,7 +84,7 @@ export default function Gallery() {
                 <div className="gallery block-title">
                     <h2>Альбомы</h2>
                     <AdminVariableComponent>
-                        <button className="add-gallery-button" onClick={() => switchAlbumEditor(true, "create")}>
+                        <button className="add-gallery-button" onClick={() => switchEditor(true, "create")}>
                             <p className="add-gallery-button-description">Добавить галерею</p>
                             <p className="add-gallery-button-icon">+</p>
                         </button>
@@ -194,13 +182,11 @@ export function AlbumEditor({ opened, action, data, close, setSuccessCreateModal
     const submit = async () => {
         const data = crawl();
         const validated = validate(data);
-        if(!validated.success) {
-            switch (validated.error) {
-                case "no_title": return alert("Не введено название");
-                case "no_cover": return alert("Не выбрана обложка альбома");
-                case "no_images": return alert("Не выбраны фото");
-                default: return alert("Внутренняя ошибка");
-            }
+        if(!validated.success) switch (validated.error) {
+            case "no_title": return alert("Не введено название");
+            case "no_cover": return alert("Не выбрана обложка альбома");
+            case "no_images": return alert("Не выбраны фото");
+            default: return alert("Внутренняя ошибка");
         }
         return data;
     };
@@ -210,11 +196,8 @@ export function AlbumEditor({ opened, action, data, close, setSuccessCreateModal
         if(data) {
             const result = await AlbumListProvider.createAlbum({ ...data, date: new Date().toISOString() });
             console.log(result);
-            if(result.success) {
-                setSuccessCreateModalOpened(true);
-                // close();
-                // Router.reload();
-            } else switch(result.reason) {
+            if(result.success) setSuccessCreateModalOpened(true);
+            else switch(result.reason) {
                 case "db_error": return alert("Ошибка БД, попробуйте позже");
                 case "album_not_exist": return alert("Такого альбома не существует");
                 case "invalid_request": return alert("Неправильный запрос");
@@ -227,11 +210,8 @@ export function AlbumEditor({ opened, action, data, close, setSuccessCreateModal
         const data = await submit();
         if(data) {
             const result = await AlbumListProvider.editAlbum(id, data);
-            if(result.success) {
-                setSuccessEditModalOpened(true);
-                // close();
-                // Router.reload();
-            } else switch(result.reason) {
+            if(result.success) setSuccessEditModalOpened(true);    
+            else switch(result.reason) {
                 case "db_error": return alert("Ошибка БД, попробуйте позже");
                 case "album_not_exist": return alert("Такого альбома не существует");
                 case "invalid_request": return alert("Неправильный запрос");

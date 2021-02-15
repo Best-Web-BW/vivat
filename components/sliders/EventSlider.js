@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import EventListProvider from "../../utils/providers/EventListProvider";
 import { reformatDate } from "../../utils/common";
@@ -28,52 +28,26 @@ function EventBlock({ id, title, dates }) {
     );
 }
 
-export default function EventSlider({ containerClass }) {
-    const [position, setPosition] = useState({ start: 0, end: 0 });
-    const [events, setEvents] = useState([]);
-    const [size, setSize] = useState(4);
-    const [length, setLength] = useState(0);
-
-    const scrollLeft = () => {
-        setPosition(prev => ({
-            start: Math.max(prev.start - 1, 0),
-            end: Math.max(prev.end - 1, size)
-        }));
-    };
-    const scrollRight = () => {
-        setPosition(prev => ({
-            start: Math.min(prev.start + 1, length - size),
-            end: Math.min(prev.end + 1, length)
-        }));
-    }
-
-    useEffect(async () => {
+export default function EventSlider({ events: _events, containerClass }) {
+    const events = useMemo(() => {
         const date = EventListProvider.currentDate;
+        return (
+            _events
+                .filter(({ dates: [start, end] }) => start <= date && date <= end)
+                .map(event => <EventBlock key={event.id} {...event} />)
+        );
+    }, [_events])
+    const length = useMemo(() => events.length, [events.length]);
+    const size = useMemo(() => Math.min(4, length), [length]);
+    const [position, setPosition] = useState({ start: 0, end: size });
 
-        let _events;
-        try { _events = await EventListProvider.getEventList(); }
-        catch(e) {}
-
-        _events = _events.filter(event => event.dates[0] <= date && date <= event.dates[1]);
-        _events = _events.map(event => <EventBlock key={event.id} {...event} />);
-
-        setEvents(_events);
-
-        const _length = _events.length;
-        const _size = Math.min(size, _length);
-
-        setLength(_length);
-        setSize(_size);
-        setPosition({
-            start: 0,
-            end: _size
-        });
-    }, []);
+    const scrollLeft = () => setPosition(({ start, end }) => ({ start: Math.max(--start, 0), end: Math.max(--end, size) }))
+    const scrollRight = () => setPosition(({ start, end }) => ({ start: Math.min(++start, length - size), end: Math.min(++end, length) }))
 
     return (
         <div className={containerClass}>
             <div className="day-events-title">
-                <p><span>События на</span>&nbsp;<span style={{ color: "#797878d1" }}>{ reformatDate(new Date())  }</span></p>
+                <p><span>События на</span>&nbsp;<span style={{ color: "#797878d1" }}>{ reformatDate(new Date()) }</span></p>
             </div>
             <div className="events-navigation">
                 <div className="prev" onClick={scrollLeft}>

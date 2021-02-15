@@ -1,34 +1,15 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import ContentHeader from "../../components/common/ContentHeader";
 import AlbumListProvider from "../../utils/providers/AlbumListProvider";
 import ModalImageSlider from "../../components/sliders/ModalImageSlider";
 
-function Image({ index, image, openSlider }) {
-    return (
-        <div className="album-element" onClick={() => openSlider(index)}>
-            <img src={image.url} alt="" width="100%" />
-        </div>
-    );
-}
-
-function Album({ images, openSlider }) {
-    return (
-        <div className="album">
-            { images ? images.map((image, index) => <Image key={index} index={index} image={image} openSlider={openSlider} />) : [] }
-        </div>
-    );
-}
-
-export default function AlbumPage({ id }) {
-    const [album, setAlbum] = useState({ });
-    const [isSliderOpened, setIsSliderOpened] = useState(false);
-    const [activeSlide, setActiveSlide] = useState(0);
-
-    useEffect(async () => setAlbum(await AlbumListProvider.getAlbumDetails(id)), [id]);
+export default function AlbumPage({ album: { id, title, images } }) {
+    const [active, switchSlide] = useState(0);
+    const [opened, setOpened] = useState(false);
 
     return (
         <>
-            <ContentHeader pages={[["gallery", "Галерея"], [`gallery/${id}`, album.title]]}>
+            <ContentHeader pages={[["gallery", "Галерея"], [`gallery/${id}`, title]]}>
                 <p>
                     Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsam illo id beatae dolores recusandae
                     et repellat ratione! Culpa accusamus consequatur quae ipsam quidem, reiciendis distinctio
@@ -42,21 +23,28 @@ export default function AlbumPage({ id }) {
             </ContentHeader>
             <div className="gallery-content-wrapper content-block">
                 <div className="block-title">
-                    <h2>{ album.title }</h2>
+                    <h2>{ title }</h2>
                 </div>
                 <div className="album-container">
-                    <Album images={album.images} openSlider={(index) => { setActiveSlide(index); setIsSliderOpened(true); }} />
+                    <div className="album">
+                    {
+                        images.map(({ url }, index) => (
+                            <div key={index} className="album-element" onClick={() => { switchSlide(index); setOpened(true) }}>
+                                <img src={url} alt="" width="100%" />
+                            </div>
+                        ))
+                    }
+                    </div>
                 </div>
             </div>
-            <ModalImageSlider
-                images={album.images}
-                active={activeSlide}
-                opened={isSliderOpened}
-                switchSlide={setActiveSlide}
-                closeSlider={() => setIsSliderOpened(false)}
-            />
+            <ModalImageSlider {...{ switchSlide, images, active, opened }} closeSlider={() => setOpened(false)} />
         </>
     );
 }
 
-export async function getServerSideProps({ query: { id } }) { return { props: { id: +id } } }
+export async function getServerSideProps({ query: { id } }) {
+    const result = { props: { album: { } } };
+    try { result.props.album = await AlbumListProvider.getAlbumDetails(+id) }
+    catch(e) { console.error(e) }
+    finally { return result }
+}

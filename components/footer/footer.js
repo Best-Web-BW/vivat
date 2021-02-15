@@ -1,14 +1,26 @@
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { YMaps, Map } from "react-yandex-maps";
 
-export default function Footer() {
-    return (
-        <footer className="footer-container">
+export default function _Footer(props) {
+    const [map, setMap] = useState(null);
+    useEffect(async () => {
+        const { YMaps, Map } = await import("react-yandex-maps");
+        setMap(
             <div id="map" className="footer-map-block">
                 <YMaps query={{ apikey: "cab32a71-7231-49e3-a077-3623c1468b74" }}>
                     <Map width="100%" height="100%" defaultState={{ center: [55.544469, 37.862529], zoom: 17 }} />
                 </YMaps>
             </div>
+        );
+    }, []);
+
+    return <Footer map={map} {...props} />
+}
+
+function Footer({ map }) {
+    return (
+        <footer className="footer-container">
+            { map }
             <div className="footer-navigation-block">
                 <p className="footer-title">Навигация</p>
                 <ul className="footer-menu-list">
