@@ -1,9 +1,24 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import ContentHeader from "../components/common/ContentHeader";
+import AuthProvider from "../utils/providers/AuthProvider";
 
 export default function ForgotPassword() {
+    const [errorModal, setErrorModal] = useState(false);
+    const [invalidEmailModal, setInvalidEmailModal] = useState(false);
+    const [successModal, setSuccessModal] = useState(false);
+
     const emailRef = useRef();
-    const submit = () => { /* do something */};
+    const submit = async () => {
+        const email = emailRef.current.value;
+        if(!/@/.test(email)) return setInvalidEmailModal(true);
+
+        const result = await AuthProvider.forgotPassword(email);
+        if(result.success) setSuccessModal(true);
+        else {
+            console.error(result.reason);
+            setErrorModal(true);
+        }
+    };
 
     return (
         <>
@@ -14,63 +29,39 @@ export default function ForgotPassword() {
                 </p>
             </ContentHeader>
             <div className="forgot-password-block content-block">
-                    <div className="forgot-password-input-wrapper">
-                        <p>
-                            Введите адрес электронной почты,
-                            <br />
-                            который был указан при регистрации:
-                        </p>
-                        <input ref={emailRef} type="email" name="email" className="forgot-password-input" placeholder="example@gmail.com" />
-                    </div>
-                    <button className="forgot-password-button" onClick={submit}>Подтвердить</button>
+                <div className="forgot-password-input-wrapper">
+                    <p>
+                        Введите адрес электронной почты,
+                        <br />
+                        который был указан при регистрации:
+                    </p>
+                    <input ref={emailRef} type="email" name="email" className="forgot-password-input" placeholder="example@gmail.com" />
+                </div>
+                <button className="forgot-password-button" onClick={submit}>Подтвердить</button>
 
-                    <div className="modal-error-wrapper">
-                        <div className="modal-error-content">
-                            <p>Произошла ошибка. Обновите страницу и попробуйте позже.</p>
-                            <button
-                                className="warning-delete-button"
-                                onClick={() => {
-                                    // removeAlbum(removeID);
-                                    // setDeleteModalOpened(false);
-                                }}
-                            >Ок</button>
-                        </div>
+                <div className={`modal-error-wrapper ${errorModal && "opened"}`}>
+                    <div className="modal-error-content">
+                        <p>Произошла ошибка. Обновите страницу и попробуйте позже.</p>
+                        <button className="warning-delete-button" onClick={() => setErrorModal(false)}>Ок</button>
                     </div>
-                    <div className="modal-error-wrapper">
-                        <div className="modal-error-content">
-                            <p>
-                                Введите корректный адрес электронной почты. Например:
-                                <br />
-                                example@gmail.com
-                            </p>
-                            <button
-                                className="warning-delete-button"
-                                onClick={() => {
-                                    // removeAlbum(removeID);
-                                    // setDeleteModalOpened(false);
-                                }}
-                            >Ок</button>
-                        </div>
+                </div>
+                <div className={`modal-error-wrapper ${invalidEmailModal && "opened"}`}>
+                    <div className="modal-error-content">
+                        <p>
+                            Введите корректный адрес электронной почты. Например:
+                            <br />
+                            example@gmail.com
+                        </p>
+                        <button className="warning-delete-button" onClick={() => setInvalidEmailModal(false)}>Ок</button>
                     </div>
-                    <div className="warning-success-modal">
-                        <div className="warning-success-modal-content">
-                            <span
-                                className="close-modal"
-                                onClick={() => {
-                                    // setSuccessCreateModalOpened(false);
-                                    // setTimeout(() => Router.reload(), 600);
-                                }}
-                            >X</span>
-                            <p>Заявка отправлена! В течение нескольких минут Вам на почту придет сообщение с инструкцией.</p>
-                            <button
-                                className="warrning-success-modal-button"
-                                onClick={() => {
-                                    // setSuccessCreateModalOpened(false);
-                                    // setTimeout(() => Router.reload(), 600);
-                                }}
-                            >Ок</button>
-                        </div>
+                </div>
+                <div className={`warning-success-modal ${successModal && "opened"}`}>
+                    <div className="warning-success-modal-content">
+                        <span className="close-modal" onClick={() => setSuccessModal(false)}>X</span>
+                        <p>Заявка отправлена! В течение нескольких минут Вам на почту придет сообщение с инструкцией.</p>
+                        <button className="warrning-success-modal-button" onClick={() => setSuccessModal(false)}>Ок</button>
                     </div>
+                </div>
             </div>
         </>
     );
