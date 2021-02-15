@@ -283,58 +283,64 @@ export default class Header extends React.Component {
                             ref={this.registerFormRef} className="modal-register-content-wrapper"
                             style={{ height: (this.state.isRegisterFormOpened ? this.registerFormRef.current.scrollHeight : 0) + "px" }}
                         >
-                            <p className={`register-title ${this.isRegisterFormOpened && "active"}`}>Регистрация</p>
-                            <div className="surname-label">
-                                <span>Фамилия</span>&nbsp;<span className="required">*</span>
-                                <UnicornFollowInput
-                                    props={{ className: "surname-input", type: "text", name: "name", placeholder: "Иванов" }}
-                                    inputRef={this.authRefs.register.name.second} follow={this.state.followUnicorn} rest={this.state.restUnicorn}
-                                />
+                            <div className="modal-register-content-1">
+                                <p className={`register-title ${this.isRegisterFormOpened && "active"}`}>Регистрация</p>
+                                <div className="surname-label">
+                                    <span>Фамилия</span>&nbsp;<span className="required">*</span>
+                                    <UnicornFollowInput
+                                        props={{ className: "surname-input", type: "text", name: "name", placeholder: "Иванов" }}
+                                        inputRef={this.authRefs.register.name.second} follow={this.state.followUnicorn} rest={this.state.restUnicorn}
+                                    />
+                                </div>
+                                <div className="name-label">
+                                    <span>Имя</span>&nbsp;<span className="required">*</span>
+                                    <UnicornFollowInput
+                                        props={{ className: "name-input", type: "text", name: "surname", placeholder: "Иван" }}
+                                        inputRef={this.authRefs.register.name.first} follow={this.state.followUnicorn} rest={this.state.restUnicorn}
+                                    />
+                                </div>
+                                <div className="middle-name-label">
+                                    <span>Отчество</span>&nbsp;<span className="required">*</span>
+                                    <UnicornFollowInput
+                                        props={{ className: "middle-name-input", type: "text", name: "middlename", placeholder: "Иванович" }}
+                                        inputRef={this.authRefs.register.name.middle} follow={this.state.followUnicorn} rest={this.state.restUnicorn}
+                                    />
+                                </div>
+                                <div className="birth-date-label">
+                                    <span>Дата рождения</span>&nbsp;<span className="required">*</span>
+                                    <DatePicker
+                                        dropdownMode="select" dateFormat="dd.MM.yyyy" peekNextMonth showYearDropdown
+                                        onChange={date => this.setState({ selectedRegisterDate: date })}
+                                        selected={this.state.selectedRegisterDate}
+                                    />
+                                </div>
+                                <div className="email-label">
+                                    <span>Адрес электронной почты</span>&nbsp;<span className="required">*</span>
+                                    <UnicornFollowInput
+                                        props={{ className: "login-input", type: "email", name: "email", placeholder: "example@gmail.com" }}
+                                        inputRef={this.authRefs.register.email} follow={this.state.followUnicorn} rest={this.state.restUnicorn}
+                                    />
+                                </div>
+                                <button className="login-button" onClick={this.doRegister}>Далее &gt;</button>
                             </div>
-                            <div className="name-label">
-                                <span>Имя</span>&nbsp;<span className="required">*</span>
-                                <UnicornFollowInput
-                                    props={{ className: "name-input", type: "text", name: "surname", placeholder: "Иван" }}
-                                    inputRef={this.authRefs.register.name.first} follow={this.state.followUnicorn} rest={this.state.restUnicorn}
-                                />
+                            <div className="modal-register-content-2">
+                                <div className="password-label">
+                                    <span>Придумайте пароль</span>&nbsp;<span className="required">*</span>
+                                    <UnicornShyInput
+                                        props={{ className: "password-input", type:"password", name: "password", autoComplete:"current-password" }}
+                                        inputRef={this.authRefs.register.password1} shy={this.state.shyUnicorn} rest={this.state.restUnicorn}
+                                    />
+                                </div>
+                                <div className="password-label">
+                                    <span>Подтвердите пароль</span>&nbsp;<span className="required">*</span>
+                                    <UnicornShyInput
+                                        props={{ className: "password-input", type:"password", name: "password", autoComplete:"current-password" }}
+                                        inputRef={this.authRefs.register.password2} shy={this.state.shyUnicorn} rest={this.state.restUnicorn}
+                                    />
+                                </div>
+                                <button className="login-button" onClick={this.doRegister}>&lt; Назад</button>
+                                <button className="login-button" onClick={this.doRegister}>Регистрация</button>
                             </div>
-                            <div className="middle-name-label">
-                                <span>Отчество</span>&nbsp;<span className="required">*</span>
-                                <UnicornFollowInput
-                                    props={{ className: "middle-name-input", type: "text", name: "middlename", placeholder: "Иванович" }}
-                                    inputRef={this.authRefs.register.name.middle} follow={this.state.followUnicorn} rest={this.state.restUnicorn}
-                                />
-                            </div>
-                            <div className="birth-date-label">
-                                <span>Дата рождения</span>&nbsp;<span className="required">*</span>
-                                <DatePicker
-                                    dropdownMode="select" dateFormat="dd.MM.yyyy" peekNextMonth showYearDropdown
-                                    onChange={date => this.setState({ selectedRegisterDate: date })}
-                                    selected={this.state.selectedRegisterDate}
-                                />
-                            </div>
-                            <div className="email-label">
-                                <span>Адрес электронной почты</span>&nbsp;<span className="required">*</span>
-                                <UnicornFollowInput
-                                    props={{ className: "login-input", type: "email", name: "email", placeholder: "example@gmail.com" }}
-                                    inputRef={this.authRefs.register.email} follow={this.state.followUnicorn} rest={this.state.restUnicorn}
-                                />
-                            </div>
-                            <div className="password-label">
-                                <span>Придумайте пароль</span>&nbsp;<span className="required">*</span>
-                                <UnicornShyInput
-                                    props={{ className: "password-input", type:"password", name: "password", autoComplete:"current-password" }}
-                                    inputRef={this.authRefs.register.password1} shy={this.state.shyUnicorn} rest={this.state.restUnicorn}
-                                />
-                            </div>
-                            <div className="password-label">
-                                <span>Подтвердите пароль</span>&nbsp;<span className="required">*</span>
-                                <UnicornShyInput
-                                    props={{ className: "password-input", type:"password", name: "password", autoComplete:"current-password" }}
-                                    inputRef={this.authRefs.register.password2} shy={this.state.shyUnicorn} rest={this.state.restUnicorn}
-                                />
-                            </div>
-                            <button className="login-button" onClick={this.doRegister}>Регистрация</button>
                         </div>
                     </div>
                 </div>

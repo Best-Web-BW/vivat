@@ -182,7 +182,7 @@ header {
     border: 1px solid whitesmoke;
     border-radius: 5px;
     color: #131313;
-    margin: 0 1vh;
+    margin: 1vh;
 }
 
 .login-button:hover {
@@ -426,6 +426,35 @@ header {
     height: 0;
     overflow: hidden;
     transition: 0.6s ease-in-out;
+}
+
+.modal-register-content-wrapper {
+    position: relative;
+}
+
+.modal-register-content-1, .modal-register-content-2 {
+    position: absolute;
+    width: 100%;
+    transition: 0.4s ease-in-out;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.modal-register-content-1 {
+    left: 0;
+}
+
+.modal-register-content-1.disable {
+    left: -100%;
+}
+
+.modal-register-content-2 {
+    right: -100%;
+}
+
+.modal-register-content-2.active {
+    right: 0;
 }
 
 .login-title, .register-title {
