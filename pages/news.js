@@ -115,7 +115,7 @@ const switchInArray = (array, state, value) => {
     return state ? [...newArray, value] : newArray;
 };
 
-function News({ query: { categories: _categories, tags: _tags, search: _search } }) {
+export default function News({ query: { categories: _categories, tags: _tags, search: _search } }) {
     const searchRef = useRef();
     const [posts, setPosts] = useState([]);
     
@@ -317,8 +317,7 @@ function News({ query: { categories: _categories, tags: _tags, search: _search }
 }
 
 News.getInitialProps = ({ query }) => ({ query });
-
-export default News;
+// export async function getServerSideProps({  }) { }
 
 export function PostEditor(props) {
     const [imported, setImported] = useState();
