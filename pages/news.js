@@ -115,6 +115,8 @@ const switchInArray = (array, state, value) => {
     return state ? [...newArray, value] : newArray;
 };
 
+const getPostsByParams = async (categories, tags, search) => await PostListProvider.getPostList(categories, tags, search);
+
 export default function News({ query: { categories: _categories, tags: _tags, search: _search } }) {
     const searchRef = useRef();
     const [posts, setPosts] = useState([]);
@@ -149,10 +151,7 @@ export default function News({ query: { categories: _categories, tags: _tags, se
     const router = useRouter();
     useEffect(() => setStateFromURL(router.query), [_categories, _tags, _search, router.query]);
 
-    useEffect(async () => {
-        const posts = await PostListProvider.getPostList(categories, tags, search);
-        setPosts(posts);
-    }, [categories, tags, search]);
+    useEffect(async () => setPosts(await getPostsByParams(categories, tags, search)), [categories, tags, search]);
 
     const [uniqueTags, setUniqueTags] = useState([]);
     const [counts, setCounts] = useState([]);
@@ -317,7 +316,17 @@ export default function News({ query: { categories: _categories, tags: _tags, se
 }
 
 News.getInitialProps = ({ query }) => ({ query });
-// export async function getServerSideProps({  }) { }
+// export async function getServerSideProps({ query: { categories, tags, search } }) {
+//     const result = { props: { originalPosts: [], uniqueTags: [], uniqueCategories: [] } };
+//     try {
+//         const [originalPosts, { tags: uniqueTags, counts }] = await Promise.all([
+//             getPostsByParams(categories, tags, search),
+//             DBProvider.getPostStats()
+//         ]);
+//         result.props = { originalPosts, uniqueTags, uniqueCategories: Object.entries(counts) };
+//     } catch(e) { console.error(e) }
+//     finally { return result }
+// }
 
 export function PostEditor(props) {
     const [imported, setImported] = useState();
@@ -337,13 +346,13 @@ function RawPostEditor({ CreatableSelect, animatedComponents, opened, action, da
     const [selectedTags, setSelectedTags] = useState([]);
     const updateTags = tags => setSelectedTags([... new Set(tags)]);
 
-    console.log("Category:", selectedCategory);
-    console.log("Tags:", selectedTags);
+    // console.log("Category:", selectedCategory);
+    // console.log("Tags:", selectedTags);
 
     // console.log(categories, tags);
     
     useEffect(() => opened && actionMap[action][1](data), [opened]);
-    const defaultValue = useMemo(() => post ? post.contents.replaceAll("script", "sсrірt") : "", [post]);
+    const defaultValue = useMemo(() => post ? post.contents.replace(/script/gi, "sсrірt") : "", [post]);
 
     useEffect(() => post ? setSelectedCategory(post.category) : null, [post]);
     useEffect(() => post ? setSelectedTags(post.tags) : null, [post]);
@@ -387,11 +396,8 @@ function RawPostEditor({ CreatableSelect, animatedComponents, opened, action, da
         if(data) {
             const result = await PostListProvider.createPost({ ...data, date: new Date().toISOString() });
             console.log(result);
-            if(result.success) {
-                setSuccessCreateModalOpened(true);
-                // close();
-                // Router.reload();
-            } else switch(result.reason) {
+            if(result.success) setSuccessCreateModalOpened(true);
+            else switch(result.reason) {
                 case "db_error": return alert("Ошибка БД, попробуйте позже");
                 case "post_not_exist": return alert("Такой новости не существует");
                 case "invalid_request": return alert("Неправильный запрос");
@@ -404,11 +410,8 @@ function RawPostEditor({ CreatableSelect, animatedComponents, opened, action, da
         const data = await submit();
         if(data) {
             const result = await PostListProvider.editPost(id, data);
-            if(result.success) {
-                setSuccessEditModalOpened(true);
-                // close();
-                // Router.reload();
-            } else switch(result.reason) {
+            if(result.success) setSuccessEditModalOpened(true);
+            else switch(result.reason) {
                 case "db_error": return alert("Ошибка БД, попробуйте позже");
                 case "post_not_exist": return alert("Такой новости не существует");
                 case "invalid_request": return alert("Неправильный запрос");
