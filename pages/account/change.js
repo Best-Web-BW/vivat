@@ -26,9 +26,11 @@ export default function Change() {
             male: useRef(),
             female: useRef()
         },
-        password: useRef(),
-        newPassword1: useRef(),
-        newPassword2: useRef()
+        password: {
+            current: useRef(),
+            new1: useRef(),
+            new2: useRef()
+        }
     };
 
     const crawl = () => ({
@@ -41,15 +43,38 @@ export default function Change() {
         email: refs.email.current.value,
         phone: refs.phone.current.value,
         address: refs.address.current.value,
-        sex: refs.sex.male.current.checked ? "male" : "female"
+        sex: refs.sex.male.current.checked ? "male" : "female",
+        password: {
+            current: refs.password.current.current.value,
+            new1: refs.password.new1.current.value,
+            new2: refs.password.new2.current.value
+        }
     });
 
-    const submit = async newData => {
-        const result = await AuthProvider.change(newData);
+    const submit = async () => {
+        const data = crawl();
+
+        const isPasswordChanged = data.password.new1.length || data.password.new2.length;
+        if(isPasswordChanged) {
+            const newPassword = data.password.new1;
+            if(!data.password.current.length) return alert("Для изменения пароля Вы должны ввести свой текущий пароль");
+            if(newPassword !== data.password.new2) return alert("Введённые пароли не совпадают");
+            if(!(
+                /[A-Z]/.test(newPassword) &&
+                /[a-z]/.test(newPassword) &&
+                /[0-9]/.test(newPassword) &&
+                newPassword.length >= 8
+            )) return alert("Новый пароль не соответствует требованиям");
+
+            data.password.new2 = undefined;
+        }
+
+        const result = await AuthProvider.change(data);
         if(result.success) {
             alert("Данные успешно изменены");
             Router.push("/account/profile");
         } else {
+            console.log(result.reason);
             alert("Произошла ошибка");
         }
     }
@@ -119,25 +144,25 @@ export default function Change() {
                             Женский
                         </label>
                     </div>
-                    <br/>
+                    <br />
                     <p>Настройки безопасности</p>
-                    <br/>
+                    <br />
                     <label className="profile-element-wrapper">
-                        <p className="password-title">Старый пароль:</p>
-                        <input ref={refs.password} type="password" name="password" className="password-data-input" placeholder="" />
+                        <p className="email-title">Старый пароль:</p>
+                        <input ref={refs.password.current} type="password" name="password" className="email-data-input" />
                     </label>
                     <label className="profile-element-wrapper">
-                        <p className="password-title">Новый пароль:</p>
-                        <input ref={refs.newPassword1} type="password" name="new-password" className="password-data-input" placeholder="" />
+                        <p className="email-title">Новый пароль:</p>
+                        <input ref={refs.password.new1} type="password" name="new-password1" className="email-data-input" />
                     </label>
                     <label className="profile-element-wrapper">
-                        <p className="password-title">Новый пароль еще раз:</p>
-                        <input ref={refs.newPassword2} type="password" name="new-password" className="password-data-input" placeholder="" />
+                        <p className="email-title">Новый пароль еще раз:</p>
+                        <input ref={refs.password.new2} type="password" name="new-password2" className="email-data-input" />
                     </label>
                 </div>
                 <div className="profile-row flex-row">
                     <div className="change-button-wrapper">
-                        <button className="change-button" onClick={() => submit(crawl())}>Сохранить</button>
+                        <button className="change-button" onClick={submit}>Сохранить</button>
                     </div>
                 </div>
             </div>
