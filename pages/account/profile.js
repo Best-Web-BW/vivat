@@ -1,10 +1,36 @@
 import Link from "next/link";
+import { withRouter } from "next/router";
 import { useEffect, useState } from "react";
 import ProfileMenu from "../../components/common/ProfileMenu";
 import { reformatDate } from "../../utils/common";
 import AuthProvider, { useAuth, AuthVariableComponent } from "../../utils/providers/AuthProvider";
 
-export default function Profile() {
+export default withRouter(_Profile);
+
+function _Profile({ router }) {
+    const [content, setContent] = useState(null);
+    useEffect(async () => {
+        if(!router.isReady) return;
+
+        const { verify_email, email, uuid } = router.query;
+        if(!verify_email) { setContent(<Profile />); return; }
+
+        const result = await AuthProvider.verifyEmail(email, uuid );
+        console.log(result);
+        if(result.success) {
+            await AuthProvider.refreshTokens();
+            setContent(<Profile />);
+        } else {
+            console.error(result.reason);
+            alert("Ссылка подтверждения недействительна");
+            router.push("/home");
+        }
+    }, [router.isReady]);
+
+    return content ?? null;
+}
+
+function Profile() {
     const [user, setUser] = useState(useAuth());
     useEffect(() => {
         const interval = setInterval(() => setUser(useAuth()), 500);
