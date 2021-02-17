@@ -1,17 +1,19 @@
 const router = require("express").Router();
 const ObjectID = require("mongodb").ObjectID;
-const SHA1 = require("crypto-js/sha1");
 const hmacSHA512 = require("crypto-js/hmac-sha512");
 const { v4: UUID } = require("uuid");
-const sendRegisterEmail = require("./mail").sendRegisterEmail;
+const { sendRegisterEmail, sendForgotPasswordEmail, sendChangePasswordEmail } = require("./mail");
+const moment = require("moment");
+
+const isDev = process.env.NODE_ENV !== "production";
 
 // I hit my head on the keyboard for that. It hurts.
-// Why is there no another way to create a random string? 
+// Why is there no another way to create a random string?
 const PRIVATE_KEY = "saifjaw3p c5hga2j89~`dj.PR;OTH";
 const MAX_SESSIONS = 5;
 const ACCESS_KEY_MAX_AGE = 1000 * 60 * 15; // 15 minutes in ms
 const REFRESH_KEY_MAX_AGE = 1000 * 60 * 60 * 24 * 30; // 30 days in ms
-const COOKIE_CONFIG = { path: "/api/auth", secure: process.env.NODE_ENV === "production", httpOnly: true, sameSite: "Strict" };
+const COOKIE_CONFIG = { path: "/api/auth", secure: !isDev, httpOnly: true, sameSite: "Strict" };
 
 let users;
 new require("mongodb").MongoClient("mongodb://localhost:27017", { useUnifiedTopology: true, useNewUrlParser: true }).connect((err, client) => {
@@ -32,8 +34,8 @@ router.get("/", (_, res) => {
 // });
 
 router.post("/register", async (req, res) => {
-    const { email, name: { first, second, middle }, birthdate } = req.body;
-    console.log("Register", { email, name: { first, second, middle }, birthdate });
+    const { email, name: { first, second, middle }, birthdate, password } = req.body;
+    console.log("Register", { email, name: { first, second, middle }, birthdate, password });
     
     const emailRegex = /@/;
     const nameRegex = /^[a-zа-яё]{2,}$/gi;
@@ -48,26 +50,57 @@ router.post("/register", async (req, res) => {
     
     if(errors.length) return res.json({ status: "error_regex", errors });
     
-    const password = SHA1(`${email}${Math.random()}${birthdate}`).toString().slice(-16);
+    // const password = SHA1(`${email}${Math.random()}${birthdate}`).toString().slice(-16);
     const passwordHash = hmacSHA512(password, PRIVATE_KEY).toString();
     
-    const session = { access_key: UUID(), refresh_key: UUID() };
-    const user = { email, name: { first, second, middle }, birthdate, password, password_hash: passwordHash, sessions: [session] };
-
+    const email_verify_uuid = UUID();
+    // const session = { access_key: UUID(), refresh_key: UUID() };
+    const user = {
+        email_verified: false, email_verify_uuid,
+        email, name: { first, second, middle },
+        birthdate, password, password_hash: passwordHash//, sessions: [session]
+    };
+    
     await users.insertOne(user);
-
-    const sendEmailResult = await sendRegisterEmail(email, password);
+    
+    const emailVerifyLink = (isDev ? "http://localhost" : "https://kskvivat.com") + `/account/profile?verify_email=1&email=${email}&uuid=${email_verify_uuid}`;
+    const sendEmailResult = await sendRegisterEmail(email, emailVerifyLink);
     if(sendEmailResult.status === "success") {
-        res.cookie("user_id", user._id.toString(), { maxAge: REFRESH_KEY_MAX_AGE, ...COOKIE_CONFIG });
-        res.cookie("access_key", session.access_key, { maxAge: ACCESS_KEY_MAX_AGE, ...COOKIE_CONFIG });
-        res.cookie("refresh_key", session.refresh_key, { maxAge: REFRESH_KEY_MAX_AGE, ...COOKIE_CONFIG });
-        const _user = { ...user, sessions: undefined, password_hash: undefined };
-        res.json({ status: "success", accessKeyLifetime: ACCESS_KEY_MAX_AGE, user: _user });
+        // res.cookie("user_id", user._id.toString(), { maxAge: REFRESH_KEY_MAX_AGE, ...COOKIE_CONFIG });
+        // res.cookie("access_key", session.access_key, { maxAge: ACCESS_KEY_MAX_AGE, ...COOKIE_CONFIG });
+        // res.cookie("refresh_key", session.refresh_key, { maxAge: REFRESH_KEY_MAX_AGE, ...COOKIE_CONFIG });
+        // const _user = { ...user, sessions: undefined, password_hash: undefined };
+        res.json({ status: "success"/*, accessKeyLifetime: ACCESS_KEY_MAX_AGE, user: _user*/ });
         console.log(" - Password", password);
     } else {
         res.json(sendEmailResult);
         console.log("Wtf?", { sendEmailResult });
     }
+});
+
+router.post("/verify_email", async (req, res) => {
+    const { email, uuid } = req.body;
+    console.log("Verify email", { email, uuid });
+
+    let user;
+    try { user = await users.findOne({ email }) }
+    catch(e) { console.error(e); return res.json({ status: "error", error: "db_error" }) }
+
+    if(!user) return res.json({ status: "error", error: "no_user" });
+    if(user.email_verify_uuid !== uuid) return res.json({ status: "error", error: "invalid_uuid" });
+
+    const session = { access_key: UUID(), refresh_key: UUID() };
+    try { await users.updateOne({ _id: user._id }, {
+        $set: { email_verified: true, sessions: [session] },
+        $unset: { email_verify_uuid: "" } 
+    })} catch(e) { console.error(e); return res.json({ status: "error", error: "db_error" }) }
+
+    res.cookie("user_id", user._id.toString(), { maxAge: REFRESH_KEY_MAX_AGE, ...COOKIE_CONFIG });
+    res.cookie("access_key", session.access_key, { maxAge: ACCESS_KEY_MAX_AGE, ...COOKIE_CONFIG });
+    res.cookie("refresh_key", session.refresh_key, { maxAge: REFRESH_KEY_MAX_AGE, ...COOKIE_CONFIG });
+
+    const _user = { ...user, sessions: undefined, password_hash: undefined, email_verified: undefined, email_verify_uuid: undefined };
+    res.json({ status: "success", accessKeyLifetime: ACCESS_KEY_MAX_AGE, user: _user });
 });
 
 router.post("/authenticate", async (req, res) => {
@@ -77,6 +110,7 @@ router.post("/authenticate", async (req, res) => {
     console.log("Authenticate", { email, password });
     
     if(!user) return res.json({ status: "error", reason: "invalid_email" });
+    if(!user.email_verified) return res.json({ status: "error", reason: "not_verified" });
 
     const requestSHA = hmacSHA512(password, PRIVATE_KEY).toString();
     const currentSHA = user.password_hash;
@@ -153,20 +187,33 @@ router.post("/change", async (req, res) => {
     const { user_id: userID } = req.cookies;
     console.log("Change user settings", { userID });
 
-    const { name: { first, second, middle }, birthdate, email, phone, address, sex } = req.body;
+    const { name: { first, second, middle }, birthdate, email, phone, address, sex, password } = req.body;
     const updater = { name: { first, second, middle }, birthdate, email, phone, address, sex };
 
-    console.log(" - Modified", { ...updater });
+    console.log(" - Modified", { ...req.body });
 
     try {
         const user = await users.findOne({ _id: new ObjectID(userID) });
 
+        let isPasswordChanged = false;
+        if(password.current.length && password.new1.length) {
+            const currentPasswordHash = hmacSHA512(password.current, PRIVATE_KEY).toString();
+            const newPasswordHash = hmacSHA512(password.new1, PRIVATE_KEY).toString();
+
+            if(user.password_hash === currentPasswordHash) {
+                updater.password_hash = newPasswordHash;
+                isPasswordChanged = true;
+            } else return res.json({ status: "error", error: "invalid_current_password" });
+        }
+
+        console.log("Pass change updater", { updater });
+
         await users.updateOne({ _id: user._id }, { $set: updater });
 
         const _user = { ...user, ...updater, sessions: undefined, password_hash: undefined };
-
+        if(isPasswordChanged) await sendChangePasswordEmail({ email: _user.email, name: _user.name.first });
         res.json({ status: "success", user: _user });
-    } catch(e) { res.json({ status: "error", reason: "unknown_error" }); }
+    } catch(e) { console.error(e); res.json({ status: "error", reason: "unknown_error" }); }
 });
 
 router.post("/register_to_event", async (req, res) => {
@@ -184,6 +231,65 @@ router.post("/register_to_event", async (req, res) => {
 
         res.json({ status: "success", events: user.events });
     } catch(e) { console.log(e); res.json({ status: "error", reason: "unknown_error" }); }
+});
+
+router.post("/forgot_password/mail", async (req, res) => {
+    const { email } = req.body;
+    console.log("Forgot password", { email });
+
+    const uuid = UUID();
+    try {
+        const user = await users.findOne({ email });
+        if(!user) return res.json({ status: "success" });
+
+        const forgot_password = { uuid, expires: moment().add(1, "minutes").toISOString() };
+        await users.updateOne({ _id: user._id }, { $set: { forgot_password } });
+
+        const link = (isDev ? "http://localhost" : "https://kskvivat.com") + `/forgot-password?email=${email}&uuid=${uuid}`;
+        await sendForgotPasswordEmail({ email, name: user.name.first, link });
+        res.json({ status: "success" });
+    } catch(e) { res.json({ status: "error", error: "db_error" }) }
+});
+
+router.post("/forgot_password/check", async (req, res) => {
+    const { email, uuid } = req.body;
+    console.log("Check forgot password", { email, uuid });
+
+    let user;
+    try { user = await users.findOne({ email }) }
+    catch(e) { console.error(e); return res.json({ status: "error", error: "db_error" }) }
+    if(!user) return res.json({ status: "error", error: "no_user_found" });
+
+    const record = user.forgot_password;
+    if(!record) return res.json({ status: "error", error: "user_not_forgot" });
+    if(record.uuid !== uuid) return res.json({ status: "error", error: "invalid_uuid" });
+    if(record.expires <= moment().toISOString()) return res.json({ status: "error", error: "uuid_expired" });
+
+    return res.json({ status: "success" });
+});
+
+router.post("/forgot_password/reset", async (req, res) => {
+    const { email, uuid, password } = req.body;
+    console.log("Reset password", { email, uuid, password });
+
+    let user;
+    try { user = await users.findOne({ email }) }
+    catch(e) { console.error(e); return res.json({ status: "error", error: "db_error" }) }
+    if(!user) return res.json({ status: "error", error: "no_user_found" });
+
+    const record = user.forgot_password;
+    if(!record) return res.json({ status: "error", error: "user_not_forgot" });
+    if(record.uuid !== uuid) return res.json({ status: "error", error: "invalid_uuid" });
+    if(record.expires <= moment().toISOString()) return res.json({ status: "error", error: "uuid_expired" });
+
+    const password_hash = hmacSHA512(password, PRIVATE_KEY).toString();
+
+    try { await users.updateOne({ _id: user._id }, { $set: { password_hash, sessions: [] }, $unset: { forgot_password: "" } }) }
+    catch(e) { console.error(e); return res.json({ status: "error", error: "db_error" }) }
+
+    await sendChangePasswordEmail({ email, name: user.name.first });
+
+    return res.json({ status: "success" });
 });
 
 module.exports = router;
