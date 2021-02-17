@@ -17,6 +17,7 @@ export default class Header extends React.Component {
             isSignFormOpened: false,
             isLoginFormOpened: false,
             isRegisterFormOpened: false,
+            isRegisterFormSecondPageOpened: false,
             profilePreviewName: "",
             selectedRegisterDate: new Date(),
             restUnicorn: undefined,
@@ -53,7 +54,8 @@ export default class Header extends React.Component {
             this.setState({
                 isSignFormOpened: newState,
                 isLoginFormOpened: newState,
-                isRegisterFormOpened: false
+                isRegisterFormOpened: false,
+                isRegisterFormFirstPageOpened: true
             });
         };
         this.switchSignForm = (isRegisterForm = false) => {
@@ -76,7 +78,9 @@ export default class Header extends React.Component {
                     second: React.createRef(),
                     middle: React.createRef()
                 },
-                birthdate: React.createRef()
+                birthdate: React.createRef(),
+                password1: React.createRef(),
+                password2: React.createRef()
             }
         };
 
@@ -92,6 +96,7 @@ export default class Header extends React.Component {
                 if(success) (alert("Успешный вход!"), this.toggleSignForm());
                 else if(reason === "invalid_email") alert("Пользователь с таким email не зарегистрирован");
                 else if(reason === "invalid_password") alert("Неверный пароль");
+                else if(reason === "not_verified") alert("Пользователь не подтвердил свой email");
                 else alert("Произошла ошибка, попробуйте позже");
             }
         };
@@ -109,12 +114,16 @@ export default class Header extends React.Component {
                 middle: this.authRefs.register.name.middle.current.value
             };
             const birthdate = toISODate(this.state.selectedRegisterDate);
+            const password1 = this.authRefs.register.password1.current.value;
+            const password2 = this.authRefs.register.password2.current.value;
             const errorMap = {
                 invalid_email: "Некорректный email",
                 invalid_first_name: "Некорректное имя",
                 invalid_second_name: "Некорректная фамилия",
                 invalid_middle_name: "Некорректное отчество",
-                invalid_birthdate: "Некорректная дата рождения"
+                invalid_birthdate: "Некорректная дата рождения",
+                invalid_password: "Пароль не соответствует требованиям",
+                different_passwords: "Пароли не совпадают"
             };
 
             if(!/@/.test(email)) alert(errorMap.invalid_email);
@@ -122,8 +131,15 @@ export default class Header extends React.Component {
             else if(!/^[a-zа-яё]{2,}$/gi.test(name.second)) alert(errorMap.invalid_second_name);
             else if(!/^[a-zа-яё]{2,}$/gi.test(name.middle)) alert(errorMap.invalid_middle_name);
             else if(!/./.test(birthdate)) alert(errorMap.invalid_birthdate);
+            else if(!(
+                /[A-Z]/.test(password1) &&
+                /[a-z]/.test(password1) &&
+                /[0-9]/.test(password1) &&
+                password1.length >= 8
+            )) alert(errorMap.invalid_password);
+            else if(password1 !== password2) alert(errorMap.different_passwords);
             else {
-                const [success, reasons] = await AuthProvider.register(email, name, birthdate);
+                const [success, reasons] = await AuthProvider.register(email, name, birthdate, password1);
 
                 if(success) (alert("Успешная регистрация!"), this.toggleSignForm());
                 else alert(reasons.map((reason, index) => `${index}. ${errorMap[reason]}`));
@@ -161,32 +177,35 @@ export default class Header extends React.Component {
                                 </Link>
                                 <button id="open-enter-form" className="login-button" onClick={this.toggleSignForm}>Войти</button>
                             </AuthVariableComponent>
-                            <div
-                                className={`profile-preview-wrapper ${this.state.isProfileMenuShowed && "showed"}`}
-                                style={{ display: this.state.isProfileMenuOpened ? "block" : "none" }}
-                                onMouseEnter={this.openProfileMenu}
-                                onMouseLeave={this.closeProfileMenu}
-                            >
-                                <div className="profile-preview-row">
-                                    <div className="profile-preview-photo">
-                                        <img src="/images/placeholder_avatar.jpg" alt="" width="100%" />
-                                    </div>
-                                    <div className="profile-preview-data">
-                                        <div className="profile-preview-name">
-                                            <p>{ profilePreviewName }</p>
+                            <AuthVariableComponent>
+                                <div
+                                    className={`profile-preview-wrapper ${this.state.isProfileMenuShowed && "showed"}`}
+                                    style={{ display: this.state.isProfileMenuOpened ? "block" : "none" }}
+                                    onMouseEnter={this.openProfileMenu}
+                                    onMouseLeave={this.closeProfileMenu}
+                                >
+                                    <div className="profile-preview-row">
+                                        <div className="profile-preview-photo">
+                                            <img src="/images/placeholder_avatar.jpg" alt="" width="100%" />
                                         </div>
-                                        <div className="profile-preview-address">RU | Moscow</div>
+                                        <div className="profile-preview-data">
+                                            <div className="profile-preview-name">
+                                                <p>{ profilePreviewName }</p>
+                                            </div>
+                                            <div className="profile-preview-address">RU | Moscow</div>
+                                        </div>
+                                    </div>
+                                    <div className="profile-preview-row" style={{ flexWrap: "wrap" }}>
+                                        <Link href="/account/profile">
+                                            <a>
+                                                <button className="profile-preview-button">В профиль</button>
+                                            </a>
+                                        </Link>
+                                        <button className="profile-preview-button" onClick={this.doLogout}>Выйти</button>
                                     </div>
                                 </div>
-                                <div className="profile-preview-row" style={{ flexWrap: "wrap" }}>
-                                    <Link href="/account/profile">
-                                        <a>
-                                            <button className="profile-preview-button">В профиль</button>
-                                        </a>
-                                    </Link>
-                                    <button className="profile-preview-button" onClick={this.doLogout}>Выйти</button>
-                                </div>
-                            </div>
+                                { null }
+                            </AuthVariableComponent>
                         </div>
                     </div>
                 </div>
@@ -259,7 +278,7 @@ export default class Header extends React.Component {
                             ref={this.loginFormRef} className={`modal-enter-content-wrapper`}
                             style={{ height: `${this.state.isLoginFormOpened ? this.loginFormRef.current.scrollHeight : 0}px` }}
                         >
-                            <p className={`login-title ${this.isLoginFormOpened && "active"}`}>Войти</p>
+                            <p className={`login-title ${this.state.isLoginFormOpened && "active"}`}>Войти</p>
                             <div className="login-label">
                                 <span>Логин/email</span>
                                 <UnicornFollowInput
@@ -285,8 +304,8 @@ export default class Header extends React.Component {
                             ref={this.registerFormRef} className="modal-register-content-wrapper"
                             style={{ height: (this.state.isRegisterFormOpened ? this.registerFormRef.current.scrollHeight : 0) + "px" }}
                         >
-                            <div className="modal-register-content-1">
-                                <p className={`register-title ${this.isRegisterFormOpened && "active"}`}>Регистрация</p>
+                            <div className={`modal-register-content-1 ${this.state.isRegisterFormSecondPageOpened && "disable"}`}>
+                                <p className={`register-title ${this.state.isRegisterFormOpened && "active"}`}>Регистрация</p>
                                 <div className="surname-label">
                                     <span>Фамилия</span>&nbsp;<span className="required">*</span>
                                     <UnicornFollowInput
@@ -323,9 +342,9 @@ export default class Header extends React.Component {
                                         inputRef={this.authRefs.register.email} follow={this.state.followUnicorn} rest={this.state.restUnicorn}
                                     />
                                 </div>
-                                <button className="login-button" onClick={this.doRegister}>Далее &gt;</button>
+                                <button className="login-button" onClick={() => this.setState({ isRegisterFormSecondPageOpened: true })}>Далее &gt;</button>
                             </div>
-                            <div className="modal-register-content-2">
+                            <div className={`modal-register-content-2 ${this.state.isRegisterFormSecondPageOpened && "active"}`}>
                                 <div className="password-label">
                                     <span>Придумайте пароль</span>&nbsp;<span className="required">*</span>
                                     <UnicornShyInput
@@ -340,7 +359,7 @@ export default class Header extends React.Component {
                                         inputRef={this.authRefs.register.password2} shy={this.state.shyUnicorn} rest={this.state.restUnicorn}
                                     />
                                 </div>
-                                <button className="login-button" onClick={this.doRegister}>&lt; Назад</button>
+                                <button className="login-button" onClick={() => this.setState({ isRegisterFormSecondPageOpened: false })}>&lt; Назад</button>
                                 <button className="login-button" onClick={this.doRegister}>Регистрация</button>
                             </div>
                         </div>
