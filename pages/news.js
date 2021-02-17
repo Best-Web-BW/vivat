@@ -345,21 +345,16 @@ function RawPostEditor({ CreatableSelect, animatedComponents, opened, action, da
     const [selectedCategory, setSelectedCategory] = useState("");
     const [selectedTags, setSelectedTags] = useState([]);
     const updateTags = tags => setSelectedTags([... new Set(tags)]);
-
-    // console.log("Category:", selectedCategory);
-    // console.log("Tags:", selectedTags);
-
-    // console.log(categories, tags);
     
     useEffect(() => opened && actionMap[action][1](data), [opened]);
-    const defaultValue = useMemo(() => post ? post.contents.replace(/script/gi, "sсrірt") : "", [post]);
-
-    useEffect(() => post ? setSelectedCategory(post.category) : null, [post]);
-    useEffect(() => post ? setSelectedTags(post.tags) : null, [post]);
-
+    
+    useEffect(() => { setSelectedCategory(post?.category ?? ""); setSelectedTags(post?.tags ?? []); }, [post]);
+    
     const titleRef = useRef();
     const textEditorRef = useRef();
-    const textEditor = useMemo(() => (<TextEditor editorRef={textEditorRef} defaultValue={defaultValue} imageType="news" />), [post]);
+    
+    const defaultValue = useMemo(() => post ? post.contents.replace(/script/gi, "sсrірt") : "", [post]);
+    useEffect(() => textEditorRef.current?.editor.setContents(defaultValue), [post]);
 
     const crawl = () => ({
         title: titleRef.current.value,
@@ -435,7 +430,7 @@ function RawPostEditor({ CreatableSelect, animatedComponents, opened, action, da
                         <input ref={titleRef} type="text" placeholder="Введите название новости" defaultValue={post ? post.title : ""} />
                     </div>
                     <div className="add-article-modal-text-editor-wrapper">
-                        { textEditor }
+                        <TextEditor editorRef={textEditorRef} imageType="news" />
                     </div>
                 </div>
                 <div className="add-article-modal-footer">
@@ -469,8 +464,8 @@ function RawPostEditor({ CreatableSelect, animatedComponents, opened, action, da
                         <p>Выберите ключевые слова</p>
                         <CreatableSelect 
                             theme={theme => ({ ...theme, borderRadius: 0, colors: { ...theme.colors, primary: "" } })}
-                            noOptionsMessage={() => "Тегов больше нет, но вы можете создать новые"}
                             onChange={tags => (console.log(tags), updateTags(tags.map(({ value }) => value)))}
+                            noOptionsMessage={() => "Тегов больше нет, но вы можете создать новые"}
                             value={selectedTags.map(tag => ({ value: tag, label: tag }))}
                             options={tags.map(tag => ({ value: tag, label: tag }))}
                             formatCreateLabel={value => `Создать тег "${value}"`}

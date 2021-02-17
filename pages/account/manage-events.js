@@ -206,8 +206,8 @@ export function EventEditor({ CreatableSelect, opened, action, eventData, close,
         address: useRef()
     };
     
-    const defaultValue = useMemo(() => event ? event.contents.replaceAll("script", "sсrірt") : "", [event]);
-    const textEditor = useMemo(() => (<TextEditor editorRef={refs.textEditor} defaultValue={defaultValue} imageType="events" />), [event]);
+    const defaultValue = useMemo(() => event ? event.contents.replace(/script/gi, "sсrірt") : "", [event]);
+    useEffect(() => refs.textEditor.current?.editor.setContents(defaultValue), [event]);
     
     const [startDate, setStartDate] = useState();
     const [endDate, setEndDate] = useState();
@@ -339,7 +339,7 @@ export function EventEditor({ CreatableSelect, opened, action, eventData, close,
                     </div>
                     <div className="edit-event-modal-col-right">
                         <div className="edit-event-modal-edit-text">
-                            { textEditor }
+                            <TextEditor editorRef={refs.textEditor} imageType="events" />
                         </div>
                     </div>
                 </div>

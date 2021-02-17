@@ -11,16 +11,9 @@ export default function _TextEditor(props) {
     return imported ? <TextEditor {...imported} {...props} /> : null;
 };
 
-function TextEditor({ SunEditor, buttonList: { basic: basicButtonList }, editorRef, imageType, defaultValue }) {
+function TextEditor({ SunEditor, buttonList: { basic: basicButtonList }, editorRef, imageType }) {
     const buttonList = useMemo(() => basicButtonList, []);
     const imageUploadUrl = useMemo(() => `/api/admin/load_image/${imageType}`, [imageType]);
 
-    return (
-        <SunEditor
-            setOptions={{ buttonList, imageUploadUrl }}
-            defaultValue={defaultValue}
-            ref={editorRef}
-            lang="ru"
-        />
-    );
+    return <SunEditor setOptions={{ buttonList, imageUploadUrl }} ref={editorRef} lang="ru" />;
 }
