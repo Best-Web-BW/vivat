@@ -13,25 +13,24 @@ const mailer = {
             pass: password
         },
     }),
-    register: (email, password) => ({
-        from: `Успешная регистрация на сайте ${ksk} <${address}>`,
+    register: (email, link) => ({
+        from: `"Успешная регистрация на сайте ${ksk}" <${address}>`,
         to: email,
         subject: `Успешная регистрация на сайте`,
         html: `
             <div>
                 <h2> Вы успешно зарегистрировались на сайте <a href="https://kskvivat.com">${ksk}</a> </h2>
                 <p>
-                    Указанный email: ${email}<br />
-                    Сгенерированный пароль: ${password}
+                    Указанный email: ${email}
+                    <br />
+                    Ссылка для подтверждения email: <a href="${link}">${link}</a>
                 </p>
-                <p>Пожалуйста, запишите этот пароль. Он сгенерирован автоматически и предотвратит несанкционированный доступ к Вашему аккаунту</p>
-                <br />
                 <p>Это сообщение сгенерировано сервером. Пожалуйста, не отвечайте на него</p>
             </div>
         `
     }),
-    forgotPassword: ({ email, name, link }) => ({
-        from: `BLANK FIELD <${address}>`,
+    forgotPassword: ({ email, name, link }) => (console.log(email, name, link), {
+        from: `"Смена пароля на ${ksk}" <${address}>`,
         to: email,
         subject: `Смена пароля на ${ksk}`,
         html: `
@@ -50,7 +49,7 @@ const mailer = {
         `
     }),
     changePassword: ({ email, name }) => ({
-        from: `BLANK FIELD <${address}>`,
+        from: `"BLANK FIELD" <${address}>`,
         to: email,
         subject: `Смена пароля на ${ksk}`,
         html: `
@@ -68,7 +67,7 @@ const mailer = {
         `
     }),
     feedback: (name, email, phone, question) => ({
-        from: `Обратная связь на сайте ${ksk} <${address}>`,
+        from: `"Обратная связь на сайте ${ksk}" <${address}>`,
         to: address,
         subject: `${name}, ${email}, ${phone}`,
         html: `
@@ -82,7 +81,7 @@ const mailer = {
         `
     }),
     rent: (email, phone, service, time, date) => ({
-        from: `${ksk} <${address}>`,
+        from: `"${ksk}" <${address}>`,
         to: address,
         subject: `Заказ услуги ${time}`,
         html: `
@@ -122,9 +121,9 @@ router.post("/rent", async (req, res) => {
 });
 
 module.exports = router;
-module.exports.sendRegisterEmail = async (email, password) => {
+module.exports.sendRegisterEmail = async (email, link) => {
     try {
-        const result = await mailer.transporter.sendMail(mailer.register(email, password));
+        const result = await mailer.transporter.sendMail(mailer.register(email, link));
         return { status: "success", result };
     } catch(e) { console.log(e); return { status: "error", error: e }; }
 };
