@@ -1,6 +1,7 @@
 import Router from "next/router";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import ContentHeader from "../components/common/ContentHeader";
+import { DefaultErrorModal, ErrorModal, SuccessModal } from "../components/common/Modals";
 import AuthProvider from "../utils/providers/AuthProvider";
 
 export async function getServerSideProps({ query: { email, uuid } }) {
@@ -37,12 +38,7 @@ export default function ForgotPassword({ type, email, uuid }) {
         </ContentHeader>
         { type === "email" && <EmailContent openErrorModal={() => toggleErrorModal(true)} /> }
         { type === "password" && <PasswordContent openErrorModal={() => toggleErrorModal(true)} email={email} uuid={uuid} /> }
-        <div className={`modal-error-wrapper ${errorModal && "opened"}`}>
-            <div className="modal-error-content">
-                <p>Произошла ошибка. Обновите страницу и попробуйте позже.</p>
-                <button className="warning-delete-button" onClick={() => toggleErrorModal(false)}>Ок</button>
-            </div>
-        </div>
+        <DefaultErrorModal opened={errorModal} close={() => toggleErrorModal(false)} />
     </>);
 }
 
@@ -75,23 +71,13 @@ function EmailContent({ openErrorModal }) {
                 <button className="forgot-password-button" onClick={submit}>Подтвердить</button>
             </div>
         </div>
-        <div className={`modal-error-wrapper ${invalidEmailModal && "opened"}`}>
-            <div className="modal-error-content">
-                <p>
-                    Введите корректный адрес электронной почты. Например:
-                    <br />
-                    example@gmail.com
-                </p>
-                <button className="warning-delete-button" onClick={() => setInvalidEmailModal(false)}>Ок</button>
-            </div>
-        </div>
-        <div className={`warning-success-modal ${successModal && "opened"}`}>
-            <div className="warning-success-modal-content">
-                <span className="close-modal" onClick={() => setSuccessModal(false)}>X</span>
-                <p>Заявка отправлена! В течение нескольких минут Вам на почту придет сообщение с инструкцией.</p>
-                <button className="warrning-success-modal-button" onClick={() => setSuccessModal(false)}>Ок</button>
-            </div>
-        </div>
+        <ErrorModal opened={invalidEmailModal} close={() => setInvalidEmailModal(false)}>
+            <p>Введите корректный адрес электронной почты. Например:<br />example@gmail.com</p>
+        </ErrorModal>
+        <SuccessModal
+            opened={successModal} close={() => setSuccessModal(false)}
+            content="Заявка отправлена! В течение нескольких минут Вам на почту придёт сообщение с инструкцией."
+        />
     </>);
 }
 
