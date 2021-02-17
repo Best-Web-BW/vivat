@@ -9,14 +9,15 @@ export default function _Unicorn(props) {
 }
 
 function Unicorn({ config, setListeners }) {
-    const [src, setSrc] = useState(config.rest);
+    const [src, setSrc] = useState(config.follow[5].image);
     const [mode, setMode] = useState("rest");
 
     const animator = useMemo(() => ({
-        rest: () => { setMode("rest"); setSrc(config.rest); },
+        // Rest is follow's [-4; 4) duplicate, it has index 5
+        rest: () => { setMode("rest"); setSrc(config.follow[5].image); },
         follow: angle => {
             setMode("follow");
-            angle = angle ? Math.bound(angle, -90, 90) : 0;
+            angle = Math.bound(angle ?? 0, -90, 90);
             setSrc(config.follow.find(({ min, max }) => min < angle && max >= angle).image);
         },
         shy: async (shying = true, after) => {
