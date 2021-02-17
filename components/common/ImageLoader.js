@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { ErrorModal } from "./Modals";
 
 export class Image {
     constructor(url, name) {
@@ -33,9 +34,7 @@ export default function ImageLoader({ isSingle, type, onChange, defaultImages })
     const filterImages = (images, image) => images.filter(img => !img.isEqual(image));
     
     const addImage = image => setImages(prev => {
-        let newImages;
-        if(isSingle && false) newImages = [image];
-        else newImages = [...filterImages(prev, image), image];
+        const newImages = isSingle ? [image] : [...filterImages(prev, image), image];
         setTimeout(() => onChange(newImages), 0);
         return newImages;
     });
@@ -48,6 +47,7 @@ export default function ImageLoader({ isSingle, type, onChange, defaultImages })
         return newImages;
     });
     
+    const [errorModal, setErrorModal] = useState(false);
     const inputRef = useRef();
     const loadImages = async () => {
         const images = inputRef.current.files;
@@ -59,31 +59,36 @@ export default function ImageLoader({ isSingle, type, onChange, defaultImages })
         const response = await fetch("/api/admin/load_images/" + type, { method: "POST", body: formData });
         const json = await response.json();
 
-        if(json.status !== "success") alert("Не удалось загрузить фото, попробуйте позже");
+        if(json.status !== "success") setErrorModal(true);
         else for(let image of json.images) addImage(new Image(image.url, image.name));
 
-        resetInput();
+        // resetInput();
     };
     
-    const [input, setInput] = useState();
-    const resetInput = () => {
-        setInput(<input />)
-        setInput(<input ref={inputRef} type="file" multiple={!isSingle} accept="image/*" onChange={loadImages} />);
-    }
+    // const [input, setInput] = useState();
+    // const resetInput = () => {
+    //     setInput(<input />)
+    //     setInput(<input ref={inputRef} type="file" multiple={!isSingle} accept="image/*" onChange={loadImages} />);
+    // }
 
-    useEffect(() => resetInput(), []);
+    // useEffect(() => resetInput(), []);
 
     return (
         <>
             <form encType="multipart/form-data">
                 <label>
                     <p className="gallery-upload-button">Выбрать фото</p>
-                    { input }
+                    <input ref={inputRef} type="file" multiple={!isSingle} accept="image/*" onChange={loadImages} />
+                    {/* { input } */}
                 </label>
             </form>
             <div className="add-gallery-modal-imgs-list">
                 { images.map(image => <ImageEntry key={image.name} image={image} remove={() => removeImage(image)} /> ) }
             </div>
+            <ErrorModal
+                content="Не удалось загрузить фото, попробуйте позже."
+                opened={errorModal} close={() => setErrorModal(false)}
+            />
         </>
     );
 }

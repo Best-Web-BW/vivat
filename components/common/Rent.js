@@ -1,6 +1,7 @@
 import AuthProvider from "../../utils/providers/AuthProvider";
 import MailProvider from "../../utils/providers/MailProvider";
 import { reformatDate } from "../../utils/common";
+import { DefaultErrorModal, ErrorModal, SuccessModal } from "./Modals";
 import DatePicker from "./DatePicker";
 import { useState } from "react";
 
@@ -10,8 +11,12 @@ export default function Rent({ text, cost, minHours, hoursText }) {
     const [selectedTime, setSelectedTime] = useState("");
     const [selectedDate, setSelectedDate] = useState(new Date());
 
+    const [successModal, setSuccessModal] = useState(false);
+    const [rentTimeErrorModal, setRentTimeErrorModal] = useState(false);
+    const [errorModal, setErrorModal] = useState(false);
+
     const submit = async () => {
-        if(!selectedTime.length) return alert("Не выбрано время аренды");
+        if(!selectedTime.length) return setRentTimeErrorModal(true);
         
         try {
             const email = AuthProvider.userData.email;
@@ -19,19 +24,19 @@ export default function Rent({ text, cost, minHours, hoursText }) {
             console.log(email, phone, text, selectedTime, reformatDate(selectedDate));
             const result = await MailProvider.sendRentEmail(email, phone, text, selectedTime, reformatDate(selectedDate));
             if(result.success) {
-                alert("Успешная аренда, с вами свяжутся для уточнения деталей");
+                setSuccessModal(true);
                 setSelectedTime("");
             } else {
-                alert("Арендовать время не получилось, попробуйте позже");
-                console.log({ result });
+                setErrorModal(true);
+                console.error({ result });
             }
         } catch(e) {
-            alert("Внутренняя ошибка сервера, попробуйте позже");
-            console.log(e);
+            setErrorModal(true);
+            console.error(e);
         }
     };
 
-    return (
+    return (<>
         <div className="order-service-wrapper content-block">
             <div className="order-service-block">
                 <div className="order-service-title-wrapper">
@@ -70,5 +75,14 @@ export default function Rent({ text, cost, minHours, hoursText }) {
                 </div>
             </div>
         </div>
-    );
+        <SuccessModal
+            content="Успешная аренда, с вами свяжутся для уточнения деталей."
+            opened={successModal} close={() => setSuccessModal(false)}
+        />
+        <ErrorModal
+            opened={rentTimeErrorModal} close={() => setRentTimeErrorModal(false)}
+            content="Не выбрано время для аренды."
+        />
+        <DefaultErrorModal opened={errorModal} close={() => setErrorModal(false)} />
+    </>);
 }

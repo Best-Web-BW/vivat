@@ -1,10 +1,11 @@
 import AuthProvider, { AuthVariableComponent, useAuth } from "../../utils/providers/AuthProvider";
 import EventListProvider from "../../utils/providers/EventListProvider";
-import { currentISODate, toISODate } from "../../utils/common";
+import { currentISODate, sleep, toISODate } from "../../utils/common";
 import ProfileMenu from "../../components/common/ProfileMenu";
 import DatePicker from "../../components/common/DatePicker";
 import { useEffect, useRef, useState } from "react";
 import Router from "next/router";
+import { DefaultErrorModal, SuccessModal } from "../../components/common/Modals";
 // import makeAnimated from "react-select/animated";
 // import { css, cx } from "@emotion/css";
 
@@ -68,7 +69,7 @@ function Registration({ Select }) {
         // console.log("Mapped events", mappedEvents);
         
         setEvents(mappedEvents);
-        refs.event_id.current = mappedEvents[0].value;
+        refs.event_id.current = mappedEvents[0]?.value;
     }, [user]);
 
     const refs = {
@@ -113,13 +114,16 @@ function Registration({ Select }) {
         wait_needed: refs.wait_needed.current.checked ? true : false
     });
 
+    const [successModal, setSuccessModal] = useState(false);
+    const [errorModal, setErrorModal] = useState(false);
     const submit = async () => {
         const result = await AuthProvider.registerToEvent(crawl());
-        if(result.success) {
-            alert("Успешная регистрация на мероприятие");
-            Router.push("/account/my-events");
-        } else alert("Что-то пошло не так, повторите попытку позже");
+        if(result.success) setSuccessModal(true);
+        else setErrorModal(true);
     };
+
+    global.s = () => setSuccessModal(true);
+    global.e = () => setErrorModal(true);
 
     const [riderBirthdate, setRiderBirthdate] = useState(new Date());
 
@@ -239,6 +243,11 @@ function Registration({ Select }) {
                 <div className="registration-row flex-row">
                     <button className="registration-button" onClick={submit}>Зарегистрировать</button>
                 </div>
+                <SuccessModal
+                    close={() => (setSuccessModal(false), sleep(600).then(() => Router.push("/account/my-events")))}
+                    opened={successModal} content="Успешная регистрация на мероприятие."
+                />
+                <DefaultErrorModal opened={errorModal} close={() => setErrorModal(false)} />
             </div>
             <div />
         </AuthVariableComponent>

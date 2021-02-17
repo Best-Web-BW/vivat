@@ -3,12 +3,13 @@ import EventListProvider from "../../utils/providers/EventListProvider";
 import DocumentLoader from "../../components/common/DocumentLoader";
 import { convertDate } from "../../components/sliders/EventSlider";
 import ProfileMenu from "../../components/common/ProfileMenu";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import TextEditor from "../../components/common/TextEditor";
 import DatePicker from "../../components/common/DatePicker";
-import { toISODate } from "../../utils/common";
+import { sleep, toISODate } from "../../utils/common";
 import Router from "next/router";
 import Link from "next/link";
+import { DefaultErrorModal, ErrorModal, SuccessModal, WarningModal } from "../../components/common/Modals";
 // import CreatableSelect from 'react-select/creatable';
 // import Select from "react-select";
 
@@ -88,6 +89,22 @@ function ManageEvents({ CreatableSelect }) {
     const [deleteModalOpened, setDeleteModalOpened] = useState(false);
     const [successCreateModalOpened, setSuccessCreateModalOpened] = useState(false);
     const [successEditModalOpened, setSuccessEditModalOpened] = useState(false);
+    const [successDeleteModalOpened, setSuccessDeleteModalOpened] = useState(false);
+    const [defaultErrorModal, setDefaultErrorModal] = useState(false);
+    const [errorModal, setErrorModal] = useState(null);
+
+    const processError = useCallback(error => {
+        switch(error) {
+            case "db_error": return setErrorModal("Ошибка БД, попробуйте позже");
+            case "event_not_exist": return setErrorModal("Такого мероприятия не существует");
+            case "invalid_request": return setErrorModal("Неправильный запрос");
+            case "no_category": return setErrorModal("Не выбрана категория");
+            case "no_title": return setErrorModal("Не введено название");
+            case "no_contents": return setErrorModal("Не введён текст");
+            case "no_address": return setErrorModal("Не введён адрес");
+            default: return setErrorModal("Внутренная ошибка");
+        }
+    }, []);
 
     const editEvent = async id => {
         const e = await EventListProvider.getEventDetails(id);
@@ -96,78 +113,17 @@ function ManageEvents({ CreatableSelect }) {
     }
 
     const [removeID, setRemoveID] = useState();
-    const prepareToRemove = id => {
-        setRemoveID(id);
-        setDeleteModalOpened(true);
-    };
+    const prepareToRemove = id => (setRemoveID(id), setDeleteModalOpened(true));
     const removeEvent = async id => {
         const result = await EventListProvider.removeEvent(id);
-        if(result.success) {
-            alert("Мероприятие успешно удалено");
-            Router.reload();
-        } else switch(result.reason) {
-            case "db_error": return alert("Ошибка БД, попробуйте позже");
-            case "event_not_exist": return alert("Такого мероприятия не существует");
-            case "invalid_request": return alert("Неправильный запрос");
-            default: return alert("Внутренная ошибка");
-        }
+        if(result.success) setSuccessDeleteModalOpened(true);
+        else processError(result.reason);
     }
 
     return (
         <AdminVariableComponent>
             <div className="profile-content content-block">
                 <ProfileMenu active="manage-events" />
-                 <div className={`warning-delete-modal ${deleteModalOpened && "opened"}`}>
-                    <div className="warning-delete-modal-content">
-                        <p>Вы уверены, что хотите удалить это событие безвозвратно?</p>
-                        <button
-                            className="warning-delete-button"
-                            onClick={() => {
-                                removeEvent(removeID);
-                                setDeleteModalOpened(false);
-                            }}
-                        >Да</button>
-                        <button className="warning-delete-button-no" onClick={() => setDeleteModalOpened(false)}>Нет</button>
-                    </div>
-                </div>
-                <div className={`warning-success-modal ${successCreateModalOpened && "opened"}`}>
-                    <div className="warning-success-modal-content">
-                        <span
-                            className="close-modal"
-                            onClick={() => {
-                                setSuccessCreateModalOpened(false);
-                                setTimeout(() => Router.reload(), 600);
-                            }}
-                        >X</span>
-                        <p>Событие успешно создано!</p>
-                        <button
-                            className="warrning-success-modal-button"
-                            onClick={() => {
-                                setSuccessCreateModalOpened(false);
-                                setTimeout(() => Router.reload(), 600);
-                            }}
-                        >Ок</button>
-                    </div>
-                </div>
-                <div className={`warning-success-modal ${successEditModalOpened && "opened"}`}>
-                    <div className="warning-success-modal-content">
-                        <span
-                            className="close-modal"
-                            onClick={() => {
-                                setSuccessEditModalOpened(false);
-                                setTimeout(() => Router.reload(), 600);
-                            }}
-                        >X</span>
-                        <p>Событие успешно изменено!</p>
-                        <button
-                            className="warrning-success-modal-button"
-                            onClick={() => {
-                                setSuccessEditModalOpened(false);
-                                setTimeout(() => Router.reload(), 600);
-                            }}
-                        >Ок</button>
-                    </div>
-                </div>
                 <div className="admin-events-list">
                     <h2>Управление событиями</h2>
                     <div className="add-event-button-container">
@@ -176,20 +132,40 @@ function ManageEvents({ CreatableSelect }) {
                     { events.map(event => <EventBlock key={event.id} {...event} edit={editEvent} remove={prepareToRemove} />) }
                 </div>
                 <EventEditor
-                    {...{ setSuccessCreateModalOpened, setSuccessEditModalOpened }}
-                    CreatableSelect={CreatableSelect}
+                    {...{
+                        setSuccessCreateModalOpened, setSuccessEditModalOpened,
+                        processError, CreatableSelect, categories
+                    }}
                     eventData={editorConfig.data}
                     opened={editorConfig.opened}
                     action={editorConfig.action}
-                    categories={categories}
                     close={closeEditor}
                 />
+                <SuccessModal
+                    close={() => { setSuccessCreateModalOpened(false); sleep(600).then(() => Router.reload()); }}
+                    opened={successCreateModalOpened} content="Мероприятие успешно создано!"
+                />
+                <SuccessModal
+                    close={() => { setSuccessEditModalOpened(false); sleep(600).then(() => Router.reload()); }}
+                    opened={successEditModalOpened} content="Мероприятие успешно изменено!"
+                />
+                <SuccessModal
+                    close={() => { setSuccessDeleteModalOpened(false); sleep(600).then(() => Router.reload()); }}
+                    opened={successDeleteModalOpened} content="Мероприятие успешно удалено!"
+                />
+                <WarningModal
+                    opened={deleteModalOpened} content="Вы уверены, что хотите удалить это мероприятие безвозвратно?"
+                    submit={() => { removeEvent(removeID); setDeleteModalOpened(false); }}
+                    cancel={() => setDeleteModalOpened(false)}
+                />
+                <ErrorModal opened={errorModal} content={errorModal} close={() => setErrorModal(false)} />
+                <DefaultErrorModal opened={defaultErrorModal} close={() => setDefaultErrorModal(false)} />
             </div>
         </AdminVariableComponent>
     );
 }
 
-export function EventEditor({ CreatableSelect, opened, action, eventData, close, categories, setSuccessCreateModalOpened, setSuccessEditModalOpened }) {
+export function EventEditor({ CreatableSelect, opened, action, eventData, close, categories, setSuccessCreateModalOpened, setSuccessEditModalOpened, processError }) {
     const [actionMap] = useState({ "create": ["Создать", () => setEvent(undefined)], "edit": ["Изменить", data => setEvent(data)] });
     const [event, setEvent] = useState();
     const [selectedCategory, setSelectedCategory] = useState("");
@@ -241,15 +217,7 @@ export function EventEditor({ CreatableSelect, opened, action, eventData, close,
     const submit = async () => {
         const data = crawl();
         const validated = validate(data);
-        if(!validated.success) {
-            switch (validated.error) {
-                case "no_title": return alert("Не введено название");
-                case "no_contents": return alert("Не введён текст");
-                case "no_address": return alert("Не введён адрес");
-                case "no_category": return alert("Не выбрана категория");
-                default: return alert("Внутренняя ошибка");
-            }
-        }
+        if(!validated.success) return processError(validated.error);
         return data;
     };
 
@@ -257,17 +225,8 @@ export function EventEditor({ CreatableSelect, opened, action, eventData, close,
         const data = await submit();
         if(data) {
             const result = await EventListProvider.createEvent(data);
-            console.log(result);
-            if(result.success) {
-                setSuccessCreateModalOpened(true);
-                // close();
-                // Router.reload();
-            } else switch(result.reason) {
-                case "db_error": return alert("Ошибка БД, попробуйте позже");
-                case "event_not_exist": return alert("Такого события не существует");
-                case "invalid_request": return alert("Неправильный запрос");
-                default: return alert("Внутренная ошибка");
-            }
+            if(result.success) setSuccessCreateModalOpened(true);
+            else processError(result.reason);
         }
     };
 
@@ -275,16 +234,8 @@ export function EventEditor({ CreatableSelect, opened, action, eventData, close,
         const data = await submit();
         if(data) {
             const result = await EventListProvider.editEvent(id, data);
-            if(result.success) {
-                setSuccessEditModalOpened(true);
-                // close();
-                // Router.reload();
-            } else switch(result.reason) {
-                case "db_error": return alert("Ошибка БД, попробуйте позже");
-                case "event_not_exist": return alert("Такого события не существует");
-                case "invalid_request": return alert("Неправильный запрос");
-                default: return alert("Внутренная ошибка");
-            }
+            if(result.success) setSuccessEditModalOpened(true);
+            else processError(result.reason);
         }
     };
 

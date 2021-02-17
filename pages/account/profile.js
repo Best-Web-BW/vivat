@@ -1,13 +1,15 @@
-import Link from "next/link";
-import { withRouter } from "next/router";
-import { useEffect, useState } from "react";
-import ProfileMenu from "../../components/common/ProfileMenu";
-import { reformatDate } from "../../utils/common";
 import AuthProvider, { useAuth, AuthVariableComponent } from "../../utils/providers/AuthProvider";
+import ProfileMenu from "../../components/common/ProfileMenu";
+import { ErrorModal } from "../../components/common/Modals";
+import { reformatDate, sleep } from "../../utils/common";
+import { useEffect, useState } from "react";
+import { withRouter } from "next/router";
+import Link from "next/link";
 
 export default withRouter(_Profile);
 
 function _Profile({ router }) {
+    const [errorModal, setErrorModal] = useState(false);
     const [content, setContent] = useState(null);
     useEffect(async () => {
         if(!router.isReady) return;
@@ -22,12 +24,17 @@ function _Profile({ router }) {
             setContent(<Profile />);
         } else {
             console.error(result.reason);
-            alert("Ссылка подтверждения недействительна");
-            router.push("/home");
+            setErrorModal(true);
         }
     }, [router.isReady]);
 
-    return content ?? null;
+    return (<>
+        { content }
+        <ErrorModal
+            close={() => (setErrorModal(false), sleep(600).then(() => router.push("/home")))}
+            opened={errorModal} content="Ссылка подтверждения недействительна."
+        />
+    </>);
 }
 
 function Profile() {

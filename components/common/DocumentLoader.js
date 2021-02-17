@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { ErrorModal } from "./Modals";
 
 export class Document {
     constructor(url, name) {
@@ -56,6 +57,7 @@ export default function DocumentLoader({ type, onChange, defaultDocuments }) {
         return newDocuments;
     });
     
+    const [errorModal, setErrorModal] = useState(false);
     const inputRef = useRef();
     const loadDocuments = async () => {
         const documents = inputRef.current.files;
@@ -67,19 +69,21 @@ export default function DocumentLoader({ type, onChange, defaultDocuments }) {
         const response = await fetch("/api/admin/load_documents/" + type, { method: "POST", body: formData });
         const json = await response.json();
 
-        if(json.status !== "success") alert("Не удалось загрузить документ(ы), попробуйте позже");
+        if(json.status !== "success") setErrorModal(true);
         else for(let document of json.documents) addDocument(new Document(document.url, document.name));
 
-        resetInput();
+        // resetInput();
     };
-    
-    const [input, setInput] = useState();
-    const resetInput = () => {
-        setInput(<input />)
-        setInput(<input ref={inputRef} type="file" accept="application/*, image/*, video/*, audio/*" multiple={true} onChange={loadDocuments} />);
-    }
 
-    useEffect(() => resetInput(), []);
+    global.e = setErrorModal;
+    
+    // const [input, setInput] = useState();
+    // const resetInput = () => {
+    //     setInput(<input />)
+    //     setInput(<input ref={inputRef} type="file" accept="application/*, image/*, video/*, audio/*" multiple={true} onChange={loadDocuments} />);
+    // }
+
+    // useEffect(() => resetInput(), []);
 
     return (
         <>
@@ -87,12 +91,17 @@ export default function DocumentLoader({ type, onChange, defaultDocuments }) {
                 <p>Выберите документ</p>
                 <label>
                     <p className="document-upload-button">Выбрать</p>
-                    { input }
+                    <input ref={inputRef} type="file" accept="application/*, image/*, video/*, audio/*" multiple={true} onChange={loadDocuments} />
+                    {/* { input } */}
                 </label>
             </form>
             <div className="edit-event-add-document-preview-list">
                 { documents.map(document => <DocumentEntry key={document.name} document={document} remove={() => removeDocument(document)} /> ) }
             </div>
+            <ErrorModal
+                content="Не удалось загрузить документ(ы), попробуйте позже."
+                opened={errorModal} close={() => setErrorModal(false)}
+            />
         </>
     );
 }

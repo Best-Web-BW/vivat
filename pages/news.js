@@ -1,12 +1,14 @@
 import Router, { useRouter } from "next/router"
 import Link from "next/link";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 // import Select from "react-select";
 import ContentHeader from "../components/common/ContentHeader";
 import DBProvider from "../utils/providers/DBProvider";
 import PostListProvider from "../utils/providers/PostListProvider";
 import { AdminVariableComponent } from "../utils/providers/AuthProvider";
 import TextEditor from "../components/common/TextEditor";
+import { DefaultErrorModal, ErrorModal, SuccessModal, WarningModal } from "../components/common/Modals";
+import { sleep } from "../utils/common";
 // import { css, cx } from "@emotion/css"
 
 const groupStyles = {
@@ -160,10 +162,26 @@ export default function News({ query: { categories: _categories, tags: _tags, se
         setUniqueTags(tags);
         setCounts(Object.entries(counts));
     }, []);
-
+    
     const [deleteModalOpened, setDeleteModalOpened] = useState(false);
     const [successCreateModalOpened, setSuccessCreateModalOpened] = useState(false);
     const [successEditModalOpened, setSuccessEditModalOpened] = useState(false);
+    const [successDeleteModalOpened, setSuccessDeleteModalOpened] = useState(false);
+    const [defaultErrorModal, setDefaultErrorModal] = useState(false);
+    const [errorModal, setErrorModal] = useState(null);
+
+    const processError = useCallback(error => {
+        switch(error) {
+            case "db_error": return setErrorModal("Ошибка БД, попробуйте позже.");
+            case "post_not_exist": return setErrorModal("Такой статьи не существует.");
+            case "invalid_request": return setErrorModal("Неправильный запрос.");
+            case "no_tags": return setErrorModal("Не выбрано ни одного тега.");
+            case "no_category": return setErrorModal("Не выбрана категория.");
+            case "no_title": return setErrorModal("Не введено название.");
+            case "no_contents": return setErrorModal("Не введён текст.");
+            default: return setDefaultErrorModal(true);
+        }
+    }, []);
 
     const [editorConfig, setEditorConfig] = useState({
         opened: false,
@@ -180,21 +198,11 @@ export default function News({ query: { categories: _categories, tags: _tags, se
     }
 
     const [removeID, setRemoveID] = useState();
-    const prepareToRemove = id => {
-        setRemoveID(id);
-        setDeleteModalOpened(true);
-    };
+    const prepareToRemove = id => (setRemoveID(id), setDeleteModalOpened(true));
     const removePost = async id => {
         const result = await PostListProvider.removePost(id);
-        if(result.success) {
-            alert("Новость успешно удалена");
-            Router.reload();
-        } else switch(result.reason) {
-            case "db_error": return alert("Ошибка БД, попробуйте позже");
-            case "post_not_exist": return alert("Такой новости не существует");
-            case "invalid_request": return alert("Неправильный запрос");
-            default: return alert("Внутренная ошибка");
-        }
+        if(result.success) setSuccessDeleteModalOpened(true);
+        else processError(result.reason);
     }
     
     return (
@@ -212,61 +220,6 @@ export default function News({ query: { categories: _categories, tags: _tags, se
                 </p>
             </ContentHeader>
             <div className="blog-content content-block">
-            
-                <div className={`warning-delete-modal ${deleteModalOpened && "opened"}`}>
-                    <div className="warning-delete-modal-content">
-                        <p>Вы уверены, что хотите удалить эту статью безвозвратно?</p>
-                        <button
-                            className="warning-delete-button"
-                            onClick={() => {
-                                removePost(removeID);
-                                setDeleteModalOpened(false);
-                            }}
-                        >Да</button>
-                        <button className="warning-delete-button-no" onClick={() => setDeleteModalOpened(false)}>Нет</button>
-                    </div>
-                </div>
-
-                <div className={`warning-success-modal ${successCreateModalOpened && "opened"}`}>
-                    <div className="warning-success-modal-content">
-                        <span
-                            className="close-modal"
-                            onClick={() => {
-                                setSuccessCreateModalOpened(false);
-                                setTimeout(() => Router.reload(), 600);
-                            }}
-                        >X</span>
-                        <p>Статья успешно создана!</p>
-                        <button
-                            className="warrning-success-modal-button"
-                            onClick={() => {
-                                setSuccessCreateModalOpened(false);
-                                setTimeout(() => Router.reload(), 600);
-                            }}
-                        >Ок</button>
-                    </div>
-                </div>
-
-                <div className={`warning-success-modal ${successEditModalOpened && "opened"}`}>
-                    <div className="warning-success-modal-content">
-                        <span
-                            className="close-modal"
-                            onClick={() => {
-                                setSuccessEditModalOpened(false);
-                                setTimeout(() => Router.reload(), 600);
-                            }}
-                        >X</span>
-                        <p>Статья успешно изменена!</p>
-                        <button
-                            className="warrning-success-modal-button"
-                            onClick={() => {
-                                setSuccessEditModalOpened(false);
-                                setTimeout(() => Router.reload(), 600);
-                            }}
-                        >Ок</button>
-                    </div>
-                </div>
-
                 <div className="modile-blog-menu">
                     <div className="mobile-blog-menu-wrapper">
                         <div className="mobile-nav-button">
@@ -308,7 +261,26 @@ export default function News({ query: { categories: _categories, tags: _tags, se
                     </div>
                 </div>
                 <AdminVariableComponent>
-                    <PostEditor tags={uniqueTags} categories={counts} {...editorConfig} close={() => closeEditor(false)} {...{ setSuccessCreateModalOpened, setSuccessEditModalOpened }} />
+                    <PostEditor tags={uniqueTags} categories={counts} {...editorConfig} close={() => closeEditor(false)} {...{ setSuccessCreateModalOpened, setSuccessEditModalOpened, processError }} />
+                    <SuccessModal
+                        close={() => { setSuccessCreateModalOpened(false); sleep(600).then(() => Router.reload()); }}
+                        opened={successCreateModalOpened} content="Статья успешно создана!"
+                    />
+                    <SuccessModal
+                        close={() => { setSuccessEditModalOpened(false); sleep(600).then(() => Router.reload()); }}
+                        opened={successEditModalOpened} content="Статья успешно изменена!"
+                    />
+                    <SuccessModal
+                        close={() => { setSuccessDeleteModalOpened(false); sleep(600).then(() => Router.reload()); }}
+                        opened={successDeleteModalOpened} content="Статья успешно удалена!"
+                    />
+                    <WarningModal
+                        opened={deleteModalOpened} content="Вы уверены, что хотите удалить эту статью безвозвратно?"
+                        submit={() => { removePost(removeID); setDeleteModalOpened(false); }}
+                        cancel={() => setDeleteModalOpened(false)}
+                    />
+                    <ErrorModal opened={errorModal} content={errorModal} close={() => setErrorModal(false)} />
+                    <DefaultErrorModal opened={defaultErrorModal} close={() => setDefaultErrorModal(false)} />
                 </AdminVariableComponent>
             </div>
         </div>
@@ -339,7 +311,7 @@ export function PostEditor(props) {
     return imported ? <RawPostEditor {...imported} {...props} /> : null;
 }
 
-function RawPostEditor({ CreatableSelect, animatedComponents, opened, action, data, close, categories, tags, setSuccessCreateModalOpened, setSuccessEditModalOpened }) {
+function RawPostEditor({ CreatableSelect, animatedComponents, opened, action, data, close, categories, tags, setSuccessCreateModalOpened, setSuccessEditModalOpened, processError }) {
     const [actionMap] = useState({ "create": ["Создать", () => setPost(undefined)], "edit": ["Изменить", data => setPost(data)] });
     const [post, setPost] = useState();
     const [selectedCategory, setSelectedCategory] = useState("");
@@ -364,9 +336,9 @@ function RawPostEditor({ CreatableSelect, animatedComponents, opened, action, da
     });
 
     const validate = data => {
-        if(!data.title.length) return { success: 0, error: "no_title" };
-        else if(data.contents.length <= 7) return { success: 0, error: "no_contents" };
+        if(data.contents.length <= 11) return { success: 0, error: "no_contents" };
         else if(!data.category.length) return { success: 0, error: "no_category" };
+        else if(!data.title.length) return { success: 0, error: "no_title" };
         else if(!data.tags.length) return { success: 0, error: "no_tags" };
         else return { success: 1 };
     };
@@ -374,15 +346,7 @@ function RawPostEditor({ CreatableSelect, animatedComponents, opened, action, da
     const submit = async () => {
         const data = crawl();
         const validated = validate(data);
-        if(!validated.success) {
-            switch (validated.error) {
-                case "no_title": return alert("Не введено название");
-                case "no_contents": return alert("Не введён текст");
-                case "no_category": return alert("Не выбрана категория");
-                case "no_tags": return alert("Не выбрано ни одного тега");
-                default: return alert("Внутренняя ошибка");
-            }
-        }
+        if(!validated.success) return processError(validated.error);
         return data;
     };
 
@@ -392,12 +356,7 @@ function RawPostEditor({ CreatableSelect, animatedComponents, opened, action, da
             const result = await PostListProvider.createPost({ ...data, date: new Date().toISOString() });
             console.log(result);
             if(result.success) setSuccessCreateModalOpened(true);
-            else switch(result.reason) {
-                case "db_error": return alert("Ошибка БД, попробуйте позже");
-                case "post_not_exist": return alert("Такой новости не существует");
-                case "invalid_request": return alert("Неправильный запрос");
-                default: return alert("Внутренная ошибка");
-            }
+            else processError(result.reason);
         }
     };
 
@@ -406,12 +365,7 @@ function RawPostEditor({ CreatableSelect, animatedComponents, opened, action, da
         if(data) {
             const result = await PostListProvider.editPost(id, data);
             if(result.success) setSuccessEditModalOpened(true);
-            else switch(result.reason) {
-                case "db_error": return alert("Ошибка БД, попробуйте позже");
-                case "post_not_exist": return alert("Такой новости не существует");
-                case "invalid_request": return alert("Неправильный запрос");
-                default: return alert("Внутренная ошибка");
-            }
+            else processError(result.reason);
         }
     };
 
@@ -445,9 +399,9 @@ function RawPostEditor({ CreatableSelect, animatedComponents, opened, action, da
                         /> */}
                         <CreatableSelect
                             theme={theme => ({ ...theme, borderRadius: 0, colors: { ...theme.colors, primary: "" } })}
-                            value={{ value: selectedCategory, label: selectedCategory }}
                             options={categories.map(([category]) => ({ value: category, label: category }))}
                             onChange={option => setSelectedCategory(option?.label ?? "")}
+                            value={{ value: selectedCategory, label: selectedCategory }}
                             formatCreateLabel={value => `Создать категорию "${value}"`}
                             placeholder="Выберите из списка или создайте новую"
                             formatGroupLabel={formatGroupLabel}

@@ -74,12 +74,6 @@ export default function Gallery({ albums }) {
         const result = await AlbumListProvider.removeAlbum(id);
         if(result.success) setSuccessDeleteModalOpened(true);
         else processError(result.reason);
-        // else switch(result.reason) {
-        //     case "db_error": return setErrorModal("Ошибка БД, попробуйте позже.");
-        //     case "album_not_exist": return setErrorModal("Такого альбома не существует.");
-        //     case "invalid_request": return setErrorModal("Неправильный запрос, возможно ошибка сервера, обратитесь к разработчику.");
-        //     default: return setDefaultErrorModal(true);
-        // }
     }
 
     return (
@@ -151,11 +145,8 @@ export function AlbumEditor({ opened, action, data, close, setSuccessCreateModal
     
     const titleRef = useRef();
 
-    const crawl = () => ({
-        title: titleRef.current.value,
-        cover, images
-    });
-
+    const crawl = () => ({ title: titleRef.current.value, cover, images });
+    
     const validate = data => {
         if(!data.title.length) return { success: 0, error: "no_title" };
         else if(!data.cover) return { success: 0, error: "no_cover" };
@@ -167,12 +158,6 @@ export function AlbumEditor({ opened, action, data, close, setSuccessCreateModal
         const data = crawl();
         const validated = validate(data);
         if(!validated.success) return processError(validated.error);
-        // if(!validated.success) switch (validated.error) {
-        //     case "no_title": return alert("Не введено название");
-        //     case "no_cover": return alert("Не выбрана обложка альбома");
-        //     case "no_images": return alert("Не выбраны фото");
-        //     default: return alert("Внутренняя ошибка");
-        // }
         return data;
     };
 
@@ -183,12 +168,6 @@ export function AlbumEditor({ opened, action, data, close, setSuccessCreateModal
             console.log(result);
             if(result.success) setSuccessCreateModalOpened(true);
             else processError(result.reason);
-            // else switch(result.reason) {
-            //     case "db_error": return alert("Ошибка БД, попробуйте позже");
-            //     case "album_not_exist": return alert("Такого альбома не существует");
-            //     case "invalid_request": return alert("Неправильный запрос");
-            //     default: return alert("Внутренная ошибка");
-            // }
         }
     };
 
@@ -198,12 +177,6 @@ export function AlbumEditor({ opened, action, data, close, setSuccessCreateModal
             const result = await AlbumListProvider.editAlbum(id, data);
             if(result.success) setSuccessEditModalOpened(true);
             else processError(result.reason);
-            // else switch(result.reason) {
-            //     case "db_error": return alert("Ошибка БД, попробуйте позже");
-            //     case "album_not_exist": return alert("Такого альбома не существует");
-            //     case "invalid_request": return alert("Неправильный запрос");
-            //     default: return alert("Внутренная ошибка");
-            // }
         }
     };
 
