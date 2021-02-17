@@ -47,7 +47,7 @@ export const UnicornFollowInput = ({ props, inputRef, follow, rest }) => {
     const updateText = useCallback(() => {
         spanRef.current.innerText = inputRef.current.value;
         const angle = ((spanRef.current.offsetWidth / inputRef.current.offsetWidth) - 0.5) * 90;
-        setTimeout(() => follow(angle), 0);
+        if(document.activeElement == inputRef.current) setTimeout(() => follow(angle), 0);
         spanRef.current.innerText = "";
     }, [follow, rest]);
 
