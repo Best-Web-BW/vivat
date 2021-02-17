@@ -1,4 +1,4 @@
-import { DefaultErrorModal, SuccessModal, WarningModal } from "../components/common/Modals";
+import { DefaultErrorModal, ErrorModal, SuccessModal, WarningModal } from "../components/common/Modals";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AdminVariableComponent } from "../utils/providers/AuthProvider";
 import AlbumListProvider from "../utils/providers/AlbumListProvider";
