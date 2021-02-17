@@ -1,5 +1,6 @@
 import Router from "next/router";
 import { useState, useEffect } from "react";
+import FetchProvider from "./FetchProvider";
 
 export function useAuth() {
     return AuthProvider.userData;
@@ -35,22 +36,28 @@ export default class AuthProvider {
         window.dispatchEvent(new CustomEvent("onauth"));
     }
 
-    static register(email, name, birthdate) {
+    static register(email, name, birthdate, password) {
         return new Promise(async (resolve, reject) => {
             try {
                 const response = await fetch("/api/auth/register", {
                     method: "POST",
                     headers: { "Content-Type": "application/json;charset=utf-8" },
-                    body: JSON.stringify({ email, name, birthdate })
+                    body: JSON.stringify({ email, name, birthdate, password })
                 });
                 const json = await response.json();
                 const success = json.status === "success";
                 const reasons = json.reasons;
 
-                if(success) this.setUser(json);
+                // if(success) this.setUser(json);
                 resolve([success, reasons]);
             } catch(e) { reject(); }
         });
+    }
+
+    static async verifyEmail(email, uuid) {
+        const result = await FetchProvider.post("/api/auth/verify_email", { email, uuid });
+        if(result.status === "success") return { success: 1 };
+        else return { success: 0, reason: result.error };
     }
 
     static authenticate(email, password) {
@@ -112,7 +119,7 @@ export default class AuthProvider {
                     this.userData = json.user;
                     window.dispatchEvent(new CustomEvent("onauth"));
                     resolve({ success: 1 });
-                } else resolve({ success: 0, reason: json.reason });
+                } else resolve({ success: 0, reason: json.error });
             } catch(e) { reject(); }
         })
     }
@@ -132,6 +139,24 @@ export default class AuthProvider {
                 } else resolve({ success: 0, reason: json.reason });
             } catch(e) { reject(); }
         });
+    }
+
+    static async forgotPassword(email) {
+        const result = await FetchProvider.post("/api/auth/forgot_password/mail", { email });
+        if(result.status === "success") return { success: 1 };
+        else return { success: 0, reason: result.error };
+    }
+
+    static async checkForgotPassword(email, uuid) {
+        const result = await FetchProvider.post("/api/auth/forgot_password/check", { email, uuid });
+        if(result.status === "success") return { success: 1 };
+        else return { success: 0, reason: result.error };
+    }
+
+    static async resetPassword(email, uuid, password ) {
+        const result = await FetchProvider.post("/api/auth/forgot_password/reset", { email, uuid, password  });
+        if(result.status === "success") return { success: 1 };
+        else return { success: 0, reason: result.error };
     }
 }
 
