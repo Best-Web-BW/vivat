@@ -4,6 +4,7 @@ import { AdminVariableComponent } from "../utils/providers/AuthProvider";
 import AlbumListProvider from "../utils/providers/AlbumListProvider";
 import ContentHeader from "../components/common/ContentHeader";
 import ImageLoader from "../components/common/ImageLoader";
+import DBProvider from "../utils/providers/DBProvider";
 import { reformatDate, sleep } from "../utils/common";
 import Router from "next/router";
 import Link from "next/link";
@@ -36,7 +37,7 @@ function Album({ id, cover, date, title, edit, remove }) {
 
 export async function getServerSideProps() {
     const result = { props: { albums: [] } };
-    try { result.props.albums = await AlbumListProvider.getAlbumList() }
+    try { result.props.albums = await DBProvider.getAlbumList() }
     catch(e) { console.error(e) }
     finally { return result }
 }
