@@ -13,7 +13,7 @@ const PRIVATE_KEY = "saifjaw3p c5hga2j89~`dj.PR;OTH";
 const MAX_SESSIONS = 5;
 const ACCESS_KEY_MAX_AGE = 1000 * 60 * 15; // 15 minutes in ms
 const REFRESH_KEY_MAX_AGE = 1000 * 60 * 60 * 24 * 30; // 30 days in ms
-const COOKIE_CONFIG = { path: "/api/auth", secure: !isDev, httpOnly: true, sameSite: "Strict" };
+const COOKIE_CONFIG = { path: "/api/auth", secure: true, httpOnly: true, sameSite: "Strict" };
 
 let users;
 new require("mongodb").MongoClient("mongodb://localhost:27017", { useUnifiedTopology: true, useNewUrlParser: true }).connect((err, client) => {
@@ -63,7 +63,7 @@ router.post("/register", async (req, res) => {
     
     await users.insertOne(user);
     
-    const emailVerifyLink = (isDev ? "http://localhost" : "https://kskvivat.com") + `/account/profile?verify_email=1&email=${email}&uuid=${email_verify_uuid}`;
+    const emailVerifyLink = `https://${isDev ? "localhost" : "kskvivat.com"}/account/profile?verify_email=1&email=${email}&uuid=${email_verify_uuid}`;
     const sendEmailResult = await sendRegisterEmail(email, emailVerifyLink);
     if(sendEmailResult.status === "success") {
         // res.cookie("user_id", user._id.toString(), { maxAge: REFRESH_KEY_MAX_AGE, ...COOKIE_CONFIG });
@@ -245,7 +245,7 @@ router.post("/forgot_password/mail", async (req, res) => {
         const forgot_password = { uuid, expires: moment().add(10, "minutes").toISOString() };
         await users.updateOne({ _id: user._id }, { $set: { forgot_password } });
 
-        const link = (isDev ? "http://localhost" : "https://kskvivat.com") + `/forgot-password?email=${email}&uuid=${uuid}`;
+        const link = `https://${isDev ? "localhost" : "kskvivat.com"}/forgot-password?email=${email}&uuid=${uuid}`;
         await sendForgotPasswordEmail({ email, name: user.name.first, link });
         res.json({ status: "success" });
     } catch(e) { res.json({ status: "error", error: "db_error" }) }

@@ -9,6 +9,7 @@ const next = require("next");
 const path = require("path");
 const fs = require("fs");
 
+
 const dev = process.env.NODE_ENV !== "production";
 const app = next({ dev });
 const handle = app.getRequestHandler();
@@ -22,9 +23,9 @@ const auth = require("./routes/auth.js");
 const admin = require("./routes/admin.js");
 
 (async () => {
-	try {
-		await app.prepare();
-
+    try {
+        await app.prepare();
+        
         const options = {
             ca: fs.readFileSync("ssl/ca.crt"),
             cert: fs.readFileSync("ssl/cert.crt"),
@@ -32,11 +33,11 @@ const admin = require("./routes/admin.js");
         }
         
         http.createServer(server).listen(HTTP_PORT);
-        if(!dev) {
-            https.createServer(options, server).listen(HTTPS_PORT);
-            server.use(forceSSL);
-        }
+        https.createServer(options, server).listen(HTTPS_PORT);
+        server.use(forceSSL);
 
+        if(dev) process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+        
         server.use(fileUpload({}));
         server.use(cookieParser());
         server.use(bodyParser.json());
@@ -57,7 +58,7 @@ const admin = require("./routes/admin.js");
         console.log(`--> Process environment: '${process.env.NODE_ENV}'`);
         console.log(`--> Is app in development mode: ${dev}`);
         console.log(`-> Ready on port ${HTTP_PORT} for HTTP`);
-        !dev && console.log(`-> Ready on port ${HTTPS_PORT} for HTTPS`);
+        console.log(`-> Ready on port ${HTTPS_PORT} for HTTPS`);
 	} catch(e) {
 		console.error(e.stack);
 		process.exit(1);
