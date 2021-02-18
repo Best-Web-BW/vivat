@@ -199,7 +199,76 @@ export function AlbumEditor({ opened, action, data, close, setSuccessCreateModal
                     <p>Выберите фотографии для альбома</p>
                     <ImageLoader type="gallery" onChange={setImages} defaultImages={defaultImages} />
                 </div>
-                <button className="add-gallery-modal-save-button" onClick={album ? () => editAlbum(album.id) : createAlbum}>Сохранить</button>
+                <div className="col-1-3">
+                        <p>Выберите категорию</p>
+                        {/* <Select
+                            // defaultValue={colourOptions[1]}
+                            options={categoryOptions}
+                            formatGroupLabel={formatGroupLabel}
+                            theme={theme => ({ ...theme, borderRadius: 0, colors: { ...theme.colors, primary: "" } })}
+                            placeholder="Выберите из списка"
+                        /> */}
+                        <CreatableSelect
+                            theme={theme => ({ ...theme, borderRadius: 0, colors: { ...theme.colors, primary: "" } })}
+                            options={categories.map(([category]) => ({ value: category, label: category }))}
+                            onChange={option => setSelectedCategory(option?.label ?? "")}
+                            value={{ value: selectedCategory, label: selectedCategory }}
+                            formatCreateLabel={value => `Создать категорию "${value}"`}
+                            placeholder="Выберите из списка"
+                            formatGroupLabel={formatGroupLabel}
+                            menuPlacement="top"
+                            isClearable
+                        />
+                        <div className="add-article-add-new-category"> 
+                            {/* <input type="text" placeholder="Категория" defaultValue={post ? post.category : ""} /> */}
+                            <input type="text" placeholder="Добавить категорию"/>
+                            <button className="add-article-add-new-category-button">Добавить</button>
+                        </div>
+                    </div>
+                    <div className="col-1-3">
+                        <p>Выберите ключевые слова</p>
+                        <CreatableSelect 
+                            theme={theme => ({ ...theme, borderRadius: 0, colors: { ...theme.colors, primary: "" } })}
+                            onChange={tags => (console.log(tags), updateTags(tags.map(({ value }) => value)))}
+                            noOptionsMessage={() => "Тегов больше нет, но вы можете создать новые"}
+                            value={selectedTags.map(tag => ({ value: tag, label: tag }))}
+                            options={tags.map(tag => ({ value: tag, label: tag }))}
+                            formatCreateLabel={value => `Создать тег "${value}"`}
+                            placeholder="Выберите из списка или создайте новый"
+                            components={animatedComponents}
+                            closeMenuOnSelect={false}
+                            menuPlacement="top"
+                            isClearable
+                            isMulti
+                            // styles={customStyles}
+                        />
+                        <div className="add-article-add-new-keyword"> 
+                            <input type="text" placeholder="Добавить ключевое слово"/>
+                            <button className="add-article-add-new-keyword-button">Добавить</button>
+                        </div>
+                    </div>
+                    <div className="col-1-3">
+                        <div className="col-1-2" style={{"display" : "none"}}>
+                            <div className="add-article-choose-visibility">
+                                <p>Видимость</p>
+                                {/* <label>
+                                    Видимый&nbsp;
+                                    <input name="visibility" type="radio" />
+                                </label>
+                                <label>
+                                    <input name="visibility" type="radio" />
+                                    &nbsp;Скрытый
+                                </label> */}
+                                {/* <label htmlFor="chooseVisibility-yes">Видимый</label>
+                                <input type="radio" name="chooseVisibility" id="chooseVisibility-yes"/>
+                                <input type="radio" name="chooseVisibility" id="chooseVisibility-no"/>
+                                <label htmlFor="chooseVisibility-no">Скрытый</label> */}
+                            </div>
+                        </div>
+                        <div className="col-1-2">
+                            <button className="add-gallery-modal-save-button" onClick={album ? () => editAlbum(album.id) : createAlbum}>Сохранить</button>
+                        </div>
+                    </div>
             </div>
         </div>
     );

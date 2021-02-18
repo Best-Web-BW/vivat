@@ -308,19 +308,39 @@ export function EventEditor({ CreatableSelect, opened, action, eventData, close,
                             menuPlacement="top"
                             isClearable
                         />
-                        {/* <div className="add-article-add-new-category"> 
+                        <div className="add-article-add-new-category"> 
                             <input type="text" placeholder="Добавить категорию"/>
                             <button className="add-article-add-new-category-button">Добавить</button>
-                        </div> */}
+                        </div>
+                    </div>
+                    <div className="col-1-3">
+                        <p>Выберите ключевые слова</p>
+                        <CreatableSelect 
+                            theme={theme => ({ ...theme, borderRadius: 0, colors: { ...theme.colors, primary: "" } })}
+                            onChange={tags => (console.log(tags), updateTags(tags.map(({ value }) => value)))}
+                            noOptionsMessage={() => "Тегов больше нет, но вы можете создать новые"}
+                            value={selectedTags.map(tag => ({ value: tag, label: tag }))}
+                            options={tags.map(tag => ({ value: tag, label: tag }))}
+                            formatCreateLabel={value => `Создать тег "${value}"`}
+                            placeholder="Выберите из списка или создайте новый"
+                            components={animatedComponents}
+                            closeMenuOnSelect={false}
+                            menuPlacement="top"
+                            isClearable
+                            isMulti
+                            // styles={customStyles}
+                        />
+                        <div className="add-article-add-new-keyword"> 
+                            <input type="text" placeholder="Добавить ключевое слово"/>
+                            <button className="add-article-add-new-keyword-button">Добавить</button>
+                        </div>
                     </div>
                     <div className="col-1-3">
                         <div className="edit-event-add-document">
                             <DocumentLoader type="events" onChange={setDocuments} defaultDocuments={defaultDocuments} />
                         </div>
                     </div>
-                    <div className="col-1-3">
-                        <button className="edit-event-save-button" onClick={event ? () => editEvent(event.id) : createEvent}>Сохранить</button>
-                    </div>
+                    <button className="edit-event-save-button" onClick={event ? () => editEvent(event.id) : createEvent}>Сохранить</button>
                 </div>
             </div>
         </div>

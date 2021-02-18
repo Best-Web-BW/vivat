@@ -570,8 +570,14 @@ header {
     position: relative;
 }
 
+.search-form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .search-input {
-    width: calc(100% - 6vh);
+    width: 100%;
     height: 4vh;
     background-color: transparent;
     border: 1px solid whitesmoke;
@@ -579,6 +585,11 @@ header {
     padding-right: 5vh;
     font-size: 100%;
     color: whitesmoke;
+}
+
+.search-icon-wrapper {
+    position: absolute;
+    right: 1vh;
 }
 
 .search-input::placeholder {
@@ -595,10 +606,14 @@ header {
 }
 
 .search-container .search-icon {
-    position: absolute;
     font-size: 140%;
     color: gray;
-    right: 1vh;
+    cursor: pointer;
+}
+
+.search-container .search-icon:hover {
+    color: #ff0a0a;
+    text-shadow: 0 0 10px #ff0a0a;
 }
 
 .search-container .search-icon::before {

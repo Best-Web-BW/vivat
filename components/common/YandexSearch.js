@@ -36,12 +36,12 @@ export function QueryInput() {
     return (
         <>
             <div className="ya-site-form ya-site-form_inited_no" data-bem={config} style={{ width: "100%" }}>
-                <form action="https://yandex.ru/search/site/" method="get" target="_self" acceptCharset="utf-8" style={{ width: "100%" }}>
+                <form className="search-form" action="https://yandex.ru/search/site/" method="get" target="_self" acceptCharset="utf-8" style={{ width: "100%" }}>
                     <input type="hidden" name="searchid" defaultValue="2447908" />
                     <input type="hidden" name="l10n" defaultValue="ru" />
                     <input type="hidden" name="reqenc" />
                     <input type="search" name="text" className="search-input" placeholder="Введите поисковой запрос" />
-                    <label>
+                    <label className="search-icon-wrapper">
                         <input type="submit" defaultValue="Найти" style={{ display: "none" }} />
                         <span className="search-icon" />
                     </label>

@@ -403,16 +403,16 @@ function RawPostEditor({ CreatableSelect, animatedComponents, opened, action, da
                             onChange={option => setSelectedCategory(option?.label ?? "")}
                             value={{ value: selectedCategory, label: selectedCategory }}
                             formatCreateLabel={value => `Создать категорию "${value}"`}
-                            placeholder="Выберите из списка или создайте новую"
+                            placeholder="Выберите из списка"
                             formatGroupLabel={formatGroupLabel}
                             menuPlacement="top"
                             isClearable
                         />
-                        {/* <div className="add-article-add-new-category"> 
-                            <input type="text" placeholder="Категория" defaultValue={post ? post.category : ""} />
+                        <div className="add-article-add-new-category"> 
+                            {/* <input type="text" placeholder="Категория" defaultValue={post ? post.category : ""} /> */}
                             <input type="text" placeholder="Добавить категорию"/>
                             <button className="add-article-add-new-category-button">Добавить</button>
-                        </div> */}
+                        </div>
                     </div>
                     <div className="col-1-3">
                         <p>Выберите ключевые слова</p>
@@ -431,10 +431,10 @@ function RawPostEditor({ CreatableSelect, animatedComponents, opened, action, da
                             isMulti
                             // styles={customStyles}
                         />
-                        {/* <div className="add-article-add-new-keyword"> 
+                        <div className="add-article-add-new-keyword"> 
                             <input type="text" placeholder="Добавить ключевое слово"/>
                             <button className="add-article-add-new-keyword-button">Добавить</button>
-                        </div> */}
+                        </div>
                     </div>
                     <div className="col-1-3">
                         <div className="col-1-2" style={{"display" : "none"}}>
