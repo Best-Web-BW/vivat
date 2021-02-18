@@ -1,5 +1,5 @@
 .header-content-wrapper.contacts {
-    background-image     : url('/images/services/elegant-girl-farm-wiith-horse.jpg');
+    background-image     : url('/images/services/elegant-girl-farm-wiith-horse.webp');
     background-position-x: right;
     background-size      : cover;
     background-repeat    : no-repeat;
@@ -178,7 +178,7 @@
     }
 
     .header-content-wrapper.contacts {
-        background-image: url('/images/services/elegant-girl-farm-wiith-horsem.jpg');
+        background-image: url('/images/services/elegant-girl-farm-wiith-horsem.webp');
     }
 
     .contacts-content {
