@@ -298,15 +298,15 @@ export function EventEditor({ CreatableSelect, opened, action, eventData, close,
                     <div className="col-1-3">
                         <p>Выберите категорию</p>
                         <CreatableSelect
-                            theme={theme => ({ ...theme, borderRadius: 0, colors: { ...theme.colors, primary: "" } })}
-                            options={categories.map(category => ({ value: category, label: category }))}
-                            value={{ value: selectedCategory, label: selectedCategory }}
-                            onChange={option => setSelectedCategory(option?.label ?? "")}
-                            formatCreateLabel={value => `Создать категорию "${value}"`}
-                            placeholder="Выберите из списка или создайте новую"
-                            formatGroupLabel={formatGroupLabel}
-                            menuPlacement="top"
-                            isClearable
+                            // theme={theme => ({ ...theme, borderRadius: 0, colors: { ...theme.colors, primary: "" } })}
+                            // options={categories.map(category => ({ value: category, label: category }))}
+                            // value={{ value: selectedCategory, label: selectedCategory }}
+                            // onChange={option => setSelectedCategory(option?.label ?? "")}
+                            // formatCreateLabel={value => `Создать категорию "${value}"`}
+                            // placeholder="Выберите из списка или создайте новую"
+                            // formatGroupLabel={formatGroupLabel}
+                            // menuPlacement="top"
+                            // isClearable
                         />
                         <div className="add-article-add-new-category"> 
                             <input type="text" placeholder="Добавить категорию"/>
@@ -316,19 +316,19 @@ export function EventEditor({ CreatableSelect, opened, action, eventData, close,
                     <div className="col-1-3">
                         <p>Выберите ключевые слова</p>
                         <CreatableSelect 
-                            theme={theme => ({ ...theme, borderRadius: 0, colors: { ...theme.colors, primary: "" } })}
-                            onChange={tags => (console.log(tags), updateTags(tags.map(({ value }) => value)))}
-                            noOptionsMessage={() => "Тегов больше нет, но вы можете создать новые"}
-                            value={selectedTags.map(tag => ({ value: tag, label: tag }))}
-                            options={tags.map(tag => ({ value: tag, label: tag }))}
-                            formatCreateLabel={value => `Создать тег "${value}"`}
-                            placeholder="Выберите из списка или создайте новый"
-                            components={animatedComponents}
-                            closeMenuOnSelect={false}
-                            menuPlacement="top"
-                            isClearable
-                            isMulti
-                            // styles={customStyles}
+                            // theme={theme => ({ ...theme, borderRadius: 0, colors: { ...theme.colors, primary: "" } })}
+                            // onChange={tags => (console.log(tags), updateTags(tags.map(({ value }) => value)))}
+                            // noOptionsMessage={() => "Тегов больше нет, но вы можете создать новые"}
+                            // value={selectedTags.map(tag => ({ value: tag, label: tag }))}
+                            // options={tags.map(tag => ({ value: tag, label: tag }))}
+                            // formatCreateLabel={value => `Создать тег "${value}"`}
+                            // placeholder="Выберите из списка или создайте новый"
+                            // components={animatedComponents}
+                            // closeMenuOnSelect={false}
+                            // menuPlacement="top"
+                            // isClearable
+                            // isMulti
+                            // // styles={customStyles}
                         />
                         <div className="add-article-add-new-keyword"> 
                             <input type="text" placeholder="Добавить ключевое слово"/>
