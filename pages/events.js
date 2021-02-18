@@ -1,6 +1,7 @@
 import EventCalendar from "../components/common/EventCalendar";
 import ContentHeader from "../components/common/ContentHeader";
 import EventSlider from "../components/sliders/EventSlider";
+import DBProvider from "../utils/providers/DBProvider";
 import { useEffect, useState } from "react";
 
 export default function Events({ events }) {
