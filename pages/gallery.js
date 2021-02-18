@@ -282,9 +282,9 @@ function RawAlbumEditor({ CreatableSelect, animatedComponents, opened, action, d
                                 <label htmlFor="chooseVisibility-no">Скрытый</label> */}
                             </div>
                         </div>
-                        <div className="col-1-2">
+                    </div>
+                    <div className="col-1-2">
                             <button className="add-gallery-modal-save-button" onClick={album ? () => editAlbum(album.id) : createAlbum}>Сохранить</button>
-                        </div>
                     </div>
             </div>
         </div>

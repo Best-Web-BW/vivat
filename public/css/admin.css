@@ -791,7 +791,7 @@
     display: flex;
     justify-content: center;
     align-items: flex-start;
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
 }
 
 .edit-event-modal-body input, .add-article-modal-body input {
@@ -839,6 +839,8 @@
     align-items: center;
     display: flex;
     flex-wrap: wrap;
+    width: calc(33.33% - 2vh);
+    padding-bottom: 0;
 }
 
 .edit-event-save-button {

@@ -946,6 +946,7 @@ header {
     height: 50vh;
     background-image: linear-gradient(#20152d, #20152d), linear-gradient(#e9eafe, #d8d1ff);
     background-blend-mode: exclusion, hard-light;
+    overflow: hidden;
 }
 
 .footer-navigation-block {
