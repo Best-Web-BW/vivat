@@ -242,7 +242,7 @@ router.post("/forgot_password/mail", async (req, res) => {
         const user = await users.findOne({ email });
         if(!user) return res.json({ status: "success" });
 
-        const forgot_password = { uuid, expires: moment().add(1, "minutes").toISOString() };
+        const forgot_password = { uuid, expires: moment().add(10, "minutes").toISOString() };
         await users.updateOne({ _id: user._id }, { $set: { forgot_password } });
 
         const link = (isDev ? "http://localhost" : "https://kskvivat.com") + `/forgot-password?email=${email}&uuid=${uuid}`;

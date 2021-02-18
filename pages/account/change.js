@@ -14,7 +14,7 @@ export default function Change() {
 
     const [user, setUser] = useState(useAuth());
     useEffect(() => {
-        const interval = setInterval(() => setUser(useAuth()), 500);
+        const interval = setInterval(() => setUser(useAuth()), 200);
         return () => clearInterval(interval);
     }, []);
 
