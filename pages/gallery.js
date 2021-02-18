@@ -130,7 +130,18 @@ export default function Gallery({ albums }) {
     );
 }
 
-export function AlbumEditor({ opened, action, data, close, setSuccessCreateModalOpened, setSuccessEditModalOpened, processError }) {
+export function AlbumEditor(props) {
+    const [imported, setImported] = useState();
+    useEffect(async () => {
+        const CreatableSelect = (await import("react-select/creatable")).default;
+        const animatedComponents = ((await import("react-select/animated")).default)();
+        setImported({ CreatableSelect, animatedComponents });
+    }, []);
+
+    return imported ? <RawAlbumEditor {...imported} {...props} /> : null;
+}
+
+function RawAlbumEditor({ CreatableSelect, animatedComponents, opened, action, data, close, setSuccessCreateModalOpened, setSuccessEditModalOpened, processError }) {
     const [actionMap] = useState({ "create": ["Создать", () => setAlbum(undefined)], "edit": ["Изменить", data => setAlbum(data)] });
     const [album, setAlbum] = useState();
     const [cover, setCover] = useState();
@@ -210,12 +221,12 @@ export function AlbumEditor({ opened, action, data, close, setSuccessCreateModal
                         /> */}
                         <CreatableSelect
                             theme={theme => ({ ...theme, borderRadius: 0, colors: { ...theme.colors, primary: "" } })}
-                            options={categories.map(([category]) => ({ value: category, label: category }))}
+                            // options={categories.map(([category]) => ({ value: category, label: category }))}
                             onChange={option => setSelectedCategory(option?.label ?? "")}
-                            value={{ value: selectedCategory, label: selectedCategory }}
+                            // value={{ value: selectedCategory, label: selectedCategory }}
                             formatCreateLabel={value => `Создать категорию "${value}"`}
                             placeholder="Выберите из списка"
-                            formatGroupLabel={formatGroupLabel}
+                            // formatGroupLabel={formatGroupLabel} ----- HERE IS YOUR PART -----
                             menuPlacement="top"
                             isClearable
                         />
@@ -229,10 +240,10 @@ export function AlbumEditor({ opened, action, data, close, setSuccessCreateModal
                         <p>Выберите ключевые слова</p>
                         <CreatableSelect 
                             theme={theme => ({ ...theme, borderRadius: 0, colors: { ...theme.colors, primary: "" } })}
-                            onChange={tags => (console.log(tags), updateTags(tags.map(({ value }) => value)))}
+                            // onChange={tags => (console.log(tags), updateTags(tags.map(({ value }) => value)))}
                             noOptionsMessage={() => "Тегов больше нет, но вы можете создать новые"}
-                            value={selectedTags.map(tag => ({ value: tag, label: tag }))}
-                            options={tags.map(tag => ({ value: tag, label: tag }))}
+                            // value={selectedTags.map(tag => ({ value: tag, label: tag }))}
+                            // options={tags.map(tag => ({ value: tag, label: tag }))}
                             formatCreateLabel={value => `Создать тег "${value}"`}
                             placeholder="Выберите из списка или создайте новый"
                             components={animatedComponents}
