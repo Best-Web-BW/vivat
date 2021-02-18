@@ -2,6 +2,7 @@ import Router from "next/router";
 import { useRef, useState } from "react";
 import ContentHeader from "../components/common/ContentHeader";
 import { DefaultErrorModal, ErrorModal, SuccessModal } from "../components/common/Modals";
+import { sleep } from "../utils/common";
 import AuthProvider from "../utils/providers/AuthProvider";
 
 export async function getServerSideProps({ query: { email, uuid } }) {
@@ -27,7 +28,7 @@ const passwordDesc = `
     После Вашего подтверждения этот пароль будет использоваться для входа в профиль.
 `;
 export default function ForgotPassword({ type, email, uuid }) {
-    const [errorModal, toggleErrorModal] = useState(false);
+    const [errorModal, setErrorModal] = useState(false);
 
     return (<>
         <ContentHeader class="forgot-password" pages={[["forgot-password", "Забыли пароль?"]]}>
@@ -36,9 +37,9 @@ export default function ForgotPassword({ type, email, uuid }) {
                 { type === "password" && passwordDesc }
             </p>
         </ContentHeader>
-        { type === "email" && <EmailContent openErrorModal={() => toggleErrorModal(true)} /> }
-        { type === "password" && <PasswordContent openErrorModal={() => toggleErrorModal(true)} email={email} uuid={uuid} /> }
-        <DefaultErrorModal opened={errorModal} close={() => toggleErrorModal(false)} />
+        { type === "email" && <EmailContent openErrorModal={() => setErrorModal(true)} /> }
+        { type === "password" && <PasswordContent openErrorModal={() => setErrorModal(true)} email={email} uuid={uuid} /> }
+        <DefaultErrorModal opened={errorModal} close={() => setErrorModal(false)} />
     </>);
 }
 
@@ -71,37 +72,39 @@ function EmailContent({ openErrorModal }) {
                 <button className="forgot-password-button" onClick={submit}>Подтвердить</button>
             </div>
         </div>
+        <SuccessModal
+            content="Заявка отправлена! В течение нескольких минут Вам на почту придёт сообщение с инструкцией."
+            opened={successModal} close={() => setSuccessModal(false)}
+        />
         <ErrorModal opened={invalidEmailModal} close={() => setInvalidEmailModal(false)}>
             <p>Введите корректный адрес электронной почты. Например:<br />example@gmail.com</p>
         </ErrorModal>
-        <SuccessModal
-            opened={successModal} close={() => setSuccessModal(false)}
-            content="Заявка отправлена! В течение нескольких минут Вам на почту придёт сообщение с инструкцией."
-        />
     </>);
 }
 
 function PasswordContent({ openErrorModal, email, uuid }) {
     console.log("UUID is", { email, uuid });
 
+    const [successModal, setSuccessModal] = useState(false);
+    const [errorModal, setErrorModal] = useState(null);
+
     const passwordRef1 = useRef();
     const passwordRef2 = useRef();
     const submit = async () => {
         const password = passwordRef1.current.value;
         const password2 = passwordRef2.current.value;
-        if(password !== password2) return alert("Пароли различаются");
+        if(password !== password2) return setErrorModal("Пароли различаются.");
         if(!(
             /[A-Z]/.test(password) &&
             /[a-z]/.test(password) &&
             /[0-9]/.test(password) &&
             password.length >= 8
-        )) return alert("Пароль не соответствует требованиям");
+        )) return setErrorModal("Пароль не соответствует требованиям.");
 
         const result = await AuthProvider.resetPassword(email, uuid, password);
         if(result.success) {
-            alert("Пароль успешно изменён");
+            setSuccessModal(true)
             await AuthProvider.authenticate(email, password);
-            Router.push("/account/profile");
         } else {
             console.error(result.reason);
             openErrorModal();
@@ -124,16 +127,10 @@ function PasswordContent({ openErrorModal, email, uuid }) {
                 <button className="forgot-password-button" onClick={submit}>Подтвердить</button>
             </div>
         </div>
+        <SuccessModal
+            close={() => (setSuccessModal(false), sleep(600).then(() => Router.push("/account/profile")))}
+            opened={successModal} content="Пароль успешно изменён."
+        />
+        <ErrorModal opened={errorModal} close={() => setErrorModal(null)} content={errorModal} />
     </>);
 }
-    // const submit = async () => {
-    //     const email = emailRef.current.value;
-    //     if(!/@/.test(email)) return setInvalidEmailModal(true);
-
-    //     const result = await AuthProvider.forgotPassword(email);
-    //     if(result.success) setSuccessModal(true);
-    //     else {
-    //         console.error(result.reason);
-    //         setErrorModal(true);
-    //     }
-    // };
