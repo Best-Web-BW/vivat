@@ -8,7 +8,7 @@ const initModule = module => {
 
 export function QueryInput() {
     const config = useMemo(() => JSON.stringify({
-        "action": `https://localhost/search`,
+        "action": `http://localhost/search`,
         "arrow": false,
         "bg": "transparent",
         "fontsize": 16,
@@ -35,13 +35,16 @@ export function QueryInput() {
 
     return (
         <>
-            <div className="ya-site-form ya-site-form_inited_no" data-bem={config}>
-                <form action="https://yandex.ru/search/site/" method="get" target="_self" acceptCharset="utf-8">
+            <div className="ya-site-form ya-site-form_inited_no" data-bem={config} style={{ width: "100%" }}>
+                <form action="https://yandex.ru/search/site/" method="get" target="_self" acceptCharset="utf-8" style={{ width: "100%" }}>
                     <input type="hidden" name="searchid" defaultValue="2447908" />
                     <input type="hidden" name="l10n" defaultValue="ru" />
                     <input type="hidden" name="reqenc" />
-                    <input type="search" name="text" />
-                    <input type="submit" defaultValue="Найти" />
+                    <input type="search" name="text" className="search-input" placeholder="Введите поисковой запрос" />
+                    <label>
+                        <input type="submit" defaultValue="Найти" style={{ display: "none" }} />
+                        <span className="search-icon" />
+                    </label>
                 </form>
             </div>
             <style type="text/css">
