@@ -202,6 +202,12 @@ function RawAlbumEditor({ CreatableSelect, animatedComponents, opened, action, d
                         <input ref={titleRef} type="text" placeholder="Введите название" defaultValue={album ? album.title : ""} />
                     </label>
                 </div>
+                <div className="add-gallery-modal-description-input">
+                    <label onClick={() => console.log(validate(crawl()))}>
+                        Введите описание
+                        <textarea ref={titleRef} type="text" placeholder="Введите описание" defaultValue={album ? album.title : ""} />
+                    </label>
+                </div>
                 <div className="add-gallery-modal-choose-cover-wrapper">
                     <p>Выберите обложку для альбома</p>
                     <ImageLoader isSingle type="gallery" onChange={([cover]) => setCover(cover)} defaultImages={defaultCover} />
