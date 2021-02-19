@@ -30,7 +30,7 @@ export function ResultPage() {
         "updatehash": true
     }), []);
 
-    useEffect(() => Ya.Site.Results.init(), []);
+    useEffect(() => typeof Ya === "object" && Ya.Site.Results.init(), [typeof Ya]);
 
     return (
         <>
