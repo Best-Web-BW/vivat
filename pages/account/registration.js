@@ -96,7 +96,7 @@ function Registration({ Select }) {
         event_id: refs.event_id.current,
         rider: {
             name: refs.rider.name.current.value,
-            birthdate: riderBirthdate.toISOString();
+            birthdate: riderBirthdate.toISOString(),
         },
         region: refs.region.current.value,
         trainer_name: refs.trainer_name.current.value,
