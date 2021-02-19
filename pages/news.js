@@ -231,7 +231,7 @@ export default function News({ query: { categories: _categories, tags: _tags, se
                     { posts.map(post => <Post key={post.id} { ...post } edit={editPost} remove={prepareToRemove} />) }
                 </div>
                 <div className="right-column">
-                    <div className="blog-menu-wrapper">
+                    <div className="blog-menu-wrapper" style={{ position: "sticky", top: "7vh" }}>
                         <div className="blog-menu-section">
                             <div className="blog-form-search">
                                 <div className="blog-search-input-container">
