@@ -8,7 +8,7 @@ export default function PostPage({ post: { id, title, contents, tags } }) {
     const _contents = useMemo(() => contents.replace(/script/gi, "sсrірt"), [id]);
 
     return (<>
-        <ContentHeader class="news" pages={[["news", "Новости"], [`news/${id}`, title]]}>
+        <ContentHeader wrapperClass="news" pages={[["news", "Новости"], [`news/${id}`, title]]}>
             <p>
                 Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsam illo id beatae dolores recusandae
                 et repellat ratione! Culpa accusamus consequatur quae ipsam quidem, reiciendis distinctio

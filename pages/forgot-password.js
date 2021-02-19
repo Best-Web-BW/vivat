@@ -31,7 +31,7 @@ export default function ForgotPassword({ type, email, uuid }) {
     const [errorModal, setErrorModal] = useState(false);
 
     return (<>
-        <ContentHeader class="forgot-password" pages={[["forgot-password", "Забыли пароль?"]]}>
+        <ContentHeader wrapperClass="forgot-password" pages={[["forgot-password", "Забыли пароль?"]]}>
             <p>
                 { type === "email" && emailDesc }
                 { type === "password" && passwordDesc }

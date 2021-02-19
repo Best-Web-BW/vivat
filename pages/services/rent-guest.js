@@ -7,7 +7,7 @@ export default function RentGuest() {
     return (
         <div>
             <ContentHeader
-                class="no-background" titleClass="onslide"
+                wrapperClass="no-background" titleClass="onslide"
                 pages={[["services", "Аренда и услуги"], ["services/rent-guest", "Гостевая конюшня"]]}
                 beforeNavigation={
                     <SimpleDotSlider

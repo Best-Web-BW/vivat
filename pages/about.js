@@ -4,7 +4,7 @@ import DescriptedDotSlider from "../components/sliders/DescribedDotSlider";
 export default function About() {
     return (
         <div>
-            <ContentHeader class="about" pages={[["about", "О нас"]]}>
+            <ContentHeader wrapperClass="about" pages={[["about", "О нас"]]}>
                 <p>
                     Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsam illo id beatae dolores recusandae
                     et repellat ratione! Culpa accusamus consequatur quae ipsam quidem, reiciendis distinctio

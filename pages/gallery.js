@@ -78,7 +78,7 @@ export default function Gallery({ albums }) {
 
     return (
         <div>
-            <ContentHeader class="gallery" pages={[["gallery", "Галерея"]]}>
+            <ContentHeader wrapperClass="gallery" pages={[["gallery", "Галерея"]]}>
                 <p>
                     Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsam illo id beatae dolores recusandae
                     et repellat ratione! Culpa accusamus consequatur quae ipsam quidem, reiciendis distinctio

@@ -42,7 +42,7 @@ export default function Contacts() {
     }
 
     return (<>
-        <ContentHeader class="contacts" pages={[["contacts", "Контакты"]]}>
+        <ContentHeader wrapperClass="contacts" pages={[["contacts", "Контакты"]]}>
             <p>
                 Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsam illo id beatae dolores recusandae
                 et repellat ratione! Culpa accusamus consequatur quae ipsam quidem, reiciendis distinctio

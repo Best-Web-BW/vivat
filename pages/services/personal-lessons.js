@@ -7,7 +7,7 @@ export default function PersonalLessons() {
     return (
         <div>
             <ContentHeader
-                class="no-background" titleClass="onslide"
+                wrapperClass="no-background" titleClass="onslide"
                 pages={[["services", "Аренда и услуги"], ["services/personal-lessons", "Персональные занятия"]]}
                 beforeNavigation={
                     <SimpleDotSlider

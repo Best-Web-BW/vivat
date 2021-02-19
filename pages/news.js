@@ -207,7 +207,7 @@ export default function News({ query: { categories: _categories, tags: _tags, se
     
     return (
         <div>
-            <ContentHeader class="news" pages={[["news", "Новости"]]}>
+            <ContentHeader wrapperClass="news" pages={[["news", "Новости"]]}>
                 <p>
                     Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsam illo id beatae dolores recusandae
                     et repellat ratione! Culpa accusamus consequatur quae ipsam quidem, reiciendis distinctio

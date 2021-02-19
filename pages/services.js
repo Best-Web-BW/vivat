@@ -4,7 +4,7 @@ import ServicesList from "../components/common/ServicesList";
 export default function Services() {
     return (
         <div>
-            <ContentHeader class="services" pages={[["services", "Аренда и услуги"]]}>
+            <ContentHeader wrapperClass="services" pages={[["services", "Аренда и услуги"]]}>
                 <p>
                     Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsam illo id beatae dolores recusandae
                     et repellat ratione! Culpa accusamus consequatur quae ipsam quidem, reiciendis distinctio

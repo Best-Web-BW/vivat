@@ -32,10 +32,10 @@ function processChildren(children) {
     return children.map((child, i) => <p key={i} className={`page-title-${i + 1}`}>{child.props.children}</p>);
 }
 
-export default function ContentHeader(props) {
-    const [title, navigation] = processNavigation(props.pages);
+export default function ContentHeader({ pages, wrapperClass, titleClass, beforeNavigation, afterTitle, children }) {
+    const [title, navigation] = processNavigation(pages);
     return (
-        <div className={"header-content-wrapper content-block " + (props.class ?? "")}>
+        <div className={`header-content-wrapper content-block ${wrapperClass ?? ""}`}>
             <Head>
                 <title>{title}</title>
             </Head>
@@ -43,8 +43,8 @@ export default function ContentHeader(props) {
             <div className="blur-1" />
             <div className="blur-2" />
             <div className="blur-3" />
-            { props.beforeNavigation }
-            <div className={`header-title-wrapper ${props.titleClass ?? ""}`}>
+            { beforeNavigation }
+            <div className={`header-title-wrapper ${titleClass ?? ""}`}>
                 <div className="header-navigation">
                     { navigation }
                 </div>
@@ -52,9 +52,9 @@ export default function ContentHeader(props) {
                     <h1>{title}</h1>
                     <h2>{translator.get("header")}</h2>
                 </div>
-                { props.afterTitle ?? (
+                { afterTitle ?? (
                     <div className="page-title-container">
-                        { processChildren(props.children) }
+                        { processChildren(children) }
                     </div>
                 ) }
             </div>

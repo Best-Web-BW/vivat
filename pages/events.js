@@ -19,7 +19,7 @@ export default function Events({ events }) {
     
     return (
         <div>
-            <ContentHeader class="events" pages={[["events", "Мероприятия"]]}>
+            <ContentHeader wrapperClass="events" pages={[["events", "Мероприятия"]]}>
                 <p>
                     Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsam illo id beatae dolores recusandae
                     et repellat ratione! Culpa accusamus consequatur quae ipsam quidem, reiciendis distinctio
