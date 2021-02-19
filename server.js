@@ -37,7 +37,7 @@ const admin = require("./routes/admin.js");
         https.createServer(options, server).listen(HTTPS_PORT);
         server.use(forceSSL);
 
-        if(dev) process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+        if(dev || true) process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
         
         server.use(fileUpload({}));
         server.use(cookieParser());

@@ -50,6 +50,9 @@ export default function Home({ events }) {
         <div>
             <Head>
                 <title>{translator.get("header")} "{translator.get("vivat")}"</title>
+                <meta name="robots" content="index, nofollow" />
+                <meta name="description" content="Домашняя страница официального сайта КСК Виват, Россия! Маленькие лошадки, большие лошадки и не только лошадки!" />
+                <meta name="keywords" content="кск, Виват, Россия, лошади, кони, пони, люди" />
             </Head>
             <div className="header-content-wrapper content-block">
                 <div className="video-background desktop">
