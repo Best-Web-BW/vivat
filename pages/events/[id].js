@@ -19,13 +19,14 @@ function DocumentBlock({ url, name }) {
     );
 }
 
-export default function EventPage({ events, event: { id, title, contents, documents } }) {
+export default function EventPage({ events, event: { id, title, contents, documents, tags } }) {
     const _contents = useMemo(() => contents.replace(/script/gi, "sсrірt"), [id]);
+    const keywords = useMemo(() => [...tags, "событие", "мероприятие", "кск", "Виват", "Россия"].join(", "), [tags]);
 
     return (
         <>
             <ContentHeader
-                pages={[["events", "Мероприятия"], [`events/${id}`, title]]}
+                pages={[["events", "Мероприятия"], [`events/${id}`, title]]} {...{ keywords }}
                 afterTitle={<EventSlider events={events} containerClass="day-events-container" />}
             />
             <div className="event-page-content content-block">

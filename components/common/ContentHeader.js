@@ -32,12 +32,15 @@ function processChildren(children) {
     return children.map((child, i) => <p key={i} className={`page-title-${i + 1}`}>{child.props.children}</p>);
 }
 
-export default function ContentHeader({ pages, wrapperClass, titleClass, beforeNavigation, afterTitle, children }) {
+export default function ContentHeader({ description, keywords, pages, wrapperClass, titleClass, beforeNavigation, afterTitle, children }) {
     const [title, navigation] = processNavigation(pages);
     return (
         <div className={`header-content-wrapper content-block ${wrapperClass ?? ""}`}>
             <Head>
                 <title>{title}</title>
+                <meta name="robots" content="index, nofollow" />
+                { description && <meta name="description" content={description} /> }
+                { keywords && <meta name="keywords" content={keywords} /> }
             </Head>
             <div className="header-bg" />
             <div className="blur-1" />

@@ -1,14 +1,17 @@
 import PostListProvider from "../../utils/providers/PostListProvider";
 import ContentHeader from "../../components/common/ContentHeader";
+import { removeTagsFromText } from "../../utils/common";
+import Router from "next/router";
 import { useMemo } from "react";
 import { Tag } from "../news";
-import Link from "next/link";
 
-export default function PostPage({ post: { id, title, contents, tags } }) {
+export default function PostPage({ post: { id, title, contents, tags, category } }) {
     const _contents = useMemo(() => contents.replace(/script/gi, "sсrірt"), [id]);
+    const description = useMemo(() => `${removeTagsFromText(_contents).substring(0, 137)}...`, [_contents]);
+    const keywords = useMemo(() => `${tags.join(", ")}, ${category}`, [tags, category]);
 
     return (<>
-        <ContentHeader wrapperClass="news" pages={[["news", "Новости"], [`news/${id}`, title]]}>
+        <ContentHeader wrapperClass="news" pages={[["news", "Новости"], [`news/${id}`, title]]} {...{ description, keywords }}>
             <p>
                 Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsam illo id beatae dolores recusandae
                 et repellat ratione! Culpa accusamus consequatur quae ipsam quidem, reiciendis distinctio
@@ -26,9 +29,7 @@ export default function PostPage({ post: { id, title, contents, tags } }) {
                 <button className="delete">X</button>
             </div> */}
             <div className="news-navigation-row">
-                <Link href="/news">
-                    <a>Назад</a>
-                </Link>
+                <a onClick={Router.back}>Назад</a>
             </div>
             <div className="news-article-wrapper">
                 <article className="news-article">
