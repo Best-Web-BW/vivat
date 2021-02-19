@@ -223,7 +223,7 @@ export default function News({ query: { categories: _categories, tags: _tags, se
                 <div className="modile-blog-menu">
                     <div className="mobile-blog-menu-wrapper">
                         <div className="mobile-nav-button">
-                            <img src="/images/news/button.png" alt="" width="100%" /> 
+                            <img src="/images/news/button.webp" alt="" width="100%" /> 
                         </div>
                     </div>
                 </div>

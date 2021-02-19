@@ -20,7 +20,7 @@ function DocumentEntry({ document, remove }) {
                 <Link href={document.url}>
                     <a>
                         <div className="documents-img">
-                            <img src="/images/events/pdf-icon.png" alt="" width="100%" />
+                            <img src="/images/events/pdf-icon.webp" alt="" width="100%" />
                         </div>
                         <p className="documents-title">{ document.name }</p>
                     </a>

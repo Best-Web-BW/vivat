@@ -10,7 +10,7 @@ function DocumentBlock({ url, name }) {
             <Link href={url}>
                 <a>
                     <div className="documents-img">
-                        <img src="/images/events/pdf-icon.png" alt="" width="100%" />
+                        <img src="/images/events/pdf-icon.webp" alt="" width="100%" />
                     </div>
                     <p className="documents-title">{ name }</p>
                 </a>
