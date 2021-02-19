@@ -2,7 +2,6 @@ import { AuthVariableComponent, useAuth } from "../../utils/providers/AuthProvid
 import EventListProvider from "../../utils/providers/EventListProvider";
 import ProfileMenu from "../../components/common/ProfileMenu";
 import { useEffect, useMemo, useState } from "react";
-import { currentISODate } from "../../utils/common";
 import Link from "next/link";
 // import Select from "react-select";
 
@@ -77,7 +76,7 @@ function EventEntryContainer({ Select }) {
     const [events, setEvents] = useState([]);
     const [dates, setDates] = useState([]);
     const [selectedDate, setSelectedDate] = useState();
-    const currentDate = useMemo(currentISODate, []);
+    const currentDate = useMemo(() => new Date().toISOString(), []);
     const user = useAuth();
     
     useEffect(async () => {

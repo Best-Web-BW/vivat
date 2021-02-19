@@ -6,7 +6,7 @@ import ProfileMenu from "../../components/common/ProfileMenu";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import TextEditor from "../../components/common/TextEditor";
 import DatePicker from "../../components/common/DatePicker";
-import { sleep, toISODate } from "../../utils/common";
+import { sleep } from "../../utils/common";
 import Router from "next/router";
 import Link from "next/link";
 import { DefaultErrorModal, ErrorModal, SuccessModal, WarningModal } from "../../components/common/Modals";
@@ -201,7 +201,7 @@ export function EventEditor({ CreatableSelect, opened, action, eventData, close,
         title: refs.title.current.value,
         contents: refs.textEditor.current.editor.getContents(),
         address: refs.address.current.value,
-        dates: [toISODate(startDate), toISODate(endDate)],
+        dates: [startDate.toISOString(), endDate.toISOString()],
         category: selectedCategory,
         documents
     });

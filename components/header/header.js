@@ -1,10 +1,9 @@
-import React from "react";
-import Link from "next/link";
-import Unicorn, { UnicornFollowInput, UnicornShyInput } from "./Unicorn";
 import AuthProvider, { AuthVariableComponent } from "../../utils/providers/AuthProvider";
-import DatePicker from "../common/DatePicker";
-import { toISODate } from "../../utils/common";
+import Unicorn, { UnicornFollowInput, UnicornShyInput } from "./Unicorn";
 import { QueryInput } from "../common/YandexSearch";
+import DatePicker from "../common/DatePicker";
+import Link from "next/link";
+import React from "react";
 
 export default class Header extends React.Component {
     constructor(props) {
@@ -113,7 +112,7 @@ export default class Header extends React.Component {
                 second: this.authRefs.register.name.second.current.value,
                 middle: this.authRefs.register.name.middle.current.value
             };
-            const birthdate = toISODate(this.state.selectedRegisterDate);
+            const birthdate = this.state.selectedRegisterDate.toISOString();
             const password1 = this.authRefs.register.password1.current.value;
             const password2 = this.authRefs.register.password2.current.value;
             const errorMap = {

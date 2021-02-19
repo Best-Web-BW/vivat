@@ -2,7 +2,7 @@ import AuthProvider, { AuthVariableComponent, useAuth } from "../../utils/provid
 import { DefaultErrorModal, ErrorModal, SuccessModal } from "../../components/common/Modals";
 import ProfileMenu from "../../components/common/ProfileMenu";
 import DatePicker from "../../components/common/DatePicker";
-import { sleep, toISODate } from "../../utils/common";
+import { sleep } from "../../utils/common";
 import { useEffect, useRef, useState } from "react";
 import Router from "next/router"
 
@@ -45,7 +45,7 @@ export default function Change() {
             second: refs.name.second.current.value,
             middle: refs.name.middle.current.value
         },
-        birthdate: toISODate(birthdate),
+        birthdate: birthdate.toISOString(),
         email: refs.email.current.value,
         phone: refs.phone.current.value,
         address: refs.address.current.value,

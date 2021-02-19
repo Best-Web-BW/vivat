@@ -1,6 +1,5 @@
 import AuthProvider, { AuthVariableComponent, useAuth } from "../../utils/providers/AuthProvider";
 import EventListProvider from "../../utils/providers/EventListProvider";
-import { currentISODate, sleep, toISODate } from "../../utils/common";
 import ProfileMenu from "../../components/common/ProfileMenu";
 import DatePicker from "../../components/common/DatePicker";
 import { useEffect, useRef, useState } from "react";
@@ -52,7 +51,7 @@ function Registration({ Select }) {
     useEffect(async () => {
         if(!user) return;
 
-        const currentDate = currentISODate();
+        const currentDate = new Date().toISOString();
 
         let events;
         try { events = await EventListProvider.getEventList(); }
@@ -97,7 +96,7 @@ function Registration({ Select }) {
         event_id: refs.event_id.current,
         rider: {
             name: refs.rider.name.current.value,
-            birthdate: toISODate(riderBirthdate)
+            birthdate: riderBirthdate.toISOString();
         },
         region: refs.region.current.value,
         trainer_name: refs.trainer_name.current.value,
