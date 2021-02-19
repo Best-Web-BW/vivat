@@ -1,5 +1,5 @@
 .header-content-wrapper.about {
-    background-image: url('/images/about/marylou-fortier-mjXm9gYP4wE-unsplash.jpg');
+    background-image: url('/images/about/marylou-fortier-mjXm9gYP4wE-unsplash.webp');
     background-position-x: right;
     background-size: contain;
     background-repeat: no-repeat;
@@ -100,7 +100,7 @@
     }
 
     .header-content-wrapper.about {
-        background-image: url('/images/about/marylou-fortier-mjXm9gYP4wE-unsplashm.jpg');
+        background-image: url('/images/about/marylou-fortier-mjXm9gYP4wE-unsplashm.webp');
     }
 
     .about-slider-container {

@@ -13,9 +13,9 @@ export default function RentGuest() {
                     <SimpleDotSlider
                         containerClass="services-slider-container" slideClass="services-slide"
                         images={[
-                            "/images/services/guest-horsestable-slider/1.jpg",
-                            "/images/services/guest-horsestable-slider/2.jpg",
-                            "/images/services/guest-horsestable-slider/3.jpg"
+                            "/images/services/guest-horsestable-slider/1.webp",
+                            "/images/services/guest-horsestable-slider/2.webp",
+                            "/images/services/guest-horsestable-slider/3.webp"
                         ]}
                     />
                 }

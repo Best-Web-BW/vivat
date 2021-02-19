@@ -1,5 +1,5 @@
 .header-content-wrapper.events {
-    background-image: url('/images/events/events_header.jpg');
+    background-image: url('/images/events/events_header.webp');
     background-position-x: right;
     background-size: cover;
     background-repeat: no-repeat;
@@ -252,7 +252,7 @@
     }
 
     .header-content-wrapper.events {
-        background-image: url('/images/events/events_headerm.jpg');
+        background-image: url('/images/events/events_headerm.webp');
     }
 
     #calendar {

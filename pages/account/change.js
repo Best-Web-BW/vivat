@@ -94,7 +94,7 @@ export default function Change() {
                     <div className="profile-row flex-row">
                         <div className="personal-wrapper">
                             <div className="profile-photo-wrapper" onClick={() => console.log(crawl())}>
-                                <img src="/images/profile/114296480-businessman-avatar-icon-profession-logo-male-character-a-man-in-suit-people-specialists-flat-simple-.jpg" alt="" width="100%" />
+                                <img src="/images/profile/avatar_placeholder.webp" alt="" width="100%" />
                             </div>
                             {/* <div className="change-photo-wrapper">
                                 <span className="change-photo"></span>

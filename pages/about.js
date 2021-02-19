@@ -28,9 +28,9 @@ export default function About() {
             </ContentHeader>
             <div className="about-slider-wrapper content-block">
                 <DescriptedDotSlider containerClass="about-slider-container" slideClass="about-slide" images={[
-                    ["/images/about/slider/1.jpg", "Описание для фото 1"],
-                    ["/images/about/slider/2.jpg", "Описание для фото 2"],
-                    ["/images/about/slider/3.jpg", "Описание для фото 3"]
+                    ["/images/about/slider/1.webp", "Описание для фото 1"],
+                    ["/images/about/slider/2.webp", "Описание для фото 2"],
+                    ["/images/about/slider/3.webp", "Описание для фото 3"]
                 ]} />
             </div>
         </div>

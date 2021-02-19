@@ -185,7 +185,7 @@ export default class Header extends React.Component {
                                 >
                                     <div className="profile-preview-row">
                                         <div className="profile-preview-photo">
-                                            <img src="/images/placeholder_avatar.jpg" alt="" width="100%" />
+                                            <img src="/images/profile/avatar_placeholder.webp" alt="" width="100%" />
                                         </div>
                                         <div className="profile-preview-data">
                                             <div className="profile-preview-name">

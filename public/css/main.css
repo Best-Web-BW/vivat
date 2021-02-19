@@ -1146,7 +1146,7 @@ header {
 .custom-checkbox:checked+label::before {
     border-color:#c4c4c4;
     background-color: #c4c4c4;
-    background-image: url('/images/icons/check-mark.png');
+    background-image: url('/images/icons/check-mark.webp');
 }
 
 /* forgot password */

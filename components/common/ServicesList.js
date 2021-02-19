@@ -33,19 +33,19 @@ export default function ServicesList({ containerClass }) {
             </div>
             <div className="services-blocks-wrapper">
                 <Service
-                    img="/images/home/services/evan-wise-O1S18WAol3w-unsplash.jpg"
+                    img="/images/home/services/rent_main.webp"
                     link="rent-main"
                     category="Аренда"
                     title="Основная конюшня"
                 />
                 <Service
-                    img="/images/home/services/gabriella-clare-marino-O_jE3p48m44-unsplash.jpg"
+                    img="/images/home/services/rent_guest.webp"
                     link="rent-guest"
                     category="Аренда"
                     title="Гостевая конюшня"
                 />
                 <Service
-                    img="/images/home/services/matthew-lancaster-B5KfPvpVe-c-unsplash.jpg"
+                    img="/images/home/services/personal_lessons.webp"
                     link="personal-lessons"
                     category="Услуги"
                     title="Персональные занятия"

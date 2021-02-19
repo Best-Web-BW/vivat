@@ -1,5 +1,5 @@
 .header-content-wrapper.gallery {
-    background-image: url('/images/gallery/erin-dolson-uwEt4grBcdo-unsplash.jpg');
+    background-image: url('/images/gallery/erin-dolson-uwEt4grBcdo-unsplash.webp');
     background-position-x: right;
     background-size: cover;
     background-repeat: no-repeat;
@@ -265,7 +265,7 @@
     }
 
     .header-content-wrapper.gallery {
-        background-image: url('/images/gallery/erin-dolson-uwEt4grBcdo-unsplashm.jpg');
+        background-image: url('/images/gallery/erin-dolson-uwEt4grBcdo-unsplashm.webp');
     }
 
     .album-list-container {
