@@ -1,58 +1,23 @@
-import { useEffect, useMemo } from "react";
-
-const initModule = module => {
-    const callbacks = "yandex_site_callbacks";
-    if(!window[callbacks]) window[callbacks] = [];
-    window[callbacks].push(() => Ya.Site[module].init());
-}
+import { useEffect, useMemo, useState } from "react";
 
 export function QueryInput() {
-    const config = useMemo(() => JSON.stringify({
-        "action": `http://localhost/search`,
-        "arrow": false,
-        "bg": "transparent",
-        "fontsize": 16,
-        "fg": "#000000",
-        "language": "ru",
-        "logo": "rw",
-        "publicname": "Yandex Site Search #2447908",
-        "suggest": true,
-        "target": "_self",
-        "tld": "ru",
-        "type": 2,
-        "usebigdictionary": true,
-        "searchid": 2447908,
-        "input_fg": "#ffffff",
-        "input_bg": "#333333",
-        "input_fontStyle": "normal",
-        "input_fontWeight": "normal",
-        "input_placeholder": "Введите поисковой запрос",
-        "input_placeholderColor": "#cccccc",
-        "input_borderColor": "#ffffff"
-    }), []);
-
-    useEffect(() => initModule("Form"), []);
+    const [text, setText] = useState("");
+    const onSubmit = evt => {
+        evt.preventDefault();
+        if(text.length) document.location = `/search?text=${encodeURIComponent(text)}&searchid=2447908&web=0`;
+    }
 
     return (
-        <>
-            <div className="ya-site-form ya-site-form_inited_no" data-bem={config} style={{ width: "100%" }}>
-                <form className="search-form" action="https://yandex.ru/search/site/" method="get" target="_self" acceptCharset="utf-8" style={{ width: "100%" }}>
-                    <input type="hidden" name="searchid" defaultValue="2447908" />
-                    <input type="hidden" name="l10n" defaultValue="ru" />
-                    <input type="hidden" name="reqenc" />
-                    <input type="search" name="text" className="search-input" placeholder="Введите поисковой запрос" />
-                    <label className="search-icon-wrapper">
-                        <input type="submit" defaultValue="Найти" style={{ display: "none" }} />
-                        <span className="search-icon" />
-                    </label>
-                </form>
-            </div>
-            <style type="text/css">
-                {/* .ya-page_js_yes .ya-site-form_inited_no {
-                    display: none;
-                } */}
-            </style>
-        </>
+        <form className="search-form" onSubmit={onSubmit} style={{ width: "100%" }}>
+            <input
+                type="text" className="search-input" placeholder="Введите поисковой запрос"
+                value={text} onChange={evt => setText(evt.target.value)}
+            />
+            <label className="search-icon-wrapper">
+                <input type="submit" hidden />
+                <span className="search-icon" />
+            </label>
+        </form>
     );
 }
 
@@ -65,7 +30,7 @@ export function ResultPage() {
         "updatehash": true
     }), []);
 
-    useEffect(() => initModule("Results"), []);
+    useEffect(() => Ya.Site.Results.init(), []);
 
     return (
         <>

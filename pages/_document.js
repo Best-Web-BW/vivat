@@ -38,7 +38,7 @@ export default class MyDocument extends Document {
                     <Main />
                     <NextScript />
                 </body>
-                <script src="https://site.yandex.net/v2.0/js/all.js" async={true} type="text/javascript" charSet="utf-8" />
+                <script src="/yandex_all.js" async={true} type="text/javascript" charSet="utf-8" />
             </Html>
         );
     }
