@@ -33,12 +33,12 @@ export default class MyDocument extends Document {
                     <link rel="stylesheet" href="/css/react-images-upload.css" />
                     <link rel="stylesheet" href="/css/admin.css" />
                     <link rel="shortcut icon" href="/favicon.ico" />
+                    <script src="/yandex_all.js" async={true} type="text/javascript" charSet="utf-8" />
                 </Head>
                 <body>
                     <Main />
                     <NextScript />
                 </body>
-                <script src="/yandex_all.js" async={true} type="text/javascript" charSet="utf-8" />
             </Html>
         );
     }
