@@ -17,6 +17,7 @@ const handle = app.getRequestHandler();
 const HTTPS_PORT = process.env.HTTPS_PORT || 443;
 const HTTP_PORT = process.env.HTTP_PORT || 80;
 
+const seo = require("./routes/seo.js");
 const api = require("./routes/api.js");
 const mail = require("./routes/mail.js");
 const auth = require("./routes/auth.js");
@@ -49,10 +50,13 @@ const admin = require("./routes/admin.js");
         server.post("/images/*", dynamicFileHandler);
         server.get("/images/*", dynamicFileHandler);
 
+        server.use("/sitemap.xml", seo.sitemap);
+        server.use("/robots.txt", seo.robots);
         server.use("/api/admin", admin);
         server.use("/api/auth", auth);
         server.use("/api/mail", mail);
 		server.use("/api", api);
+        
 		server.get("*", (request, response) => handle(request, response));
 
         console.log(`--> Process environment: '${process.env.NODE_ENV}'`);

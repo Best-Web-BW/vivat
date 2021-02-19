@@ -1,0 +1,6 @@
+User-agent: *
+Disallow: /api/
+Disallow: /search/
+Disallow: /account/
+Disallow: /forgot-password/
+Sitemap: https://kskvivat.com/sitemap.xml
