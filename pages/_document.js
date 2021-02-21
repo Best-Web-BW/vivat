@@ -8,7 +8,7 @@ export default class MyDocument extends Document {
 
     render() {
         return (
-            <Html className="ya-page_js_yes">
+            <Html className="ya-page_js_yes" lang="ru">
                 <Head />
                 <body>
                     <Main />

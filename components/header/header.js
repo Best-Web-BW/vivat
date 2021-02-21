@@ -163,13 +163,13 @@ export default class Header extends React.Component {
                             </button>
                         </div>
                         <div className="col-1-2 login-button-container">
-                            <button className="search-button" onClick={this.toggleSearch}>
+                            <button name="search" className="search-button" onClick={this.toggleSearch}>
                                 <span className="search-icon" />
                             </button>
                             <AuthVariableComponent>
                                 <Link href="/account/profile">
                                     <a>
-                                        <button className="profile-button" onMouseEnter={this.openProfileMenu} onMouseLeave={this.closeProfileMenu}>
+                                        <button name="profile" className="profile-button" onMouseEnter={this.openProfileMenu} onMouseLeave={this.closeProfileMenu}>
                                             <span className="profile-icon" />
                                         </button>
                                     </a>
