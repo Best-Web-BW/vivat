@@ -3,6 +3,7 @@ import ContentHeader from "../../components/common/ContentHeader";
 import EventSlider from "../../components/sliders/EventSlider";
 import { useMemo } from "react";
 import Link from "next/link";
+import { removeTagsFromText } from "../../utils/common";
 
 function DocumentBlock({ url, name }) {
     return (
@@ -21,12 +22,13 @@ function DocumentBlock({ url, name }) {
 
 export default function EventPage({ events, event: { id, title, contents, documents, tags } }) {
     const _contents = useMemo(() => contents.replace(/script/gi, "sсrірt"), [id]);
-    const keywords = useMemo(() => [...tags, "событие", "мероприятие", "кск", "Виват", "Россия"].join(", "), [tags]);
+    const description = useMemo(() => removeTagsFromText(_contents), [_contents]);
+    const keywords = useMemo(() => [...tags, "событие", "мероприятие", "кск", "Виват", "Россия"], [tags]);
 
     return (
         <>
             <ContentHeader
-                pages={[["events", "Мероприятия"], [`events/${id}`, title]]} {...{ keywords }}
+                pages={[["events", "Мероприятия"], [`events/${id}`, title]]} {...{ description, keywords }}
                 afterTitle={<EventSlider events={events} containerClass="day-events-container" />}
             />
             <div className="event-page-content content-block">
