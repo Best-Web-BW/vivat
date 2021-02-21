@@ -46,11 +46,5 @@
     "suneditor-react": "^2.15.2",
     "uuid": "^8.3.2",
     "webp-converter": "^2.3.1"
-  },
-  "devDependencies": {
-    "@editorjs/editorjs": "^2.19.1",
-    "@editorjs/image": "^2.6.0",
-    "@editorjs/paragraph": "^2.8.0",
-    "react-editor-js": "^1.9.0"
   }
 }
