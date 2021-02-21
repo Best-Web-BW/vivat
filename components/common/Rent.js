@@ -1,6 +1,6 @@
 import AuthProvider from "../../utils/providers/AuthProvider";
 import MailProvider from "../../utils/providers/MailProvider";
-import { reformatDate } from "../../utils/common";
+import { toRuDate } from "../../utils/common";
 import { DefaultErrorModal, ErrorModal, SuccessModal } from "./Modals";
 import DatePicker from "./DatePicker";
 import { useState } from "react";
@@ -21,8 +21,8 @@ export default function Rent({ text, cost, minHours, hoursText }) {
         try {
             const email = AuthProvider.userData.email;
             const phone = AuthProvider.userData.phone;
-            console.log(email, phone, text, selectedTime, reformatDate(selectedDate));
-            const result = await MailProvider.sendRentEmail(email, phone, text, selectedTime, reformatDate(selectedDate));
+            console.log(email, phone, text, selectedTime, toRuDate(selectedDate));
+            const result = await MailProvider.sendRentEmail(email, phone, text, selectedTime, toRuDate(selectedDate));
             if(result.success) {
                 setSuccessModal(true);
                 setSelectedTime("");

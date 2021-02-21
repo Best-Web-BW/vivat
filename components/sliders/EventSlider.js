@@ -1,13 +1,13 @@
 import React, { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import EventListProvider from "../../utils/providers/EventListProvider";
-import { reformatDate } from "../../utils/common";
+import { toRuDate } from "../../utils/common";
 
 const daysOfWeek = ["ВС", "ПН", "ВТ", "СР", "ЧТ", "ПТ", "СБ"];
 
 export function convertDate(rawDate) {
     const date = new Date(rawDate);
-    return `${daysOfWeek[date.getUTCDay()]}. ${reformatDate(date)}`;
+    return `${daysOfWeek[date.getUTCDay()]}. ${toRuDate(date)}`;
 }
 
 function EventBlock({ id, title, dates }) {
@@ -47,7 +47,7 @@ export default function EventSlider({ events: _events, containerClass }) {
     return (
         <div className={containerClass}>
             <div className="day-events-title">
-                <p><span>События на</span>&nbsp;<span style={{ color: "#797878d1" }}>{ reformatDate(new Date()) }</span></p>
+                <p><span>События на</span>&nbsp;<span style={{ color: "#797878d1" }}>{ toRuDate(new Date()) }</span></p>
             </div>
             <div className="events-navigation">
                 <div className="prev" onClick={scrollLeft}>

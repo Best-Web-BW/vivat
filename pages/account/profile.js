@@ -1,7 +1,7 @@
 import AuthProvider, { useAuth, AuthVariableComponent } from "../../utils/providers/AuthProvider";
 import ProfileMenu from "../../components/common/ProfileMenu";
 import { ErrorModal } from "../../components/common/Modals";
-import { reformatDate, sleep } from "../../utils/common";
+import { toRuDate, sleep } from "../../utils/common";
 import { useEffect, useState } from "react";
 import { withRouter } from "next/router";
 import Link from "next/link";
@@ -68,7 +68,7 @@ function Profile() {
                 <div className="profile-row flex-row">
                     <div className="profile-element-wrapper">
                         <p className="birthday-title">Дата рождения:</p>
-                        <p className="birthday-data">{ user && reformatDate(user.birthdate) }</p>
+                        <p className="birthday-data">{ user && toRuDate(user.birthdate) }</p>
                     </div>
                     <div className="profile-element-wrapper">
                         <p className="email-title">email:</p>
