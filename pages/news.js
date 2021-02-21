@@ -1,14 +1,13 @@
-import Router, { useRouter } from "next/router"
-import Link from "next/link";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-// import Select from "react-select";
-import ContentHeader from "../components/common/ContentHeader";
-import DBProvider from "../utils/providers/DBProvider";
-import PostListProvider from "../utils/providers/PostListProvider";
-import { AdminVariableComponent } from "../utils/providers/AuthProvider";
-import TextEditor from "../components/common/TextEditor";
 import { DefaultErrorModal, ErrorModal, SuccessModal, WarningModal } from "../components/common/Modals";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { AdminVariableComponent } from "../utils/providers/AuthProvider";
+import PostListProvider from "../utils/providers/PostListProvider";
+import ContentHeader from "../components/common/ContentHeader";
+import TextEditor from "../components/common/TextEditor";
+import DBProvider from "../utils/providers/DBProvider";
+import Router, { useRouter } from "next/router"
 import { sleep } from "../utils/common";
+import Link from "next/link";
 // import { css, cx } from "@emotion/css"
 
 const groupStyles = {
@@ -208,16 +207,14 @@ export default function News({ query: { categories: _categories, tags: _tags, se
     return (
         <div>
             <ContentHeader wrapperClass="news" pages={[["news", "Новости"]]}>
-                <p>
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsam illo id beatae dolores recusandae
-                    et repellat ratione! Culpa accusamus consequatur quae ipsam quidem, reiciendis distinctio
-                    ratione aut dolore praesentium omnis quis nam modi ea architecto eveniet sunt exercitationem,
-                    totam quas aperiam cupiditate harum vero ex nihil. Aut nisi adipisci amet fugit, aliquid vel
-                    temporibus quos id provident, esse illo explicabo animi inventore at numquam? Accusantium ab
-                    dolor odit repudiandae possimus tempora eveniet autem, reprehenderit voluptatum consectetur nemo
-                    ipsam nesciunt consequuntur sequi fuga odio voluptatem, natus pariatur ullam temporibus sint
-                    rerum consequatur. Quibusdam quod sapiente debitis nulla, ad omnis ratione minima.
-                </p>
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsam illo id beatae dolores recusandae
+                et repellat ratione! Culpa accusamus consequatur quae ipsam quidem, reiciendis distinctio
+                ratione aut dolore praesentium omnis quis nam modi ea architecto eveniet sunt exercitationem,
+                totam quas aperiam cupiditate harum vero ex nihil. Aut nisi adipisci amet fugit, aliquid vel
+                temporibus quos id provident, esse illo explicabo animi inventore at numquam? Accusantium ab
+                dolor odit repudiandae possimus tempora eveniet autem, reprehenderit voluptatum consectetur nemo
+                ipsam nesciunt consequuntur sequi fuga odio voluptatem, natus pariatur ullam temporibus sint
+                rerum consequatur. Quibusdam quod sapiente debitis nulla, ad omnis ratione minima.
             </ContentHeader>
             <div className="blog-content content-block">
                 <div className="modile-blog-menu">
@@ -303,21 +300,29 @@ News.getInitialProps = ({ query }) => ({ query });
 export function PostEditor(props) {
     const [imported, setImported] = useState();
     useEffect(async () => {
-        const CreatableSelect = (await import("react-select/creatable")).default;
+        const Select = (await import("react-select")).default;
         const animatedComponents = ((await import("react-select/animated")).default)();
-        setImported({ CreatableSelect, animatedComponents });
+        setImported({ Select, animatedComponents });
     }, []);
 
     return imported ? <RawPostEditor {...imported} {...props} /> : null;
 }
 
-function RawPostEditor({ CreatableSelect, animatedComponents, opened, action, data, close, categories, tags, setSuccessCreateModalOpened, setSuccessEditModalOpened, processError }) {
+function RawPostEditor({ Select, animatedComponents, opened, action, data, close, categories, tags, setSuccessCreateModalOpened, setSuccessEditModalOpened, processError }) {
     const [actionMap] = useState({ "create": ["Создать", () => setPost(undefined)], "edit": ["Изменить", data => setPost(data)] });
     const [post, setPost] = useState();
-    const [selectedCategory, setSelectedCategory] = useState("");
-    const [selectedTags, setSelectedTags] = useState([]);
-    const updateTags = tags => setSelectedTags([... new Set(tags)]);
     
+    const addCategoryInputRef = useRef();
+    const [editorCategories, setEditorCategories] = useState(categories.map(([name]) => name));
+    
+    const addTagInputRef = useRef();
+    const [editorTags, setEditorTags] = useState(tags);
+    const updateEditorTags = tags => setEditorTags([...new Set(tags)]);
+
+    const [selectedCategory, setSelectedCategory] = useState(null);
+    const [selectedTags, setSelectedTags] = useState([]);
+    const updateSelectedTags = tags => setSelectedTags([...new Set(tags)]);
+
     useEffect(() => opened && actionMap[action][1](data), [opened]);
     
     useEffect(() => { setSelectedCategory(post?.category ?? ""); setSelectedTags(post?.tags ?? []); }, [post]);
@@ -353,8 +358,8 @@ function RawPostEditor({ CreatableSelect, animatedComponents, opened, action, da
     const createPost = async () => {
         const data = await submit();
         if(data) {
-            const result = await PostListProvider.createPost({ ...data, date: new Date().toISOString() });
-            console.log(result);
+            const currentDate = new Date().toISOString();
+            const result = await PostListProvider.createPost({ ...data, cdate: currentDate, mdate: currentDate });
             if(result.success) setSuccessCreateModalOpened(true);
             else processError(result.reason);
         }
@@ -363,11 +368,12 @@ function RawPostEditor({ CreatableSelect, animatedComponents, opened, action, da
     const editPost = async id => {
         const data = await submit();
         if(data) {
-            const result = await PostListProvider.editPost(id, data);
+            const result = await PostListProvider.editPost(id, { ...data, mdate: new Date().toISOString() });
             if(result.success) setSuccessEditModalOpened(true);
             else processError(result.reason);
         }
     };
+
 
     return (
         <div className={`add-article-modal ${opened && "opened"}`}>
@@ -390,50 +396,58 @@ function RawPostEditor({ CreatableSelect, animatedComponents, opened, action, da
                 <div className="add-article-modal-footer">
                     <div className="col-1-3">
                         <p>Выберите категорию</p>
-                        {/* <Select
-                            // defaultValue={colourOptions[1]}
-                            options={categoryOptions}
-                            formatGroupLabel={formatGroupLabel}
+                        <Select
                             theme={theme => ({ ...theme, borderRadius: 0, colors: { ...theme.colors, primary: "" } })}
-                            placeholder="Выберите из списка"
-                        /> */}
-                        <CreatableSelect
-                            theme={theme => ({ ...theme, borderRadius: 0, colors: { ...theme.colors, primary: "" } })}
-                            options={categories.map(([category]) => ({ value: category, label: category }))}
-                            onChange={option => setSelectedCategory(option?.label ?? "")}
-                            value={{ value: selectedCategory, label: selectedCategory }}
-                            formatCreateLabel={value => `Создать категорию "${value}"`}
-                            placeholder="Выберите из списка"
+                            options={editorCategories.map(category => ({ value: category, label: category }))}
+                            value={selectedCategory && { value: selectedCategory, label: selectedCategory }}
+                            onChange={option => setSelectedCategory(option?.value ?? "")}
                             formatGroupLabel={formatGroupLabel}
+                            placeholder="Выберите из списка"
                             menuPlacement="top"
                             isClearable
                         />
                         <div className="add-article-add-new-category"> 
-                            {/* <input type="text" placeholder="Категория" defaultValue={post ? post.category : ""} /> */}
-                            <input type="text" placeholder="Добавить категорию"/>
-                            <button className="add-article-add-new-category-button">Добавить</button>
+                            <input ref={addCategoryInputRef} type="text" placeholder="Добавить категорию"/>
+                            <button
+                                className="add-article-add-new-category-button"
+                                onClick={() => {
+                                    const category = addCategoryInputRef.current.value;
+                                    if(category.length) {
+                                        setEditorCategories(prev => [...prev, category]);
+                                        setSelectedCategory(category);
+                                    }
+                                    addCategoryInputRef.current.value = "";
+                                }}
+                            >Добавить</button>
                         </div>
                     </div>
                     <div className="col-1-3">
                         <p>Выберите ключевые слова</p>
-                        <CreatableSelect 
+                        <Select 
                             theme={theme => ({ ...theme, borderRadius: 0, colors: { ...theme.colors, primary: "" } })}
-                            onChange={tags => (console.log(tags), updateTags(tags.map(({ value }) => value)))}
-                            noOptionsMessage={() => "Тегов больше нет, но вы можете создать новые"}
+                            onChange={tags => updateSelectedTags(tags.map(({ value }) => value))}
                             value={selectedTags.map(tag => ({ value: tag, label: tag }))}
-                            options={tags.map(tag => ({ value: tag, label: tag }))}
-                            formatCreateLabel={value => `Создать тег "${value}"`}
-                            placeholder="Выберите из списка или создайте новый"
+                            options={editorTags.map(tag => ({ value: tag, label: tag }))}
+                            placeholder="Выберите из списка"
                             components={animatedComponents}
                             closeMenuOnSelect={false}
                             menuPlacement="top"
                             isClearable
                             isMulti
-                            // styles={customStyles}
                         />
                         <div className="add-article-add-new-keyword"> 
-                            <input type="text" placeholder="Добавить ключевое слово"/>
-                            <button className="add-article-add-new-keyword-button">Добавить</button>
+                            <input ref={addTagInputRef} type="text" placeholder="Добавить ключевое слово"/>
+                            <button
+                                className="add-article-add-new-keyword-button"
+                                onClick={() => {
+                                    const tag = addTagInputRef.current.value;
+                                    if(tag.length) {
+                                        updateEditorTags([...editorTags, tag]);
+                                        setSelectedTags(prev => [...prev, tag]);
+                                    }
+                                    addTagInputRef.current.value = "";
+                                }}
+                            >Добавить</button>
                         </div>
                     </div>
                     <div className="col-1-3">

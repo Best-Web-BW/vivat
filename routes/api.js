@@ -19,25 +19,49 @@ router.get("/events", async (req, res) => {
     const { date } = req.query;
 
     const query = date ? { "dates.0": { $lte: date }, "dates.1": { $gte: date } } : { };
-    const projection = { _id: false, id: true, title: true, dates: true, category: true };
+    const projection = { _id: 0, id: 1, title: 1, dates: 1, tags: 1, category: 1, cdate: 1 };
     
     const result = await events.find(query, { projection }).sort({ id: 1 }).toArray();
     res.json(result);
 });
 
+router.get("/events/stats", async (_, res) => {
+    const result = await events.find({ }, { projection: { _id: 0, tags: 1, category: 1 } }).toArray();
+    
+    const uniqueTags = new Set(), uniqueCategories = new Set();
+    for(const { tags, category } of result) {
+        for(const tag of tags) uniqueTags.add(tag);
+        uniqueCategories.add(category);
+    }
+
+    res.json({ tags: [...uniqueTags], categories: [...uniqueCategories] });
+});
+
 router.get("/events/:id", async (req, res) => {
-    const result = await events.findOne({ id: +req.params.id }, { projection: { _id: false } });
+    const result = await events.findOne({ id: +req.params.id }, { projection: { _id: 0 } });
     res.json({ ...result, full: true });
 });
 
 router.get("/albums", async (_, res) => {
-    const projection = { _id: false, id: true, title: true, cover: true, date: true };
+    const projection = { _id: 0, id: 1, title: 1, cover: { url: 1 }, cdate: 1 };
     const result = await albums.find({ }, { projection }).sort({ id: 1 }).toArray();
     res.json(result);
 });
 
+router.get("/albums/stats", async (_, res) => {
+    const result = await albums.find({ }, { projection: { _id: 0, tags: 1, category: 1 } }).toArray();
+    
+    const uniqueTags = new Set(), uniqueCategories = new Set();
+    for(const { tags, category } of result) {
+        for(const tag of tags) uniqueTags.add(tag);
+        uniqueCategories.add(category);
+    }
+
+    res.json({ tags: [...uniqueTags], categories: [...uniqueCategories] });
+});
+
 router.get("/albums/:id", async (req, res) => {
-    const result = await albums.findOne({ id: +req.params.id }, { projection: { _id: false } });
+    const result = await albums.findOne({ id: +req.params.id }, { projection: { _id: 0 } });
     res.json({ ...result, full: true });
 });
 

@@ -1,17 +1,16 @@
+import { DefaultErrorModal, ErrorModal, SuccessModal, WarningModal } from "../../components/common/Modals";
 import { AdminVariableComponent } from "../../utils/providers/AuthProvider";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import EventListProvider from "../../utils/providers/EventListProvider";
 import DocumentLoader from "../../components/common/DocumentLoader";
 import { convertDate } from "../../components/sliders/EventSlider";
+import { removeTagsFromText, sleep } from "../../utils/common";
 import ProfileMenu from "../../components/common/ProfileMenu";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import TextEditor from "../../components/common/TextEditor";
 import DatePicker from "../../components/common/DatePicker";
-import { sleep } from "../../utils/common";
+import DBProvider from "../../utils/providers/DBProvider";
 import Router from "next/router";
 import Link from "next/link";
-import { DefaultErrorModal, ErrorModal, SuccessModal, WarningModal } from "../../components/common/Modals";
-// import CreatableSelect from 'react-select/creatable';
-// import Select from "react-select";
 
 const groupStyles = {
     display: "flex",
@@ -40,7 +39,8 @@ const formatGroupLabel = data => (
 );
 
 function EventBlock({ id, title, dates: [start, end], edit, remove }) {
-    const link = `/events/${id}`;
+    const link = useMemo(() => `/events/${id}`, [id]);
+
     return (
         <div className="events-block">
             <div className="events-title">
@@ -63,20 +63,16 @@ function EventBlock({ id, title, dates: [start, end], edit, remove }) {
 
 export default function _ManageEvents() {
     const [imported, setImported] = useState();
-    useEffect(async () => setImported({ CreatableSelect: (await import("react-select/creatable")).default }), []);
+    useEffect(async () => setImported({
+        Select: (await import("react-select/creatable")).default,
+        animatedComponents: ((await import("react-select/animated")).default)()
+    }), []);
     return imported ? <ManageEvents {...imported} /> : null;
 }
 
-function ManageEvents({ CreatableSelect }) {
+function ManageEvents({ Select, animatedComponents }) {
     const [events, setEvents] = useState([]);
-    const [categories, setCategories] = useState([]);
-    useEffect(async () => {
-        const events = await EventListProvider.getEventList();
-        const categories = [...new Set(events.map(({ category }) => category))];
-
-        setEvents(events);
-        setCategories(categories);
-    }, []);
+    useEffect(async () => setEvents(await EventListProvider.getEventList()), []);
 
     const [editorConfig, setEditorConfig] = useState({
         opened: false,
@@ -95,9 +91,10 @@ function ManageEvents({ CreatableSelect }) {
 
     const processError = useCallback(error => {
         switch(error) {
-            case "db_error": return setErrorModal("Ошибка БД, попробуйте позже");
             case "event_not_exist": return setErrorModal("Такого мероприятия не существует");
+            case "db_error": return setErrorModal("Ошибка БД, попробуйте позже");
             case "invalid_request": return setErrorModal("Неправильный запрос");
+            case "no_tags": return setErrorModal("Не выбрано ни одного тега");
             case "no_category": return setErrorModal("Не выбрана категория");
             case "no_title": return setErrorModal("Не введено название");
             case "no_contents": return setErrorModal("Не введён текст");
@@ -134,7 +131,7 @@ function ManageEvents({ CreatableSelect }) {
                 <EventEditor
                     {...{
                         setSuccessCreateModalOpened, setSuccessEditModalOpened,
-                        processError, CreatableSelect, categories
+                        processError, Select, animatedComponents
                     }}
                     eventData={editorConfig.data}
                     opened={editorConfig.opened}
@@ -165,25 +162,43 @@ function ManageEvents({ CreatableSelect }) {
     );
 }
 
-export function EventEditor({ CreatableSelect, opened, action, eventData, close, categories, setSuccessCreateModalOpened, setSuccessEditModalOpened, processError }) {
+export function EventEditor({ Select, animatedComponents, opened, action, eventData, close, setSuccessCreateModalOpened, setSuccessEditModalOpened, processError }) {
     const [actionMap] = useState({ "create": ["Создать", () => setEvent(undefined)], "edit": ["Изменить", data => setEvent(data)] });
     const [event, setEvent] = useState();
-    const [selectedCategory, setSelectedCategory] = useState("");
     const [documents, setDocuments] = useState([]);
     const defaultDocuments = useMemo(() => event ? event.documents : [], [event]);
     
     useEffect(() => opened && actionMap[action][1](eventData), [opened]);
+
+    const addCategoryInputRef = useRef();
+    const [editorCategories, setEditorCategories] = useState([]);
     
-    useEffect(() => setSelectedCategory(event ? event.category : ""), [event]);
+    const addTagInputRef = useRef();
+    const [editorTags, setEditorTags] = useState([]);
+    const updateEditorTags = tags => setEditorTags([...new Set(tags)]);
+
+    const [selectedCategory, setSelectedCategory] = useState(null);
+    const [selectedTags, setSelectedTags] = useState([]);
+    const updateSelectedTags = tags => setSelectedTags([...new Set(tags)]);
+
+    useEffect(() => setSelectedCategory(event?.category ?? null), [event]);
+    useEffect(() => setSelectedTags(event?.tags ?? []), [event]);
+    useEffect(async () => {
+        const { categories, tags } = await DBProvider.getEventStats();
+        setEditorCategories(categories);
+        setEditorTags(tags);
+    }, []);
     
     const refs = {
-        title: useRef(),
         textEditor: useRef(),
-        address: useRef()
+        address: useRef(),
+        title: useRef()
     };
     
     const defaultValue = useMemo(() => event ? event.contents.replace(/script/gi, "sсrірt") : "", [event]);
     useEffect(() => refs.textEditor.current?.editor.setContents(defaultValue), [event]);
+    useEffect(() => refs.address.current.value = event?.address ?? "", [event]);
+    useEffect(() => refs.title.current.value = event?.title ?? "", [event]);
     
     const [startDate, setStartDate] = useState();
     const [endDate, setEndDate] = useState();
@@ -198,19 +213,21 @@ export function EventEditor({ CreatableSelect, opened, action, eventData, close,
     }, [event]);
 
     const crawl = () => ({
-        title: refs.title.current.value,
+        dates: [startDate.toISOString(), endDate.toISOString()],
         contents: refs.textEditor.current.editor.getContents(),
         address: refs.address.current.value,
-        dates: [startDate.toISOString(), endDate.toISOString()],
+        title: refs.title.current.value,
         category: selectedCategory,
+        tags: selectedTags,
         documents
     });
 
-    const validate = data => {
-        if(!data.title.length) return { success: 0, error: "no_title" };
-        else if(data.contents.length <= 11) return { success: 0, error: "no_contents" };
-        else if(!data.address.length) return { success: 0, error: "no_address" };
-        else if(!data.category.length) return { success: 0, error: "no_category" };
+    const validate = ({ title, contents, address, category, tags }) => {
+        if(!title.length) return { success: 0, error: "no_title" };
+        else if(!tags.length) return { success: 0, error: "no_tags" };
+        else if(!address.length) return { success: 0, error: "no_address" };
+        else if(!(category && category.length)) return { success: 0, error: "no_category" };
+        else if(!removeTagsFromText(contents).length) return { success: 0, error: "no_contents" };
         else return { success: 1 };
     };
 
@@ -224,7 +241,8 @@ export function EventEditor({ CreatableSelect, opened, action, eventData, close,
     const createEvent = async () => {
         const data = await submit();
         if(data) {
-            const result = await EventListProvider.createEvent(data);
+            const currentDate = new Date().toISOString();
+            const result = await EventListProvider.createEvent({ ...data, cdate: currentDate, mdate: currentDate });
             if(result.success) setSuccessCreateModalOpened(true);
             else processError(result.reason);
         }
@@ -233,7 +251,7 @@ export function EventEditor({ CreatableSelect, opened, action, eventData, close,
     const editEvent = async id => {
         const data = await submit();
         if(data) {
-            const result = await EventListProvider.editEvent(id, data);
+            const result = await EventListProvider.editEvent(id, { ...data, mdate: new Date().toISOString() });
             if(result.success) setSuccessEditModalOpened(true);
             else processError(result.reason);
         }
@@ -253,15 +271,14 @@ export function EventEditor({ CreatableSelect, opened, action, eventData, close,
                         <label onClick={() => console.log(validate(crawl()))}>
                             Название события
                         </label>
-                        <input ref={refs.title} type="text" placeholder="Введите название собыия" defaultValue={event ? event.title : ""}/>
-                        {/* <label htmlFor="">Название события</label> */}
+                        <input ref={refs.title} type="text" placeholder="Введите название собыия" />
                     </div>
                     <div className="edit-event-modal-col-left">
                         <div className="edit-event-modal-place">
                             <label>
                                 Место проведения
                             </label>
-                            <input ref={refs.address} type="text" name="address" placeholder="Введите адрес" defaultValue={event ? event.address : ""} />
+                            <input ref={refs.address} type="text" name="address" placeholder="Введите адрес" />
                         </div>
                         <div className="edit-event-modal-date">
                             <label>
@@ -297,42 +314,59 @@ export function EventEditor({ CreatableSelect, opened, action, eventData, close,
                 <div className="edit-event-modal-footer">
                     <div className="col-1-3">
                         <p>Выберите категорию</p>
-                        <CreatableSelect
-                            // theme={theme => ({ ...theme, borderRadius: 0, colors: { ...theme.colors, primary: "" } })}
-                            // options={categories.map(category => ({ value: category, label: category }))}
-                            // value={{ value: selectedCategory, label: selectedCategory }}
-                            // onChange={option => setSelectedCategory(option?.label ?? "")}
-                            // formatCreateLabel={value => `Создать категорию "${value}"`}
-                            // placeholder="Выберите из списка или создайте новую"
-                            // formatGroupLabel={formatGroupLabel}
-                            // menuPlacement="top"
-                            // isClearable
+                        <Select
+                            theme={theme => ({ ...theme, borderRadius: 0, colors: { ...theme.colors, primary: "" } })}
+                            options={editorCategories.map(category => ({ value: category, label: category }))}
+                            value={selectedCategory && { value: selectedCategory, label: selectedCategory }}
+                            onChange={option => setSelectedCategory(option?.value ?? "")}
+                            formatGroupLabel={formatGroupLabel}
+                            placeholder="Выберите из списка"
+                            menuPlacement="top"
+                            isClearable
                         />
                         <div className="add-article-add-new-category"> 
-                            <input type="text" placeholder="Добавить категорию"/>
-                            <button className="add-article-add-new-category-button">Добавить</button>
+                            <input ref={addCategoryInputRef} type="text" placeholder="Добавить категорию"/>
+                            <button
+                                className="add-article-add-new-category-button"
+                                onClick={() => {
+                                    const category = addCategoryInputRef.current.value;
+                                    if(category.length) {
+                                        setEditorCategories(prev => [...prev, category]);
+                                        setSelectedCategory(category);
+                                    }
+                                    addCategoryInputRef.current.value = "";
+                                }}
+                            >Добавить</button>
                         </div>
                     </div>
                     <div className="col-1-3">
                         <p>Выберите ключевые слова</p>
-                        <CreatableSelect 
-                            // theme={theme => ({ ...theme, borderRadius: 0, colors: { ...theme.colors, primary: "" } })}
-                            // onChange={tags => (console.log(tags), updateTags(tags.map(({ value }) => value)))}
-                            // noOptionsMessage={() => "Тегов больше нет, но вы можете создать новые"}
-                            // value={selectedTags.map(tag => ({ value: tag, label: tag }))}
-                            // options={tags.map(tag => ({ value: tag, label: tag }))}
-                            // formatCreateLabel={value => `Создать тег "${value}"`}
-                            // placeholder="Выберите из списка или создайте новый"
-                            // components={animatedComponents}
-                            // closeMenuOnSelect={false}
-                            // menuPlacement="top"
-                            // isClearable
-                            // isMulti
-                            // // styles={customStyles}
+                        <Select 
+                            theme={theme => ({ ...theme, borderRadius: 0, colors: { ...theme.colors, primary: "" } })}
+                            onChange={tags => updateSelectedTags(tags.map(({ value }) => value))}
+                            value={selectedTags.map(tag => ({ value: tag, label: tag }))}
+                            options={editorTags.map(tag => ({ value: tag, label: tag }))}
+                            placeholder="Выберите из списка"
+                            components={animatedComponents}
+                            closeMenuOnSelect={false}
+                            menuPlacement="top"
+                            isClearable
+                            isMulti
+                            // styles={customStyles}
                         />
                         <div className="add-article-add-new-keyword"> 
-                            <input type="text" placeholder="Добавить ключевое слово"/>
-                            <button className="add-article-add-new-keyword-button">Добавить</button>
+                            <input ref={addTagInputRef} type="text" placeholder="Добавить ключевое слово"/>
+                            <button
+                                className="add-article-add-new-keyword-button"
+                                onClick={() => {
+                                    const tag = addTagInputRef.current.value;
+                                    if(tag.length) {
+                                        updateEditorTags([...editorTags, tag]);
+                                        setSelectedTags(prev => [...prev, tag]);
+                                    }
+                                    addTagInputRef.current.value = "";
+                                }}
+                            >Добавить</button>
                         </div>
                     </div>
                     <div className="col-1-3">
