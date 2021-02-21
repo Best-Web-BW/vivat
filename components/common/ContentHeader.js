@@ -1,5 +1,7 @@
 import Head from "next/head";
 import Link from "next/link";
+import { useMemo } from "react";
+import { divideArrayFlatly } from "../../utils/common";
 import Translator from "./Translator";
 
 let translator = new Translator({
@@ -26,21 +28,27 @@ function createLink(address, text, isCurrent) {
     );
 }
 
-function processChildren(children) {
-    if(!children) return;
-    if(!children.length) children = [children];
-    return children.map((child, i) => <p key={i} className={`page-title-${i + 1}`}>{child.props.children}</p>);
-}
-
 export default function ContentHeader({ description, keywords, pages, wrapperClass, titleClass, beforeNavigation, afterTitle, children }) {
     const [title, navigation] = processNavigation(pages);
+
+    const descriptionMeta = useMemo(() => {
+        const desc = description ?? children;
+        if(!desc) return null;
+        return <meta name="description" content={desc.length > 140 ? `${desc.substring(0, 137)}...` : desc} />;
+    }, [description, children]);
+
+    const keywordsMetas = useMemo(() => {
+        if(!keywords) return null;
+        return divideArrayFlatly(keywords, 3).map(kws => <meta key={kws[0]} name="keywords" content={kws.join(", ")} />);
+    }, [keywords]);
+    
     return (
         <div className={`header-content-wrapper content-block ${wrapperClass ?? ""}`}>
             <Head>
                 <title>{title}</title>
                 <meta name="robots" content="index, nofollow" />
-                { description && <meta name="description" content={description} /> }
-                { keywords && <meta name="keywords" content={keywords} /> }
+                { descriptionMeta }
+                { keywordsMetas }
             </Head>
             <div className="header-bg" />
             <div className="blur-1" />
@@ -52,12 +60,12 @@ export default function ContentHeader({ description, keywords, pages, wrapperCla
                     { navigation }
                 </div>
                 <div className="header-title">
-                    <h1>{title}</h1>
-                    <h2>{translator.get("header")}</h2>
+                    <h1>{ title }</h1>
+                    <h2>{ translator.get("header") }</h2>
                 </div>
                 { afterTitle ?? (
                     <div className="page-title-container">
-                        { processChildren(children) }
+                        { children && <p className="page-title-1">{ children }</p> }
                     </div>
                 ) }
             </div>
