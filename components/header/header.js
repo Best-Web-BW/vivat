@@ -138,10 +138,11 @@ export default class Header extends React.Component {
             )) alert(errorMap.invalid_password);
             else if(password1 !== password2) alert(errorMap.different_passwords);
             else {
-                const [success, reasons] = await AuthProvider.register(email, name, birthdate, password1);
+                const result = await AuthProvider.register(email, name, birthdate, password1);
 
-                if(success) (alert("Успешная регистрация!"), this.toggleSignForm());
-                else alert(reasons.map((reason, index) => `${index}. ${errorMap[reason]}`));
+                if(result.success) (alert("Успешная регистрация!"), this.toggleSignForm());
+                else if(result.reason === "email_busy") alert("Пользователь с таким email уже зарегистрирован. Войдите в свою учётную запись или воспользуйтесь формой восстановления пароля.");
+                else alert(result.reasons.map((reason, index) => `${index}. ${errorMap[reason]}`));
             }
         };
     }
