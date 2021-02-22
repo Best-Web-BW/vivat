@@ -78,7 +78,7 @@ export default class EventListProvider {
                     // this.events.set(json.event.id, json.event);
                     return resolve({ success: 1 });
                 } else return resolve({ success: 0, reason: json.error });
-            } catch(e) { console.log(e); reject({ }); }
+            } catch(e) { console.error(e); reject({ }); }
         });
     }
 
@@ -94,7 +94,7 @@ export default class EventListProvider {
                 if(json.status === "success") {
                     return resolve({ success: 1 });
                 } else return resolve({ success: 0, reason: json.error });
-            } catch(e) { console.log(e); reject(); }
+            } catch(e) { console.error(e); reject(); }
         });
     }
 }

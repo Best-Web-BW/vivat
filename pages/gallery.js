@@ -5,9 +5,11 @@ import AlbumListProvider from "../utils/providers/AlbumListProvider";
 import ContentHeader from "../components/common/ContentHeader";
 import ImageLoader from "../components/common/ImageLoader";
 import DBProvider from "../utils/providers/DBProvider";
-import { toRuDate, sleep, divideArrayRoundly, divideArrayFlatly } from "../utils/common";
+import { toRuDate, sleep } from "../utils/common";
 import Router from "next/router";
 import Link from "next/link";
+
+const DO_LOG = false;
 
 function Album({ id, cover, cdate, title, edit, remove }) {
     return (
@@ -209,7 +211,7 @@ function RawAlbumEditor({ Select, animatedComponents, opened, action, data, clos
         if(data) {
             const currentDate = new Date().toISOString();
             const result = await AlbumListProvider.createAlbum({ ...data, cdate: currentDate, mdate: currentDate });
-            console.log(result);
+            DO_LOG && console.log(result);
             if(result.success) setSuccessCreateModalOpened(true);
             else processError(result.reason);
         }
@@ -228,15 +230,15 @@ function RawAlbumEditor({ Select, animatedComponents, opened, action, data, clos
         <div className={`add-gallery-modal ${opened && "opened"}`}>
             <div className="add-gallery-modal-content">
                 <span className="close-modal" onClick={close}>X</span>
-                <h2 onClick={() => console.log(crawl())}>{actionMap[action][0]} альбом</h2>
+                <h2 onClick={() => DO_LOG && console.log(crawl())}>{actionMap[action][0]} альбом</h2>
                 <div className="add-gallery-modal-nameinput">
-                    <label onClick={() => console.log(crawl())}>
+                    <label>
                         Название
                         <input ref={titleRef} type="text" placeholder="Введите название" />
                     </label>
                 </div>
                 <div className="add-gallery-modal-description-input">
-                    <label onClick={() => console.log(validate(crawl()))}>
+                    <label onClick={() => DO_LOG && console.log(validate(crawl()))}>
                         Введите описание
                         <textarea ref={descRef} type="text" placeholder="Введите описание" />
                     </label>

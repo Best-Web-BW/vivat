@@ -1,10 +1,14 @@
 import { useEffect, useMemo, useState } from "react";
 import { withRouter } from "next/router";
 
-export function QueryInput() {
+const DO_LOG = false;
+
+export const QueryInput = withRouter(_QueryInput);
+function _QueryInput({ router }) {
     const [text, setText] = useState("");
     const onSubmit = evt => {
         evt.preventDefault();
+        // if(text.length) router.push(`/search?text=${encodeURIComponent(text)}&searchid=2447908&web=0`);
         if(text.length) document.location = `/search?text=${encodeURIComponent(text)}&searchid=2447908&web=0`;
     }
 
@@ -23,7 +27,6 @@ export function QueryInput() {
 }
 
 export const ResultPage = withRouter(_ResultPage);
-
 function _ResultPage({ router }) {
     const config = useMemo(() => JSON.stringify({
         "tld": "ru",
@@ -33,7 +36,11 @@ function _ResultPage({ router }) {
         "updatehash": true
     }), []);
 
-    useEffect(() => typeof Ya === "object" && Ya.Site.Results.init(), [typeof Ya, router.query]);
+    // useEffect(() => console.log(router.query), [router.query]);
+    useEffect(() => {
+        DO_LOG && console.log(typeof Ya, router.query);
+        typeof Ya === "object" && Ya.Site.Results.init();
+    }, [typeof Ya, router.query]);
 
     return (<>
         <div id="ya-site-results" data-bem={config} />

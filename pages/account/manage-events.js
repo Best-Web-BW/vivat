@@ -12,6 +12,8 @@ import DBProvider from "../../utils/providers/DBProvider";
 import Router from "next/router";
 import Link from "next/link";
 
+const DO_LOG = false;
+
 const groupStyles = {
     display: "flex",
     alignItems: "center",
@@ -105,7 +107,7 @@ function ManageEvents({ Select, animatedComponents }) {
 
     const editEvent = async id => {
         const e = await EventListProvider.getEventDetails(id);
-        console.log(id, e);
+        DO_LOG && console.log(id, e);
         switchEventEditor(true, "edit", e);
     }
 
@@ -264,11 +266,11 @@ export function EventEditor({ Select, animatedComponents, opened, action, eventD
                     <button className="delete" onClick={close}>X</button>
                 </div>
                 <div className="edit-event-modal-header">
-                    <h2 onClick={() => console.log(crawl())}>{actionMap[action][0]} событие</h2>
+                    <h2 onClick={() => DO_LOG && console.log(crawl())}>{actionMap[action][0]} событие</h2>
                 </div>
                 <div className="edit-event-modal-body">
                     <div className="edit-event-modal-name">
-                        <label onClick={() => console.log(validate(crawl()))}>
+                        <label onClick={() => DO_LOG && console.log(validate(crawl()))}>
                             Название события
                         </label>
                         <input ref={refs.title} type="text" placeholder="Введите название собыия" />

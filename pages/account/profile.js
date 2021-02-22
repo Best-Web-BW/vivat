@@ -6,6 +6,8 @@ import { useEffect, useState } from "react";
 import { withRouter } from "next/router";
 import Link from "next/link";
 
+const DO_LOG = false;
+
 export default withRouter(_Profile);
 
 function _Profile({ router }) {
@@ -18,7 +20,7 @@ function _Profile({ router }) {
         if(!verify_email) { setContent(<Profile />); return; }
 
         const result = await AuthProvider.verifyEmail(email, uuid );
-        console.log(result);
+        DO_LOG && console.log(result);
         if(result.success) {
             await AuthProvider.refreshTokens();
             setContent(<Profile />);

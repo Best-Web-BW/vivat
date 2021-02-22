@@ -5,6 +5,8 @@ import { DefaultErrorModal, ErrorModal, SuccessModal } from "./Modals";
 import DatePicker from "./DatePicker";
 import { useState } from "react";
 
+const DO_LOG = false;
+
 const TimeButton = ({ time, turn, active }) => <button className={`order-service-time-button ${active && "active"}`} onClick={turn}>{ time }</button>;
 
 export default function Rent({ text, cost, minHours, hoursText }) {
@@ -21,7 +23,7 @@ export default function Rent({ text, cost, minHours, hoursText }) {
         try {
             const email = AuthProvider.userData.email;
             const phone = AuthProvider.userData.phone;
-            console.log(email, phone, text, selectedTime, toRuDate(selectedDate));
+            DO_LOG && console.log(email, phone, text, selectedTime, toRuDate(selectedDate));
             const result = await MailProvider.sendRentEmail(email, phone, text, selectedTime, toRuDate(selectedDate));
             if(result.success) {
                 setSuccessModal(true);

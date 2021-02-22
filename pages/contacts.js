@@ -33,11 +33,11 @@ export default function Contacts() {
                 textRef.current.value = "";
             } else {
                 setDefaultErrorModal(true);
-                console.log({ result });
+                console.error({ result });
             }
         } catch(e) {
             setDefaultErrorModal(true);
-            console.log({ result });
+            console.error({ result });
         }
     }
 

@@ -2,9 +2,11 @@ import AuthProvider, { AuthVariableComponent, useAuth } from "../../utils/provid
 import { DefaultErrorModal, ErrorModal, SuccessModal } from "../../components/common/Modals";
 import ProfileMenu from "../../components/common/ProfileMenu";
 import DatePicker from "../../components/common/DatePicker";
-import { sleep } from "../../utils/common";
 import { useEffect, useRef, useState } from "react";
+import { sleep } from "../../utils/common";
 import Router from "next/router"
+
+const DO_LOG = false;
 
 export default function Change() {
     const [successModal, setSuccessModal] = useState(false);
@@ -93,7 +95,7 @@ export default function Change() {
                     <ProfileMenu active="change" />
                     <div className="profile-row flex-row">
                         <div className="personal-wrapper">
-                            <div className="profile-photo-wrapper" onClick={() => console.log(crawl())}>
+                            <div className="profile-photo-wrapper" onClick={() => DO_LOG && console.log(crawl())}>
                                 <img src="/images/profile/avatar_placeholder.webp" alt="" width="100%" />
                             </div>
                             {/* <div className="change-photo-wrapper">

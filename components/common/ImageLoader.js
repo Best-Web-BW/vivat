@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { ErrorModal } from "./Modals";
 
+const DO_LOG = false;
+
 export class Image {
     constructor(url, name) {
         this.url = url;
@@ -40,9 +42,9 @@ export default function ImageLoader({ isSingle, type, onChange, defaultImages })
     });
     
     const removeImage = image => setImages(prev => {
-        console.log(prev, image);
+        DO_LOG && console.log(prev, image);
         let newImages = filterImages(prev, image);
-        console.log(newImages)
+        DO_LOG && console.log(newImages)
         setTimeout(() => onChange(newImages), 0);
         return newImages;
     });
@@ -61,17 +63,7 @@ export default function ImageLoader({ isSingle, type, onChange, defaultImages })
 
         if(json.status !== "success") setErrorModal(true);
         else for(let image of json.images) addImage(new Image(image.url, image.name));
-
-        // resetInput();
     };
-    
-    // const [input, setInput] = useState();
-    // const resetInput = () => {
-    //     setInput(<input />)
-    //     setInput(<input ref={inputRef} type="file" multiple={!isSingle} accept="image/*" onChange={loadImages} />);
-    // }
-
-    // useEffect(() => resetInput(), []);
 
     return (
         <>
@@ -79,7 +71,6 @@ export default function ImageLoader({ isSingle, type, onChange, defaultImages })
                 <label>
                     <p className="gallery-upload-button">Выбрать фото</p>
                     <input ref={inputRef} type="file" multiple={!isSingle} accept="image/*" onChange={loadImages} />
-                    {/* { input } */}
                 </label>
             </form>
             <div className="add-gallery-modal-imgs-list">

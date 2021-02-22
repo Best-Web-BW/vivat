@@ -1,9 +1,11 @@
-import Router from "next/router";
-import { useRef, useState } from "react";
-import ContentHeader from "../components/common/ContentHeader";
 import { DefaultErrorModal, ErrorModal, SuccessModal } from "../components/common/Modals";
-import { sleep } from "../utils/common";
+import ContentHeader from "../components/common/ContentHeader";
 import AuthProvider from "../utils/providers/AuthProvider";
+import { useRef, useState } from "react";
+import { sleep } from "../utils/common";
+import Router from "next/router";
+
+const DO_LOG = false;
 
 export async function getServerSideProps({ query: { email, uuid } }) {
     if(email && uuid) {
@@ -57,7 +59,7 @@ function EmailContent({ openErrorModal }) {
             openErrorModal();
         }
 
-        console.log({ email });
+        DO_LOG && console.log({ email });
     };
 
     return (<>
@@ -81,7 +83,7 @@ function EmailContent({ openErrorModal }) {
 }
 
 function PasswordContent({ openErrorModal, email, uuid }) {
-    console.log("UUID is", { email, uuid });
+    DO_LOG && console.log("UUID is", { email, uuid });
 
     const [successModal, setSuccessModal] = useState(false);
     const [errorModal, setErrorModal] = useState(null);
@@ -108,7 +110,7 @@ function PasswordContent({ openErrorModal, email, uuid }) {
             openErrorModal();
         }
 
-        console.log({ email, password, password2 });
+        DO_LOG && console.log({ email, password, password2 });
     };
 
     return (<>

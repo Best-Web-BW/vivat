@@ -1,12 +1,14 @@
 import AuthProvider, { AuthVariableComponent, useAuth } from "../../utils/providers/AuthProvider";
+import { DefaultErrorModal, SuccessModal } from "../../components/common/Modals";
 import EventListProvider from "../../utils/providers/EventListProvider";
 import ProfileMenu from "../../components/common/ProfileMenu";
 import DatePicker from "../../components/common/DatePicker";
 import { useEffect, useRef, useState } from "react";
 import Router from "next/router";
-import { DefaultErrorModal, SuccessModal } from "../../components/common/Modals";
 // import makeAnimated from "react-select/animated";
 // import { css, cx } from "@emotion/css";
+
+const DO_LOG = false;
 
 const groupStyles = {
     display: "flex",
@@ -55,18 +57,11 @@ function Registration({ Select }) {
 
         let events;
         try { events = await EventListProvider.getEventList(); }
-        catch(e) { return console.log("wtf, where is an event list"); }
-        // console.log("Events", events);
+        catch(e) { return console.error("wtf, where is an event list"); }
         
         const dateFilteredEvents = events.filter(event => event.dates[0] > currentDate);
-        // console.log("Date filtered events", dateFilteredEvents);
-
         const idFilteredEvents = dateFilteredEvents.filter(({ id }) => !user.events.some(({ event_id }) => id === event_id ));
-        // console.log("ID filtered events", idFilteredEvents);
-        
         const mappedEvents = idFilteredEvents.map(({ id, title }) => ({ value: id, label: title }));
-        // console.log("Mapped events", mappedEvents);
-        
         setEvents(mappedEvents);
         refs.event_id.current = mappedEvents[0]?.value;
     }, [user]);
@@ -121,9 +116,6 @@ function Registration({ Select }) {
         else setErrorModal(true);
     };
 
-    global.s = () => setSuccessModal(true);
-    global.e = () => setErrorModal(true);
-
     const [riderBirthdate, setRiderBirthdate] = useState(new Date());
 
     return (
@@ -131,7 +123,7 @@ function Registration({ Select }) {
             <div className="profile-content content-block">
                 <ProfileMenu active="registration" />
                 <div className="block-title">
-                    <h2 onClick={() => console.log(crawl())}>Регистрация на событие</h2>
+                    <h2 onClick={() => DO_LOG && console.log(crawl())}>Регистрация на событие</h2>
                 </div>
                 <div className="registration-content">
                     <div className="left-column">

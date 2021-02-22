@@ -1,6 +1,8 @@
 const router = require("express").Router();
 const path = require("path");
 
+const DO_LOG = false;
+
 let events, albums, posts;
 new require("mongodb").MongoClient("mongodb://localhost:27017", { useUnifiedTopology: true, useNewUrlParser: true }).connect((err, client) => {
     if(err) return console.error(err);
@@ -69,7 +71,7 @@ router.get("/posts", async (req, res) => {
     const { categories, tags, search } = req.query;
     const query = { };
 
-    console.log(categories, tags, search);
+    DO_LOG && console.log(categories, tags, search);
     
     if(categories) query.category = { $in: JSON.parse(categories) };
     if(tags) query.tags = { $all: JSON.parse(tags) };
@@ -83,7 +85,7 @@ router.get("/posts", async (req, res) => {
         ];
     }
 
-    console.log(query, query.$or);
+    DO_LOG && console.log(query, query.$or);
 
     const result = await posts.find(query, { projection: { _id: false } }).sort({ id: 1 }).toArray();
     res.json(result);
@@ -103,19 +105,12 @@ router.get("/posts/stats", async (_, res) => {
 
 router.get("/posts/:id", async (req, res) => {
     const { id } = req.params;
-    const { remove } = req.query;
     let result;
 
     try { result = await posts.findOne({ id: +id }); }
     catch(e) { return res.json({ success: false, reason: "no_post_found" }); }
 
-    if(!remove) res.json({ success: true, result: { ...result, _id: undefined } });
-    else {
-        try {
-            //result = await posts.remove({ _id: result._id });
-            res.json({ success: true });
-        } catch(e) { res.json({ success: false, reason: "unknown_error" }); }
-    }
+    res.json({ success: true, result: { ...result, _id: undefined } });
 });
 
 router.get("/cat", (_, res) => {

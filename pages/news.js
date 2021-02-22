@@ -10,6 +10,8 @@ import { sleep } from "../utils/common";
 import Link from "next/link";
 // import { css, cx } from "@emotion/css"
 
+const DO_LOG = false;
+
 const groupStyles = {
     display: "flex",
     alignItems: "center",
@@ -192,7 +194,7 @@ export default function News({ query: { categories: _categories, tags: _tags, se
 
     const editPost = id => {
         const p = posts.find(post => post.id === id);
-        console.log(id, p);
+        DO_LOG && console.log(id, p);
         switchEditor(true, "edit", p);
     }
 
@@ -382,11 +384,11 @@ function RawPostEditor({ Select, animatedComponents, opened, action, data, close
                     <button className="delete" onClick={close}>X</button>
                 </div>
                 <div className="add-article-modal-header">
-                    <h2 onClick={() => console.log(crawl())}>{actionMap[action][0]} новость</h2>
+                    <h2 onClick={() => DO_LOG && console.log(crawl())}>{actionMap[action][0]} новость</h2>
                 </div>
                 <div className="add-article-modal-body">
                     <div className="edit-event-modal-name">
-                        <span onClick={() => console.log(validate(crawl()))}>Название новости</span>
+                        <span onClick={() => DO_LOG && console.log(validate(crawl()))}>Название новости</span>
                         <input ref={titleRef} type="text" placeholder="Введите название новости" defaultValue={post ? post.title : ""} />
                     </div>
                     <div className="add-article-modal-text-editor-wrapper">

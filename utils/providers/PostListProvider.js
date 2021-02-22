@@ -97,7 +97,7 @@ export default class PostListProvider {
                     // this.posts.set(json.post.id, json.post);
                     return resolve({ success: 1 });
                 } else return resolve({ success: 0, reason: json.error });
-            } catch(e) { console.log(e); reject({ }); }
+            } catch(e) { console.error(e); reject({ }); }
         });
     }
 
@@ -113,7 +113,7 @@ export default class PostListProvider {
                 if(json.status === "success") {
                     return resolve({ success: 1 });
                 } else return resolve({ success: 0, reason: json.error });
-            } catch(e) { console.log(e); reject(); }
+            } catch(e) { console.error(e); reject(); }
         });
     }
 }

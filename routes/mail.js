@@ -29,7 +29,7 @@ const mailer = {
             </div>
         `
     }),
-    forgotPassword: ({ email, name, link }) => (console.log(email, name, link), {
+    forgotPassword: ({ email, name, link }) => ({
         from: `"Смена пароля на ${ksk}" <${address}>`,
         to: email,
         subject: `Смена пароля на ${ksk}`,
@@ -109,7 +109,7 @@ router.post("/feedback", async (req, res) => {
     try {
         const result = await mailer.transporter.sendMail(mailer.feedback(name, email, phone, question));
         res.json({ status: "success", result });
-    } catch(e) { console.log(e); res.json({ status: "error", error: e }); }
+    } catch(e) { console.error(e); res.json({ status: "error", error: e }); }
 });
 
 router.post("/rent", async (req, res) => {
@@ -117,7 +117,7 @@ router.post("/rent", async (req, res) => {
     try {
         const result = await mailer.transporter.sendMail(mailer.rent(email, phone, service, time, date));
         res.json({ status: "success", result });
-    } catch(e) { console.log(e); res.json({ status: "error", error: e }); }
+    } catch(e) { console.error(e); res.json({ status: "error", error: e }); }
 });
 
 module.exports = router;
@@ -125,7 +125,7 @@ module.exports.sendRegisterEmail = async (email, link) => {
     try {
         const result = await mailer.transporter.sendMail(mailer.register(email, link));
         return { status: "success", result };
-    } catch(e) { console.log(e); return { status: "error", error: e }; }
+    } catch(e) { console.error(e); return { status: "error", error: e }; }
 };
 
 const emailPassword = async (type, data) => {
