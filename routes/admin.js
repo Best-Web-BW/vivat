@@ -1,8 +1,11 @@
-const router = require("express").Router();
 const cwebp = require("webp-converter").cwebp;
-const path = require("path");
+const ObjectID = require("mongodb").ObjectID;
+const router = require("express").Router();
 const { v4: UUID } = require("uuid");
+const path = require("path");
 const fs = require("fs");
+
+const DO_LOG = false;
 
 let events, albums, posts, users;
 new require("mongodb").MongoClient("mongodb://localhost:27017", { useUnifiedTopology: true, useNewUrlParser: true }).connect((err, client) => {
@@ -22,6 +25,15 @@ async function getMaxID(collection) {
 
 router.get("/", (_, res) => res.end("Are you my adminny?"));
 
+const unauthorizedError = JSON.stringify({ status: "error", error: "unauthorized" });
+const authorizeAdmin = async (user_id, access_key) => {
+    DO_LOG && console.log("Authorize admin", { user_id, access_key });
+    return Boolean(await users.findOne({
+        _id: new ObjectID(user_id), admin: true,
+        sessions: { $elemMatch: { access_key } }
+    }));
+}
+
 const getRawImagePath = (type, fullName) => path.join("images", type, "tmp", fullName);
 const getWebpImagePath = (type, name) => path.join("images", type, "webp", name);
 const getWebpImageUrl = (type, name) => `/images/${type}/webp/${name}`;
@@ -29,11 +41,13 @@ const getWebpImageUrl = (type, name) => `/images/${type}/webp/${name}`;
 const getImageSize = async path => (await fs.promises.stat(path)).size;
 
 router.post("/load_image/:type", async (req, res) => {
+    if(!(await authorizeAdmin(req.cookies.user_id, req.cookies.access_key))) return res.end(unauthorizedError);
+
     const { type } = req.params;
     if(["events", "gallery", "news"].includes(type)) {
         try {
             const { "file-0": rawImage } = req.files;
-            console.log(type, { rawImage }); // Print arguments (just for debug);
+            DO_LOG && console.log(type, { rawImage }); // Print arguments (just for debug);
 
             const rawPath = getRawImagePath(type, rawImage.name);
             await rawImage.mv(rawPath);
@@ -46,22 +60,24 @@ router.post("/load_image/:type", async (req, res) => {
             const webpSize = await getImageSize(webpPath);
             
             const result = { result: [{ url: webpUrl, name: webpName, size: webpSize }] };
-            console.log("Image loaded, result is", JSON.stringify(result.result[0]));
+            DO_LOG && console.log("Image loaded, result is", JSON.stringify(result.result[0]));
             
             fs.promises.unlink(rawPath);
             return res.json(result);
-        } catch(e) { console.log(e); res.end(); }
+        } catch(e) { console.error(e); res.end(); }
     }
     else return res.json({ errorMessage: "Invalid load type" });
 });
 
 router.post("/load_images/:type", async (req, res) => {
+    if(!(await authorizeAdmin(req.cookies.user_id, req.cookies.access_key))) return res.end(unauthorizedError);
+
     const { type } = req.params;
     if(["gallery"].includes(type)) {
         try {
             let { images } = req.files;
             if(!(images instanceof Array)) images = [images];
-            console.log({ type, images }); // Print arguments (just for debug);
+            DO_LOG && console.log({ type, images }); // Print arguments (just for debug);
 
             const serverImages = [];
 
@@ -79,10 +95,10 @@ router.post("/load_images/:type", async (req, res) => {
                 serverImages.push({ url: webpUrl, name: webpName });
             }
 
-            console.log("Images loaded, result is", JSON.stringify(serverImages));
+            DO_LOG && console.log("Images loaded, result is", JSON.stringify(serverImages));
             
             return res.json({ status: "success", images: serverImages });
-        } catch(e) { console.log(e); res.json({ status: "error" }); }
+        } catch(e) { console.error(e); res.json({ status: "error" }); }
     }
     else return res.json({ errorMessage: "Invalid load type" });
 });
@@ -91,12 +107,14 @@ const getDocumentPath = (type, name) => path.join("documents", type, name);
 const getDocumentUrl = (type, name) => `/documents/${type}/${name}`;
 
 router.post("/load_documents/:type", async (req, res) => {
+    if(!(await authorizeAdmin(req.cookies.user_id, req.cookies.access_key))) return res.end(unauthorizedError);
+
     const { type } = req.params;
     if(["events"].includes(type)) {
         try {
             let { documents } = req.files;
             if(!(documents instanceof Array)) documents = [documents];
-            console.log({ type, documents });
+            DO_LOG && console.log({ type, documents });
 
             const serverDocuments = [];
             for(let document of documents) {
@@ -105,17 +123,19 @@ router.post("/load_documents/:type", async (req, res) => {
                 serverDocuments.push({ url: getDocumentUrl(type, name), name });
             }
 
-            console.log("Documents are loaded, result is", JSON.stringify(serverDocuments));
+            DO_LOG && console.log("Documents are loaded, result is", JSON.stringify(serverDocuments));
 
             return res.json({ status: "success", documents: serverDocuments });
-        } catch(e) { console.log(e); res.json({ status: "error" }); }
+        } catch(e) { console.error(e); res.json({ status: "error" }); }
     }
 });
 
 router.post("/event/:action", async (req, res) => {
+    if(!(await authorizeAdmin(req.cookies.user_id, req.cookies.access_key))) return res.end(unauthorizedError);
+
     const { action } = req.params;
     const { data } = req.body;
-    console.log(`--- Admin (event): ${action}`, data);
+    DO_LOG && console.log(`--- Admin (event): ${action}`, data);
     const SUCCESS = { status: "success" };
     const DB_ERROR = { status: "error", error: "db_error" };
     const EVENT_NOT_EXIST = { status: "error", error: "event_not_exist" };
@@ -157,9 +177,11 @@ router.post("/event/:action", async (req, res) => {
 });
 
 router.post("/album/:action", async (req, res) => {
+    if(!(await authorizeAdmin(req.cookies.user_id, req.cookies.access_key))) return res.end(unauthorizedError);
+
     const { action } = req.params;
     const { data } = req.body;
-    console.log(`--- Admin (album): ${action}`, data);
+    DO_LOG && console.log(`--- Admin (album): ${action}`, data);
     const SUCCESS = { status: "success" };
     const DB_ERROR = { status: "error", error: "db_error" };
     const ALBUM_NOT_EXIST = { status: "error", error: "album_not_exist" };
@@ -201,9 +223,11 @@ router.post("/album/:action", async (req, res) => {
 });
 
 router.post("/post/:action", async (req, res) => {
+    if(!(await authorizeAdmin(req.cookies.user_id, req.cookies.access_key))) return res.end(unauthorizedError);
+
     const { action } = req.params;
     const { data } = req.body;
-    console.log(`--- Admin (post): ${action}`, data);
+    DO_LOG && console.log(`--- Admin (post): ${action}`, data);
     const SUCCESS = { status: "success" };
     const DB_ERROR = { status: "error", error: "db_error" };
     const POST_NOT_EXIST = { status: "error", error: "post_not_exist" };
@@ -217,9 +241,9 @@ router.post("/post/:action", async (req, res) => {
 
                 images = newPost.contents.match(/\<img.*?src="(.+?)"/);
                 if(images) {
-                    console.log("Found images in contents: ", images);
+                    DO_LOG && console.log("Found images in contents: ", images);
                     newPost.image = images[1];
-                } else console.log("No images found in contents");
+                } else DO_LOG && console.log("No images found in contents");
 
                 await posts.insertOne(newPost);
                 return res.json(SUCCESS);
@@ -235,10 +259,10 @@ router.post("/post/:action", async (req, res) => {
 
             images = post.contents.match(/\<img.*?src="(.+?)"/);
             if(images) {
-                console.log("Found images in contents: ", images);
+                DO_LOG && console.log("Found images in contents: ", images);
                 post.image = images[1];
             } else {
-                console.log("No images found in contents");
+                DO_LOG && console.log("No images found in contents");
                 post.image = undefined;
             }
 
@@ -261,7 +285,7 @@ router.post("/post/:action", async (req, res) => {
 
 router.post("/user/:action", async (req, res) => {
     // Creating/editing/removing users
-    const { action } = req.params;
+    // const { action } = req.params;
     return res.end("No code there. :/");
 });
 

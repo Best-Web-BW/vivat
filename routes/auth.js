@@ -1,8 +1,8 @@
-const router = require("express").Router();
-const ObjectID = require("mongodb").ObjectID;
-const hmacSHA512 = require("crypto-js/hmac-sha512");
-const { v4: UUID } = require("uuid");
 const { sendRegisterEmail, sendForgotPasswordEmail, sendChangePasswordEmail } = require("./mail");
+const hmacSHA512 = require("crypto-js/hmac-sha512");
+const ObjectID = require("mongodb").ObjectID;
+const router = require("express").Router();
+const { v4: UUID } = require("uuid");
 const moment = require("moment");
 
 const isDev = process.env.NODE_ENV !== "production";
@@ -13,7 +13,9 @@ const PRIVATE_KEY = "saifjaw3p c5hga2j89~`dj.PR;OTH";
 const MAX_SESSIONS = 5;
 const ACCESS_KEY_MAX_AGE = 1000 * 60 * 15; // 15 minutes in ms
 const REFRESH_KEY_MAX_AGE = 1000 * 60 * 60 * 24 * 30; // 30 days in ms
-const COOKIE_CONFIG = { path: "/api/auth", secure: true, httpOnly: true, sameSite: "Strict" };
+const LAX_COOKIE_CONFIG = { path: "/api", secure: true, httpOnly: true, sameSite: "Strict" };
+const STRICT_COOKIE_CONFIG = { ...LAX_COOKIE_CONFIG, path: "/api/auth" };
+const DO_LOG = false;
 
 let users;
 new require("mongodb").MongoClient("mongodb://localhost:27017", { useUnifiedTopology: true, useNewUrlParser: true }).connect((err, client) => {
@@ -27,15 +29,11 @@ router.get("/", (_, res) => {
     res.end("This is not an auth API. :(");
 });
 
-// router.get("/reg_email", async (req, res) => {
-//     const { email, password } = req.query;
-//     const result = await sendRegisterEmail(email, password);
-//     res.json(result);
-// });
-
 router.post("/register", async (req, res) => {
     const { email, name: { first, second, middle }, birthdate, password } = req.body;
-    console.log("Register", { email, name: { first, second, middle }, birthdate, password });
+    DO_LOG && console.log("Register", { email, name: { first, second, middle }, birthdate, password });
+
+    if(await users.findOne({ email })) return res.json({ status: "error", error: "email_busy" });
     
     const emailRegex = /@/;
     const nameRegex = /^[a-zа-яё]{2,}$/gi;
@@ -50,15 +48,13 @@ router.post("/register", async (req, res) => {
     
     if(errors.length) return res.json({ status: "error_regex", errors });
     
-    // const password = SHA1(`${email}${Math.random()}${birthdate}`).toString().slice(-16);
     const passwordHash = hmacSHA512(password, PRIVATE_KEY).toString();
     
     const email_verify_uuid = UUID();
-    // const session = { access_key: UUID(), refresh_key: UUID() };
     const user = {
         email_verified: false, email_verify_uuid,
         email, name: { first, second, middle },
-        birthdate, password, password_hash: passwordHash//, sessions: [session]
+        birthdate, password_hash: passwordHash
     };
     
     await users.insertOne(user);
@@ -66,21 +62,17 @@ router.post("/register", async (req, res) => {
     const emailVerifyLink = `https://${isDev ? "localhost" : "kskvivat.com"}/account/profile?verify_email=1&email=${email}&uuid=${email_verify_uuid}`;
     const sendEmailResult = await sendRegisterEmail(email, emailVerifyLink);
     if(sendEmailResult.status === "success") {
-        // res.cookie("user_id", user._id.toString(), { maxAge: REFRESH_KEY_MAX_AGE, ...COOKIE_CONFIG });
-        // res.cookie("access_key", session.access_key, { maxAge: ACCESS_KEY_MAX_AGE, ...COOKIE_CONFIG });
-        // res.cookie("refresh_key", session.refresh_key, { maxAge: REFRESH_KEY_MAX_AGE, ...COOKIE_CONFIG });
-        // const _user = { ...user, sessions: undefined, password_hash: undefined };
-        res.json({ status: "success"/*, accessKeyLifetime: ACCESS_KEY_MAX_AGE, user: _user*/ });
-        console.log(" - Password", password);
+        res.json({ status: "success" });
+        DO_LOG && console.log(" - Password", password);
     } else {
         res.json(sendEmailResult);
-        console.log("Wtf?", { sendEmailResult });
+        console.error("Wtf?", { sendEmailResult });
     }
 });
 
 router.post("/verify_email", async (req, res) => {
     const { email, uuid } = req.body;
-    console.log("Verify email", { email, uuid });
+    DO_LOG && console.log("Verify email", { email, uuid });
 
     let user;
     try { user = await users.findOne({ email }) }
@@ -95,9 +87,9 @@ router.post("/verify_email", async (req, res) => {
         $unset: { email_verify_uuid: "" } 
     })} catch(e) { console.error(e); return res.json({ status: "error", error: "db_error" }) }
 
-    res.cookie("user_id", user._id.toString(), { maxAge: REFRESH_KEY_MAX_AGE, ...COOKIE_CONFIG });
-    res.cookie("access_key", session.access_key, { maxAge: ACCESS_KEY_MAX_AGE, ...COOKIE_CONFIG });
-    res.cookie("refresh_key", session.refresh_key, { maxAge: REFRESH_KEY_MAX_AGE, ...COOKIE_CONFIG });
+    res.cookie("user_id", user._id.toString(), { maxAge: REFRESH_KEY_MAX_AGE, ...LAX_COOKIE_CONFIG });
+    res.cookie("access_key", session.access_key, { maxAge: ACCESS_KEY_MAX_AGE, ...LAX_COOKIE_CONFIG });
+    res.cookie("refresh_key", session.refresh_key, { maxAge: REFRESH_KEY_MAX_AGE, ...STRICT_COOKIE_CONFIG });
 
     const _user = { ...user, sessions: undefined, password_hash: undefined, email_verified: undefined, email_verify_uuid: undefined };
     res.json({ status: "success", accessKeyLifetime: ACCESS_KEY_MAX_AGE, user: _user });
@@ -107,7 +99,7 @@ router.post("/authenticate", async (req, res) => {
     const { email, password } = req.body;
     const user = await users.findOne({ email });
 
-    console.log("Authenticate", { email, password });
+    DO_LOG && console.log("Authenticate", { email, password });
     
     if(!user) return res.json({ status: "error", reason: "invalid_email" });
     if(!user.email_verified) return res.json({ status: "error", reason: "not_verified" });
@@ -123,31 +115,19 @@ router.post("/authenticate", async (req, res) => {
     const refreshKey = UUID();
     const session = { access_key: accessKey, refresh_key: refreshKey };
     
-    res.cookie("user_id", user._id.toHexString(), { maxAge: REFRESH_KEY_MAX_AGE, ...COOKIE_CONFIG });
-    res.cookie("access_key", accessKey, { maxAge: ACCESS_KEY_MAX_AGE, ...COOKIE_CONFIG });
-    res.cookie("refresh_key", refreshKey, { maxAge: REFRESH_KEY_MAX_AGE, ...COOKIE_CONFIG });
+    res.cookie("user_id", user._id.toHexString(), { maxAge: REFRESH_KEY_MAX_AGE, ...LAX_COOKIE_CONFIG });
+    res.cookie("access_key", accessKey, { maxAge: ACCESS_KEY_MAX_AGE, ...LAX_COOKIE_CONFIG });
+    res.cookie("refresh_key", refreshKey, { maxAge: REFRESH_KEY_MAX_AGE, ...STRICT_COOKIE_CONFIG });
+
     const _user = { ...user, sessions: undefined, password_hash: undefined };
     res.json({ status: "success", accessKeyLifetime: ACCESS_KEY_MAX_AGE, user: _user });
 
     users.updateOne({ _id: user._id }, { $set: { sessions: [...user.sessions, session].slice(-MAX_SESSIONS) } });
 });
 
-router.post("/authorize", async (req, res) => {
-    const { user_id: userID, access_key: accessKey } = req.cookies;
-    console.log("Authorize", { userID, accessKey });
-
-    const user = await users.findOne({ _id: new ObjectID(userID) }, { projection: { sessions: 1 } });
-
-    if(!user) return res.json({ status: "error", reason: "invalid_access_key" });
-
-    for(let session of user.sessions) if(session.access_key === accessKey) return res.json({ status: "success" });
-
-    res.json({ status: "error", reason: "invalid_access_key" });
-});
-
 router.post("/refresh_tokens", async (req, res) => {
     const { user_id: userID, refresh_key: refreshKey } = req.cookies;
-    console.log("Refresh tokens", { userID, refreshKey });
+    DO_LOG && console.log("Refresh tokens", { userID, refreshKey });
 
     const user = await users.findOne({ _id: new ObjectID(userID) });
 
@@ -157,7 +137,7 @@ router.post("/refresh_tokens", async (req, res) => {
         if(user.sessions[i].refresh_key !== refreshKey) continue;
 
         user.sessions[i] = { ...user.sessions[i], access_key: UUID() };
-        res.cookie("access_key", user.sessions[i].access_key, { maxAge: ACCESS_KEY_MAX_AGE, ...COOKIE_CONFIG });
+        res.cookie("access_key", user.sessions[i].access_key, { maxAge: ACCESS_KEY_MAX_AGE, ...LAX_COOKIE_CONFIG });
         const _user = { ...user, sessions: undefined, password_hash: undefined };
         res.json({ status: "success", accessKeyLifetime: ACCESS_KEY_MAX_AGE, user: _user });
 
@@ -169,31 +149,38 @@ router.post("/refresh_tokens", async (req, res) => {
 
 router.post("/deauthenticate", async (req, res) => {
     const { user_id: userID, refresh_key: refreshKey } = req.cookies;
-    console.log("Deauthenticate", { userID, refreshKey });
+    DO_LOG && console.log("Deauthenticate", { userID, refreshKey });
 
-    const user = await users.findOne({ _id: new ObjectID(userID) }, { rejection: { sessions: 1 } });
-    const sessions = user.sessions.filter(session => session.refresh_key !== refreshKey);
+    const user = await users.findOne({ _id: new ObjectID(userID) }, { projection: { sessions: 1 } });
+    const sessions = user.sessions.filter(({ refresh_key }) => refresh_key !== refreshKey);
 
-    const config = { maxAge: -1, ...COOKIE_CONFIG };
-    res.cookie("user_id", "", config);
-    res.cookie("access_key", "", config);
-    res.cookie("refresh_key", "", config);
+    res.cookie("user_id", "", { maxAge: -1, ...LAX_COOKIE_CONFIG });
+    res.cookie("access_key", "", { maxAge: -1, ...LAX_COOKIE_CONFIG });
+    res.cookie("refresh_key", "", { maxAge: -1, ...STRICT_COOKIE_CONFIG });
     res.send({ status: "success" });
 
     users.updateOne({ _id: user._id }, { $set: { sessions } });
 });
 
+const authorize = async (userID, access_key) => {
+    DO_LOG && console.log("Authorize", { userID, access_key });
+    return Boolean(await users.findOne({ _id: new ObjectID(userID), sessions: { $elemMatch: { access_key } } }));
+};
+
 router.post("/change", async (req, res) => {
-    const { user_id: userID } = req.cookies;
-    console.log("Change user settings", { userID });
+    const { user_id: userID, access_key: accessKey } = req.cookies;
+    DO_LOG && console.log("Change user settings", { userID, accessKey });
+
+    if(!(await authorize(userID, accessKey))) return res.json({ status: "error", error: "unauthorized" });
 
     const { name: { first, second, middle }, birthdate, email, phone, address, sex, password } = req.body;
     const updater = { name: { first, second, middle }, birthdate, email, phone, address, sex };
 
-    console.log(" - Modified", { ...req.body });
+    DO_LOG && console.log(" - Modified", { ...req.body });
 
     try {
         const user = await users.findOne({ _id: new ObjectID(userID) });
+        if(!user) return res.json({ status: "error", error: "user_not_exist" });
 
         let isPasswordChanged = false;
         if(password.current.length && password.new1.length) {
@@ -206,7 +193,7 @@ router.post("/change", async (req, res) => {
             } else return res.json({ status: "error", error: "invalid_current_password" });
         }
 
-        console.log("Pass change updater", { updater });
+        DO_LOG && console.log("Pass change updater", { updater });
 
         await users.updateOne({ _id: user._id }, { $set: updater });
 
@@ -217,8 +204,10 @@ router.post("/change", async (req, res) => {
 });
 
 router.post("/register_to_event", async (req, res) => {
-    const { user_id: userID } = req.cookies;
-    console.log("Register to event", { userID });
+    const { user_id: userID, access_key: accessKey } = req.cookies;
+    DO_LOG && console.log("Register to event", { userID, accessKey });
+
+    if(!(await authorize(userID, accessKey))) return res.json({ status: "error", error: "unauthorized" });
 
     const { event_id, rider: { name, birthdate }, region, trainer_name, delegate_phone, horse: { nickname, birthyear, sex }, fskr: { passport, number }, wait_needed } = req.body;
     const participant = { event_id, rider: { name, birthdate }, region, trainer_name, delegate_phone, horse: { nickname, birthyear, sex }, fskr: { passport, number }, wait_needed };
@@ -230,19 +219,19 @@ router.post("/register_to_event", async (req, res) => {
         await users.updateOne({ _id: user._id }, { $set: { events: user.events } });
 
         res.json({ status: "success", events: user.events });
-    } catch(e) { console.log(e); res.json({ status: "error", reason: "unknown_error" }); }
+    } catch(e) { console.error(e); res.json({ status: "error", reason: "unknown_error" }); }
 });
 
 router.post("/forgot_password/mail", async (req, res) => {
     const { email } = req.body;
-    console.log("Forgot password", { email });
+    DO_LOG && console.log("Forgot password", { email });
 
     const uuid = UUID();
     try {
         const user = await users.findOne({ email });
         if(!user) return res.json({ status: "success" });
 
-        const forgot_password = { uuid, expires: moment().add(10, "minutes").toISOString() };
+        const forgot_password = { uuid, expires: moment().add(1, "days").toISOString() };
         await users.updateOne({ _id: user._id }, { $set: { forgot_password } });
 
         const link = `https://${isDev ? "localhost" : "kskvivat.com"}/forgot-password?email=${email}&uuid=${uuid}`;
@@ -253,7 +242,7 @@ router.post("/forgot_password/mail", async (req, res) => {
 
 router.post("/forgot_password/check", async (req, res) => {
     const { email, uuid } = req.body;
-    console.log("Check forgot password", { email, uuid });
+    DO_LOG && console.log("Check forgot password", { email, uuid });
 
     let user;
     try { user = await users.findOne({ email }) }
@@ -270,7 +259,7 @@ router.post("/forgot_password/check", async (req, res) => {
 
 router.post("/forgot_password/reset", async (req, res) => {
     const { email, uuid, password } = req.body;
-    console.log("Reset password", { email, uuid, password });
+    DO_LOG && console.log("Reset password", { email, uuid, password });
 
     let user;
     try { user = await users.findOne({ email }) }
