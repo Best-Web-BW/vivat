@@ -33,9 +33,9 @@ function Unicorn({ config, setListeners }) {
     useEffect(() => {
         const transit = (to, angle) => (mode === "shy" ? (angle) => animator.shy(false, () => animator[to](angle)) : animator[to])(angle);
         setListeners({
-            restUnicorn: () => transit("rest"),
-            followUnicorn: angle => transit("follow", angle),
-            shyUnicorn: () => transit("shy")
+            rest: () => transit("rest"),
+            follow: angle => transit("follow", angle),
+            shy: () => transit("shy")
         });
     }, [mode]);
 
