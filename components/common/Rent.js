@@ -4,6 +4,7 @@ import { toRuDate } from "../../utils/common";
 import { DefaultErrorModal, ErrorModal, SuccessModal } from "./Modals";
 import DatePicker from "./DatePicker";
 import { useState } from "react";
+import TimePicker from "react-time-picker";
 
 const DO_LOG = false;
 
@@ -63,10 +64,10 @@ export default function Rent({ text, cost, minHours, hoursText }) {
                 </div>
                 <div className="order-service-time-wrapper">
                     <div className="order-service-time-title">Выбор времени</div>
-                    {
+                    {/* {
                         ["09:00 - 12:00", "10:00 - 12:00", "13:00 - 15:00", "15:00 - 18:00", "17:00 - 20:00"]
                             .map(time => <TimeButton key={time} time={time} active={selectedTime === time} turn={() => setSelectedTime(time)} />)
-                    }
+                    } */}
                 </div>
                 <div className="order-service-mintime-wrapper">
                     <div className="order-service-mintime-title">Минимальное время аренды</div>
