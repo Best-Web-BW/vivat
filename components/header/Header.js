@@ -1,6 +1,6 @@
-import AuthProvider, { AuthVariableComponent, useAuth } from "../../utils/providers/AuthProvider";
+import AuthProvider, { AuthVariableComponent } from "../../utils/providers/AuthProvider";
 import { QueryInput } from "../common/YandexSearch";
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 import ProfileMenu from "./ProfileMenu";
 import AuthForm from "./AuthForm";
 import Link from "next/link";
@@ -14,9 +14,6 @@ export default function Header() {
     const [profileMenuOpened, setProfileMenuOpened] = useState(false);
     const openProfileMenu = () => setProfileMenuOpened(true);
     const closeProfileMenu = () => setProfileMenuOpened(false);
-
-    const name = useAuth()?.name;
-    const profilePreviewName = useMemo(() => name ? `${name.second} ${name.first} ${name.middle}` : null, [name])
     
     return (
         <header>
@@ -61,8 +58,8 @@ export default function Header() {
                         <AuthVariableComponent>
                             <ProfileMenu
                                 logout={() => { AuthProvider.deauthenticate(); closeProfileMenu(); }}
-                                opened={profileMenuOpened} username={profilePreviewName}
                                 open={openProfileMenu} close={closeProfileMenu}
+                                opened={profileMenuOpened}
                             />
                             { null }
                         </AuthVariableComponent>
