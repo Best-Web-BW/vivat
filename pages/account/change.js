@@ -99,11 +99,12 @@ export default function Change() {
                 <ProfileMenu active="change" />
                 <div className="profile-row flex-row">
                     <div className="personal-wrapper">
-                        {/* <div className="profile-photo-wrapper" onClick={() => DO_LOG && console.log(crawl())}>
+                        <div className="profile-photo-wrapper" onClick={() => DO_LOG && console.log(crawl())}>
                             { image ? <img src={image.url} alt="" width="100%" /> : null }
-                        </div> */}
+                        </div>
                         <div className="change-photo-wrapper">
-                            <ImageLoader isSingle type="users" onChange={images => setImage(images[0])} defaultImages={defaultImage} />
+                            <span className="change-photo" />
+                            {/* <ImageLoader isSingle type="users" onChange={images => setImage(images[0])} defaultImages={defaultImage} /> */}
                         </div>
                         <div className="profile-name">
                             <p className="name-p">{ user && `${user.name.second} ${user.name.first} ${user.name.middle}`}</p>
