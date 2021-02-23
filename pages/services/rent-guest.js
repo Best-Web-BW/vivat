@@ -1,7 +1,7 @@
 import ContentHeader from "../../components/common/ContentHeader";
 import Rent from "../../components/common/Rent";
 import SimpleDotSlider from "../../components/sliders/SimpleDotSlider";
-import { AuthVariableComponent } from "../../utils/providers/AuthProvider";
+import { ForUser } from "../../utils/providers/AuthProvider";
 
 export default function RentGuest() {
     return (
@@ -29,10 +29,9 @@ export default function RentGuest() {
                 ipsam nesciunt consequuntur sequi fuga odio voluptatem, natus pariatur ullam temporibus sint
                 rerum consequatur. Quibusdam quod sapiente debitis nulla, ad omnis ratione minima.
             </ContentHeader>
-            <AuthVariableComponent>
+            <ForUser>
                 <Rent text="Аренда гостевой конюшни" cost={5000} minHours={2} hoursText="часа" />
-                <div />
-            </AuthVariableComponent>
+            </ForUser>
         </div>
     );
 }

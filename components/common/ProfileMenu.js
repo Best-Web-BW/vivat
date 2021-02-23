@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Link from "next/link";
-import AuthProvider, { AdminVariableComponent } from "../../utils/providers/AuthProvider";
+import AuthProvider, { ForAdmin } from "../../utils/providers/AuthProvider";
 
 function ProfileMenuItem({ active, name, title }) {
     return (
@@ -22,9 +22,9 @@ export default function ProfileMenu({ active }) {
                     <ProfileMenuItem active={active} name="profile" title="Профиль" />
                     <ProfileMenuItem active={active} name="registration" title="Регистрация на событие" />
                     { AuthProvider.userData && !AuthProvider.userData.admin && <ProfileMenuItem active={active} name="my-events" title="Мои события" /> }
-                    {<AdminVariableComponent>
+                    {<ForAdmin>
                         <ProfileMenuItem active={active} name="manage-events" title="Управление событиями" />
-                    </AdminVariableComponent>}
+                    </ForAdmin>}
                 </ul>
             </div>
             <div className="profile-menu-button" onClick={() => toggle(prev => !prev)}>

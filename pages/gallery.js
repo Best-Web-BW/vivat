@@ -1,8 +1,8 @@
 import { DefaultErrorModal, ErrorModal, SuccessModal, WarningModal } from "../components/common/Modals";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { AdminVariableComponent } from "../utils/providers/AuthProvider";
 import AlbumListProvider from "../utils/providers/AlbumListProvider";
 import ContentHeader from "../components/common/ContentHeader";
+import { ForAdmin } from "../utils/providers/AuthProvider";
 import ImageLoader from "../components/common/ImageLoader";
 import DBProvider from "../utils/providers/DBProvider";
 import { toRuDate, sleep } from "../utils/common";
@@ -14,12 +14,12 @@ const DO_LOG = false;
 function Album({ id, cover, cdate, title, edit, remove }) {
     return (
         <div className="album-list-element">
-            <AdminVariableComponent>
+            <ForAdmin>
                 <div className ="gallery-edit-wrapper">
                     <span className="edit" onClick={() => edit(id)}></span>  
                     <button className="delete" onClick={() => remove(id)}>X</button>
                 </div>    
-            </AdminVariableComponent>
+            </ForAdmin>
             <Link href={`/gallery/${id}`}>
                 <a className="album-list-link">
                     <img src={cover ? cover.url : ""} alt="" width="100%" />
@@ -96,14 +96,14 @@ export default function Gallery({ albums }) {
             <div className="gallery-content-wrapper content-block">
                 <div className="gallery block-title">
                     <h2>Альбомы</h2>
-                    <AdminVariableComponent>
+                    <ForAdmin>
                         <button className="add-gallery-button" onClick={() => switchEditor(true, "create")}>
                             <p className="add-gallery-button-description">Добавить галерею</p>
                             <p className="add-gallery-button-icon">+</p>
                         </button>
-                    </AdminVariableComponent>
+                    </ForAdmin>
                 </div>
-                <AdminVariableComponent>
+                <ForAdmin>
                     <AlbumEditor {...editorConfig} close={closeEditor} {...{ setSuccessCreateModalOpened, setSuccessEditModalOpened, processError }} />
                     <SuccessModal
                         close={() => { setSuccessCreateModalOpened(false); sleep(600).then(() => Router.reload()); }}
@@ -124,7 +124,7 @@ export default function Gallery({ albums }) {
                     />
                     <ErrorModal opened={errorModal} content={errorModal} close={() => setErrorModal(false)} />
                     <DefaultErrorModal opened={defaultErrorModal} close={() => setDefaultErrorModal(false)} />
-                </AdminVariableComponent>
+                </ForAdmin>
                 <div className="album-list-container">
                     { albums.map(album => <Album key={album.id} { ...album } edit={editAlbum} remove={prepareToRemove} />) }
                 </div>

@@ -1,7 +1,7 @@
 import ContentHeader from "../../components/common/ContentHeader";
 import Rent from "../../components/common/Rent";
 import SimpleDotSlider from "../../components/sliders/SimpleDotSlider";
-import { AuthVariableComponent } from "../../utils/providers/AuthProvider";
+import { ForUser } from "../../utils/providers/AuthProvider";
 
 export default function PersonalLessons() {
     return (
@@ -29,10 +29,9 @@ export default function PersonalLessons() {
                 ipsam nesciunt consequuntur sequi fuga odio voluptatem, natus pariatur ullam temporibus sint
                 rerum consequatur. Quibusdam quod sapiente debitis nulla, ad omnis ratione minima.
             </ContentHeader>
-            <AuthVariableComponent>
+            <ForUser>
                 <Rent text="Персональные занятия" cost={3000} minHours={1} hoursText="час" />
-                <div />
-            </AuthVariableComponent>
+            </ForUser>
         </div>
     );
 }

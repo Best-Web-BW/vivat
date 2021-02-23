@@ -1,4 +1,4 @@
-import { AuthVariableComponent, useAuth } from "../../utils/providers/AuthProvider";
+import { ForUser, useAuth } from "../../utils/providers/AuthProvider";
 import EventListProvider from "../../utils/providers/EventListProvider";
 import ProfileMenu from "../../components/common/ProfileMenu";
 import { useEffect, useMemo, useState } from "react";
@@ -121,7 +121,7 @@ export default function _MyEvents() {
 
 function MyEvents({ Select }) {
     return (
-        <AuthVariableComponent>
+        <ForUser>
             <div className="profile-content content-block">
                 <ProfileMenu active="my-events" />
                 <div className="block-title">
@@ -129,7 +129,6 @@ function MyEvents({ Select }) {
                 </div>
                 <EventEntryContainer Select={Select} />
             </div>
-            <div />
-        </AuthVariableComponent>
+        </ForUser>
     );
 }

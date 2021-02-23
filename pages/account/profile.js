@@ -1,4 +1,4 @@
-import AuthProvider, { useAuth, AuthVariableComponent } from "../../utils/providers/AuthProvider";
+import AuthProvider, { ForUser, useAuth } from "../../utils/providers/AuthProvider";
 import ProfileMenu from "../../components/common/ProfileMenu";
 import { ErrorModal } from "../../components/common/Modals";
 import { toRuDate, sleep } from "../../utils/common";
@@ -47,7 +47,7 @@ function Profile() {
     }, []);
 
     return (
-        <AuthVariableComponent>
+        <ForUser>
             <div className="profile-content content-block">
                 <ProfileMenu active="profile" />
                 <div className="profile-row flex-row">
@@ -98,7 +98,6 @@ function Profile() {
                     </div>
                 </div>
             </div>
-            <div />
-        </AuthVariableComponent>
+        </ForUser>
     );
 }

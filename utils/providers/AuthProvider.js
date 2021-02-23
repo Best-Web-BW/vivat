@@ -143,28 +143,38 @@ export default class AuthProvider {
     }
 }
 
-export function AuthVariableComponent({ children }) {
-    // First child for users, second for guests
-    const [content, setContent] = useState();
+export function ForGuest({ children }) {
+    const [content, setContent] = useState(null);
     useEffect(() => {
-        const authHandler = async () => setContent(AuthProvider.userData ? children[0] : children[1]);
-        authHandler();
-        window.addEventListener("onauth", authHandler);
-        return () => window.removeEventListener("onauth", authHandler);
+        const handler = async () => setContent(AuthProvider.userData ? null : children);
+        handler();
+        window.addEventListener("onauth", handler);
+        return () => window.removeEventListener("onauth", handler);
     }, [children]);
 
-    return content ?? null;
+    return content;
 }
 
-export function AdminVariableComponent({ children }) {
-    // Children for admins, null for commons
-    const [content, setContent] = useState();
+export function ForUser({ children }) {
+    const [content, setContent] = useState(null);
     useEffect(() => {
-        const adminHandler = async () => setContent(AuthProvider.userData?.admin === true && children);
-        adminHandler();
-        window.addEventListener("onauth", adminHandler);
-        return () => window.removeEventListener("onauth", adminHandler);
+        const handler = async () => setContent(AuthProvider.userData ? children : null);
+        handler();
+        window.addEventListener("onauth", handler);
+        return () => window.removeEventListener("onauth", handler);
     }, [children]);
 
-    return content ?? null;
+    return content;
+}
+
+export function ForAdmin({ children }) {
+    const [content, setContent] = useState(null);
+    useEffect(() => {
+        const handler = async () => setContent(AuthProvider.userData?.admin === true ? children : null);
+        handler();
+        window.addEventListener("onauth", handler);
+        return () => window.removeEventListener("onauth", handler);
+    }, [children]);
+
+    return content;
 }

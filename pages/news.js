@@ -1,8 +1,8 @@
 import { DefaultErrorModal, ErrorModal, SuccessModal, WarningModal } from "../components/common/Modals";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { AdminVariableComponent } from "../utils/providers/AuthProvider";
 import PostListProvider from "../utils/providers/PostListProvider";
 import ContentHeader from "../components/common/ContentHeader";
+import { ForAdmin } from "../utils/providers/AuthProvider";
 import TextEditor from "../components/common/TextEditor";
 import DBProvider from "../utils/providers/DBProvider";
 import Router, { useRouter } from "next/router"
@@ -54,12 +54,12 @@ function Post({ id, title, image, contents, tags, edit, remove }) {
 
     return (
         <div className="blog-card">
-            <AdminVariableComponent>
+            <ForAdmin>
                 <div className ="article-edit-wrapper">
                     <span className="edit" onClick={() => edit(id)}></span>
                     <button className="delete" onClick={() => remove(id)}>X</button>
                 </div>
-            </AdminVariableComponent>
+            </ForAdmin>
             <div className="blog-img">
                 { image && <img src={`${image}`} alt="" width="100%" /> }
             </div>
@@ -252,14 +252,14 @@ export default function News({ query: { categories: _categories, tags: _tags, se
                                 </div>
                             </div>
                         </div>
-                        <AdminVariableComponent>
+                        <ForAdmin>
                             <div className="blog-menu-section admin">
                                 <button className="blog-menu-section-add-article-button" onClick={() => switchEditor(true, "create")}>Создать новость</button>
                             </div>
-                        </AdminVariableComponent>
+                        </ForAdmin>
                     </div>
                 </div>
-                <AdminVariableComponent>
+                <ForAdmin>
                     <PostEditor tags={uniqueTags} categories={counts} {...editorConfig} close={() => closeEditor(false)} {...{ setSuccessCreateModalOpened, setSuccessEditModalOpened, processError }} />
                     <SuccessModal
                         close={() => { setSuccessCreateModalOpened(false); sleep(600).then(() => Router.reload()); }}
@@ -280,7 +280,7 @@ export default function News({ query: { categories: _categories, tags: _tags, se
                     />
                     <ErrorModal opened={errorModal} content={errorModal} close={() => setErrorModal(false)} />
                     <DefaultErrorModal opened={defaultErrorModal} close={() => setDefaultErrorModal(false)} />
-                </AdminVariableComponent>
+                </ForAdmin>
             </div>
         </div>
     );

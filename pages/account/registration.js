@@ -1,4 +1,4 @@
-import AuthProvider, { AuthVariableComponent, useAuth } from "../../utils/providers/AuthProvider";
+import AuthProvider, { ForUser, useAuth } from "../../utils/providers/AuthProvider";
 import { DefaultErrorModal, SuccessModal } from "../../components/common/Modals";
 import EventListProvider from "../../utils/providers/EventListProvider";
 import ProfileMenu from "../../components/common/ProfileMenu";
@@ -119,7 +119,7 @@ function Registration({ Select }) {
     const [riderBirthdate, setRiderBirthdate] = useState(new Date());
 
     return (
-        <AuthVariableComponent>
+        <ForUser>
             <div className="profile-content content-block">
                 <ProfileMenu active="registration" />
                 <div className="block-title">
@@ -240,7 +240,6 @@ function Registration({ Select }) {
                 />
                 <DefaultErrorModal opened={errorModal} close={() => setErrorModal(false)} />
             </div>
-            <div />
-        </AuthVariableComponent>
+        </ForUser>
     );
 }

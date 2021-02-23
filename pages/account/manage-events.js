@@ -1,10 +1,10 @@
 import { DefaultErrorModal, ErrorModal, SuccessModal, WarningModal } from "../../components/common/Modals";
-import { AdminVariableComponent } from "../../utils/providers/AuthProvider";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import EventListProvider from "../../utils/providers/EventListProvider";
 import DocumentLoader from "../../components/common/DocumentLoader";
 import { convertDate } from "../../components/sliders/EventSlider";
 import { removeTagsFromText, sleep } from "../../utils/common";
+import { ForAdmin } from "../../utils/providers/AuthProvider";
 import ProfileMenu from "../../components/common/ProfileMenu";
 import TextEditor from "../../components/common/TextEditor";
 import DatePicker from "../../components/common/DatePicker";
@@ -120,7 +120,7 @@ function ManageEvents({ Select, animatedComponents }) {
     }
 
     return (
-        <AdminVariableComponent>
+        <ForAdmin>
             <div className="profile-content content-block">
                 <ProfileMenu active="manage-events" />
                 <div className="admin-events-list">
@@ -160,7 +160,7 @@ function ManageEvents({ Select, animatedComponents }) {
                 <ErrorModal opened={errorModal} content={errorModal} close={() => setErrorModal(false)} />
                 <DefaultErrorModal opened={defaultErrorModal} close={() => setDefaultErrorModal(false)} />
             </div>
-        </AdminVariableComponent>
+        </ForAdmin>
     );
 }
 
