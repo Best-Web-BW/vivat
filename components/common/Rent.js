@@ -3,6 +3,7 @@ import AuthProvider from "../../utils/providers/AuthProvider";
 import MailProvider from "../../utils/providers/MailProvider";
 import { toRuDate } from "../../utils/common";
 import TimePicker from "react-time-picker";
+import TimeRangePicker from '@wojtekmaj/react-timerange-picker';
 import DatePicker from "./DatePicker";
 import { useState } from "react";
 
@@ -64,7 +65,9 @@ export default function Rent({ text, cost, minHours, hoursText }) {
                 </div>
                 <div className="order-service-time-wrapper">
                     <div className="order-service-time-title">Выбор времени</div>
-                    <TimePicker />
+                    <TimeRangePicker 
+                        disableClock = "true"
+                    />
                     {/* {
                         ["09:00 - 12:00", "10:00 - 12:00", "13:00 - 15:00", "15:00 - 18:00", "17:00 - 20:00"]
                             .map(time => <TimeButton key={time} time={time} active={selectedTime === time} turn={() => setSelectedTime(time)} />)

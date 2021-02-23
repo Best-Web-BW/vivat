@@ -228,6 +228,20 @@
     width: 20vh;
 }
 
+.react-time-picker__button:enabled .react-time-picker__button__icon {
+    stroke: whitesmoke !important;
+}
+  
+.react-time-picker__button:enabled:hover .react-time-picker__button__icon,
+.react-time-picker__button:enabled:focus .react-time-picker__button__icon {
+    stroke: #ff0a0a !important;
+    text-shadow: 0 0 10px #ff0a0a !important;
+}
+
+.react-time-picker__inputGroup__input  {
+    color: whitesmoke;
+}
+
 /*service page end */
 
 /* media style */
