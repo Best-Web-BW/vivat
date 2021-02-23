@@ -53,8 +53,7 @@ function Profile() {
                 <div className="profile-row flex-row">
                     <div className="personal-wrapper">
                         <div className="profile-photo-wrapper">
-                            { /* why can't someone just rename files? */ }
-                            <img src="/images/profile/avatar_placeholder.webp" alt="" width="100%" />
+                            <img src={user && user.image.url} alt="" width="100%" />
                         </div>
                         <div className="profile-name">
                             <p className="name-p">{

@@ -70,10 +70,12 @@ router.post("/load_image/:type", async (req, res) => {
 });
 
 router.post("/load_images/:type", async (req, res) => {
-    if(!(await authorizeAdmin(req.cookies.user_id, req.cookies.access_key))) return res.end(unauthorizedError);
-
     const { type } = req.params;
-    if(["gallery"].includes(type)) {
+    if(type !== "users") {
+        if(!(await authorizeAdmin(req.cookies.user_id, req.cookies.access_key))) return res.end(unauthorizedError);
+    }
+
+    if(["gallery", "users"].includes(type)) {
         try {
             let { images } = req.files;
             if(!(images instanceof Array)) images = [images];

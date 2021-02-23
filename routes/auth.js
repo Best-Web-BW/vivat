@@ -54,7 +54,11 @@ router.post("/register", async (req, res) => {
     const user = {
         email_verified: false, email_verify_uuid,
         email, name: { first, second, middle },
-        birthdate, password_hash: passwordHash
+        birthdate, password_hash: passwordHash,
+        sex: "male", image: {
+            url: "/images/profile/avatar_placeholder.webp",
+            name: "avatar_placeholder.webp"
+        }
     };
     
     await users.insertOne(user);
@@ -173,8 +177,8 @@ router.post("/change", async (req, res) => {
 
     if(!(await authorize(userID, accessKey))) return res.json({ status: "error", error: "unauthorized" });
 
-    const { name: { first, second, middle }, birthdate, email, phone, address, sex, password } = req.body;
-    const updater = { name: { first, second, middle }, birthdate, email, phone, address, sex };
+    const { name: { first, second, middle }, image, birthdate, email, phone, address, sex, password } = req.body;
+    const updater = { name: { first, second, middle }, image, birthdate, email, phone, address, sex };
 
     DO_LOG && console.log(" - Modified", { ...req.body });
 

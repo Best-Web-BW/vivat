@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
+import { useAuth } from "../../utils/providers/AuthProvider";
 
 export default function ProfileMenu({ opened: newOpened, username, open, close, logout }) {
     const [opened, setOpened] = useState(false);
@@ -16,7 +17,6 @@ export default function ProfileMenu({ opened: newOpened, username, open, close, 
     }, [openTimeout, closeTimeouts]);
 
     useEffect(() => {
-        // console.log("Changes profile menu state:", opened, newOpened);
         clearTimeouts();
         if(newOpened) {
             setOpened(true);
@@ -29,6 +29,9 @@ export default function ProfileMenu({ opened: newOpened, username, open, close, 
         }
     }, [opened === newOpened]);
 
+    const user = useAuth();
+    const name = user?.name;
+
     return (
         <div
             className={`profile-preview-wrapper ${showed && "showed"}`}
@@ -37,11 +40,11 @@ export default function ProfileMenu({ opened: newOpened, username, open, close, 
         >
             <div className="profile-preview-row">
                 <div className="profile-preview-photo">
-                    <img src="/images/profile/avatar_placeholder.webp" alt="" width="100%" />
+                    <img src={user && user.image.url} alt="" width="100%" />
                 </div>
                 <div className="profile-preview-data">
                     <div className="profile-preview-name">
-                        <p>{ username }</p>
+                        <p>{ name && `${name.second} ${name.first} ${name.middle}` }</p>
                     </div>
                     <div className="profile-preview-address">RU | Moscow</div>
                 </div>

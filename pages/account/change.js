@@ -2,9 +2,10 @@ import AuthProvider, { AuthVariableComponent, useAuth } from "../../utils/provid
 import { DefaultErrorModal, ErrorModal, SuccessModal } from "../../components/common/Modals";
 import ProfileMenu from "../../components/common/ProfileMenu";
 import DatePicker from "../../components/common/DatePicker";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { sleep } from "../../utils/common";
 import Router from "next/router"
+import ImageLoader from "../../components/common/ImageLoader";
 
 const DO_LOG = false;
 
@@ -47,6 +48,7 @@ export default function Change() {
             second: refs.name.second.current.value,
             middle: refs.name.middle.current.value
         },
+        image: image ?? { url: "/images/profile/avatar_placeholder.webp", name: "avatar_placeholder.webp" },
         birthdate: birthdate.toISOString(),
         email: refs.email.current.value,
         phone: refs.phone.current.value,
@@ -84,7 +86,9 @@ export default function Change() {
             setDefaultErrorModal(true);
         }
     }
-    
+
+    const defaultImage = useMemo(() => user ? [user.image] : [], [user]);
+    const [image, setImage] = useState();
     const [birthdate, setBirthdate] = useState(new Date());
     useEffect(() => user && setBirthdate(new Date(user.birthdate)), [user]);
 
@@ -95,14 +99,14 @@ export default function Change() {
                     <ProfileMenu active="change" />
                     <div className="profile-row flex-row">
                         <div className="personal-wrapper">
-                            <div className="profile-photo-wrapper" onClick={() => DO_LOG && console.log(crawl())}>
-                                <img src="/images/profile/avatar_placeholder.webp" alt="" width="100%" />
-                            </div>
-                            {/* <div className="change-photo-wrapper">
-                                <span className="change-photo"></span>
+                            {/* <div className="profile-photo-wrapper" onClick={() => DO_LOG && console.log(crawl())}>
+                                { image ? <img src={image.url} alt="" width="100%" /> : null }
                             </div> */}
+                            <div className="change-photo-wrapper">
+                                <ImageLoader isSingle type="users" onChange={images => setImage(images[0])} defaultImages={defaultImage} />
+                            </div>
                             <div className="profile-name">
-                                <p className="name-p">{ user && (({ second, first, middle }) => `${second} ${first} ${middle}`)(user.name) }</p>
+                                <p className="name-p">{ user && `${user.name.second} ${user.name.first} ${user.name.middle}`}</p>
                                 <p className="state-p"><span>RU</span>,<span>Moscow</span></p>
                             </div>
                         </div>
@@ -113,9 +117,21 @@ export default function Change() {
                     <div className="profile-row flex-row">
                         <label className="profile-element-wrapper">
                             <p className="name-title"><span className="required">*</span>ФИО</p>
-                            <input ref={refs.name.second} type="text" name="secondname" className="surname-data-input" placeholder="Иванов" defaultValue={user ? user.name.second : ""} />
-                            <input ref={refs.name.first} type="text" name="firstname" className="name-data-input" placeholder="Иван" defaultValue={user ? user.name.first : ""} />
-                            <input ref={refs.name.middle} type="text" name="middlename" className="middle-name-data-input" placeholder="Иванович" defaultValue={user ? user.name.middle : ""} />
+                            <input
+                                ref={refs.name.second} type="text" autoComplete="family-name"
+                                className="surname-data-input" placeholder="Иванов"
+                                defaultValue={user ? user.name.second : ""}
+                            />
+                            <input
+                                ref={refs.name.first} type="text" autoComplete="given-name"
+                                className="name-data-input" placeholder="Иван"
+                                defaultValue={user ? user.name.first : ""}
+                            />
+                            <input
+                                ref={refs.name.middle} type="text" autoComplete="additional-name"
+                                className="middle-name-data-input" placeholder="Иванович"
+                                defaultValue={user ? user.name.middle : ""}
+                            />
                         </label>
                         <label className="profile-element-wrapper">
                             <p className="birthday-title"><span className="required">*</span>Дата рождения:</p>
@@ -130,23 +146,43 @@ export default function Change() {
                         </label>
                         <label className="profile-element-wrapper">
                             <p className="email-title"><span className="required">*</span>email:</p>
-                            <input ref={refs.email} type="email" name="email" className="email-data-input" placeholder="example@gmail.com" defaultValue={user ? user.email : ""} />
+                            <input
+                                ref={refs.email} type="email" autoComplete="email"
+                                className="email-data-input" placeholder="example@gmail.com"
+                                defaultValue={user ? user.email : ""}
+                            />
                         </label>
                         <label className="profile-element-wrapper">
                             <p className="phone-title"><span className="required">*</span>Номер телефон:</p>
-                            <input ref={refs.phone} type="phone" name="phone" className="phone-data-input" placeholder="+7 (900) 000 00 00" defaultValue={user ? user.phone : ""} />
+                            <input
+                                ref={refs.phone} type="phone" autoComplete="tel"
+                                className="phone-data-input" placeholder="+7 (900) 000 00 00"
+                                defaultValue={user ? user.phone : ""}
+                            />
                         </label>
                         <label className="profile-element-wrapper">
                             <p className="address-title"><span className="required">*</span>Адрес</p>
-                            <input ref={refs.address} type="address" name="address" className="address-data-input" placeholder="Россия, Москва, Замечательный проед, 1" defaultValue={user ? user.address : ""}  />
+                            <input
+                                ref={refs.address} type="address" autoComplete="street-address"
+                                className="address-data-input" placeholder="Россия, Москва, Замечательный проед, 1"
+                                defaultValue={user ? user.address : ""}
+                            />
                         </label>
                         <div className="profile-element-wrapper">
                             <p className="gender-title"><span className="required">*</span>Пол:</p>
-                            <input ref={refs.sex.male} type="radio" id="male" name="sex" className="custom-checkbox" defaultChecked={user && user.sex === "male"} />
+                            <input
+                                ref={refs.sex.male} type="radio"
+                                id="male" name="sex" className="custom-checkbox"
+                                defaultChecked={user && user.sex === "male"}
+                            />
                             <label className="gender-input" htmlFor="male">
                                 Мужской
                             </label>
-                            <input ref={refs.sex.female} type="radio" id="female" name="sex" className="custom-checkbox" defaultChecked={user && user.sex === "female"} />
+                            <input
+                                ref={refs.sex.female} type="radio"
+                                id="female" name="sex" className="custom-checkbox"
+                                defaultChecked={user && user.sex === "female"}
+                            />
                             <label className="gender-input" htmlFor="female">
                                 Женский
                             </label>
@@ -156,15 +192,24 @@ export default function Change() {
                         <br />
                         <label className="profile-element-wrapper">
                             <p className="email-title">Старый пароль:</p>
-                            <input ref={refs.password.current} type="password" name="password" className="email-data-input" />
+                            <input
+                                ref={refs.password.current} type="password"
+                                autoComplete="current-password" className="email-data-input"
+                            />
                         </label>
                         <label className="profile-element-wrapper">
                             <p className="email-title">Новый пароль:</p>
-                            <input ref={refs.password.new1} type="password" name="new-password1" className="email-data-input" />
+                            <input
+                                ref={refs.password.new1} type="password"
+                                autoComplete="new-password" className="email-data-input"
+                            />
                         </label>
                         <label className="profile-element-wrapper">
                             <p className="email-title">Новый пароль еще раз:</p>
-                            <input ref={refs.password.new2} type="password" name="new-password2" className="email-data-input" />
+                            <input
+                                ref={refs.password.new2} type="password"
+                                autoComplete="new-password" className="email-data-input"
+                            />
                         </label>
                     </div>
                     <div className="profile-row flex-row">

@@ -70,7 +70,10 @@ export default function ImageLoader({ isSingle, type, onChange, defaultImages })
             <form encType="multipart/form-data">
                 <label>
                     <p className="gallery-upload-button">Выбрать фото</p>
-                    <input ref={inputRef} type="file" multiple={!isSingle} accept="image/*" onChange={loadImages} />
+                    <input
+                        ref={inputRef} type="file" multiple={!isSingle} accept="image/*"
+                        onChange={loadImages} style={{ display: "none" }}
+                    />
                 </label>
             </form>
             <div className="add-gallery-modal-imgs-list">
