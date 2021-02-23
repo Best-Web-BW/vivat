@@ -76,17 +76,32 @@ export default function Rent({ text, cost, minHours, hoursText }) {
                 <div className="order-service-time-wrapper">
                     <div className="order-service-time-title">Выбор времени</div>
                     <div className="order-service-time-select">
-                        <Select
-                            onChange={setSelectedHour}
-                            value={selectedHour}
-                            options={hours}
-                        />
-                        :
-                        <Select
-                            onChange={setSelectedMinute}
-                            value={selectedMinute}
-                            options={minutes}
-                        />
+                        <div className="time-select-from">
+                            <Select
+                                onChange={setSelectedHour}
+                                value={selectedHour}
+                                options={hours}
+                            />
+                            :
+                            <Select
+                                onChange={setSelectedMinute}
+                                value={selectedMinute}
+                                options={minutes}
+                            />
+                        </div>
+                        <div className="time-select-to">
+                            <Select
+                                onChange={setSelectedHour}
+                                value={selectedHour}
+                                options={hours}
+                            />
+                            :
+                            <Select
+                                onChange={setSelectedMinute}
+                                value={selectedMinute}
+                                options={minutes}
+                            />
+                        </div>
                     </div>
                 </div>
                 <div className="order-service-mintime-wrapper">

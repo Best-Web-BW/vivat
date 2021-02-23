@@ -163,6 +163,7 @@
     justify-content: space-between;
     font-size: 130%;
     margin: 4vh 0;
+    align-items: center;
 }
 
 .order-service-title-wrapper {
@@ -243,7 +244,7 @@
 }
 
 .order-service-time-wrapper .css-2b097c-container {
-    width: 10vh;
+    width: 40%;
 }
 
 .order-service-time-select {
@@ -252,6 +253,7 @@
     justify-content: flex-end;
     align-items: center;
     gap: 1vh;
+    flex-wrap: wrap;
 }
 
 .order-service-time-wrapper .css-9gakcf-option {
@@ -265,6 +267,14 @@
 
 .order-service-time-wrapper .css-4ljt47-MenuList::-webkit-scrollbar {
     width: 5px;
+}
+
+.time-select-from, .time-select-to {
+    width: 100%;
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: center;
 }
 
 /*service page end */
