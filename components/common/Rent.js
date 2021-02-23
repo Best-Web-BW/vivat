@@ -1,14 +1,14 @@
+import { DefaultErrorModal, ErrorModal, SuccessModal } from "./Modals";
 import AuthProvider from "../../utils/providers/AuthProvider";
 import MailProvider from "../../utils/providers/MailProvider";
 import { toRuDate } from "../../utils/common";
-import { DefaultErrorModal, ErrorModal, SuccessModal } from "./Modals";
+import TimePicker from "react-time-picker";
 import DatePicker from "./DatePicker";
 import { useState } from "react";
-import TimePicker from "react-time-picker";
 
 const DO_LOG = false;
 
-const TimeButton = ({ time, turn, active }) => <button className={`order-service-time-button ${active && "active"}`} onClick={turn}>{ time }</button>;
+// const TimeButton = ({ time, turn, active }) => <button className={`order-service-time-button ${active && "active"}`} onClick={turn}>{ time }</button>;
 
 export default function Rent({ text, cost, minHours, hoursText }) {
     const [selectedTime, setSelectedTime] = useState("");
@@ -64,6 +64,7 @@ export default function Rent({ text, cost, minHours, hoursText }) {
                 </div>
                 <div className="order-service-time-wrapper">
                     <div className="order-service-time-title">Выбор времени</div>
+                    <TimePicker />
                     {/* {
                         ["09:00 - 12:00", "10:00 - 12:00", "13:00 - 15:00", "15:00 - 18:00", "17:00 - 20:00"]
                             .map(time => <TimeButton key={time} time={time} active={selectedTime === time} turn={() => setSelectedTime(time)} />)
