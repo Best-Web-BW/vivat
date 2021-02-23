@@ -172,7 +172,7 @@
 }
 
 .order-service-time-wrapper {
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
 }
 
 .order-service-time-title {
@@ -240,6 +240,27 @@
 
 .react-time-picker__inputGroup__input  {
     color: whitesmoke;
+}
+
+.order-service-time-wrapper .css-2b097c-container {
+    width: 20vh;
+}
+
+.order-service-time-select {
+    width: 50%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 1vh;
+}
+
+.css-9gakcf-option {
+    background-color: transparent;
+}
+
+.css-1pahdxg-control {
+    border-color: #ff0a0a !important;
+    box-shadow: 0 0 10px 1px #ff0a0a !important;
 }
 
 /*service page end */

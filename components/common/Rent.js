@@ -3,11 +3,37 @@ import AuthProvider from "../../utils/providers/AuthProvider";
 import MailProvider from "../../utils/providers/MailProvider";
 import { toRuDate } from "../../utils/common";
 import TimePicker from "react-time-picker";
-import TimeRangePicker from '@wojtekmaj/react-timerange-picker';
+// import TimeRangePicker from '@wojtekmaj/react-timerange-picker';
+import Select from 'react-select';
 import DatePicker from "./DatePicker";
 import { useState } from "react";
 
 const DO_LOG = false;
+
+const hours = [
+    { value: '09', label: '09' },
+    { value: '10', label: '10' },
+    { value: '11', label: '11' },
+    { value: '12', label: '12' },
+    { value: '13', label: '13' },
+    { value: '14', label: '14' },
+    { value: '15', label: '15' },
+    { value: '16', label: '16' },
+    { value: '17', label: '17' },
+    { value: '18', label: '18' },
+    { value: '19', label: '19' },
+    { value: '20', label: '20' },
+    { value: '21', label: '21' }
+]
+
+const minutes = [
+    { value: '00', label: '00' },
+    { value: '10', label: '10' },
+    { value: '20', label: '20' },
+    { value: '30', label: '30' },
+    { value: '40', label: '40' },
+    { value: '50', label: '50' }
+]
 
 // const TimeButton = ({ time, turn, active }) => <button className={`order-service-time-button ${active && "active"}`} onClick={turn}>{ time }</button>;
 
@@ -65,13 +91,22 @@ export default function Rent({ text, cost, minHours, hoursText }) {
                 </div>
                 <div className="order-service-time-wrapper">
                     <div className="order-service-time-title">Выбор времени</div>
-                    <TimeRangePicker 
+                    {/* <TimePicker 
                         disableClock = "true"
-                    />
+                        maxDetail = "minute"
+                    /> */}
                     {/* {
                         ["09:00 - 12:00", "10:00 - 12:00", "13:00 - 15:00", "15:00 - 18:00", "17:00 - 20:00"]
                             .map(time => <TimeButton key={time} time={time} active={selectedTime === time} turn={() => setSelectedTime(time)} />)
                     } */}
+                    <div className="order-service-time-select">
+                        <Select 
+                                options={hours}
+                        />
+                        <Select 
+                                options={minutes}
+                        />
+                    </div>
                 </div>
                 <div className="order-service-mintime-wrapper">
                     <div className="order-service-mintime-title">Минимальное время аренды</div>
