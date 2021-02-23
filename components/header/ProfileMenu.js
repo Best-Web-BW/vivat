@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { useAuth } from "../../utils/providers/AuthProvider";
 
-export default function ProfileMenu({ opened: newOpened, username, open, close, logout }) {
+export default function ProfileMenu({ opened: newOpened, open, close, logout }) {
     const [opened, setOpened] = useState(false);
     const [showed, setShowed] = useState(false);
     
@@ -27,6 +27,7 @@ export default function ProfileMenu({ opened: newOpened, username, open, close, 
                 setTimeout(() => setOpened(false), animationDuration * 2)
             ]);
         }
+        return clearTimeouts;
     }, [opened === newOpened]);
 
     const user = useAuth();
