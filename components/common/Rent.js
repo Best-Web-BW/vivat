@@ -101,9 +101,12 @@ export default function Rent({ text, cost, minHours, hoursText }) {
                     } */}
                     <div className="order-service-time-select">
                         <Select 
+                                defaultValue={[hours[0]]}
                                 options={hours}
                         />
+                        :
                         <Select 
+                                defaultValue={[minutes[0]]}
                                 options={minutes}
                         />
                     </div>

@@ -243,7 +243,7 @@
 }
 
 .order-service-time-wrapper .css-2b097c-container {
-    width: 20vh;
+    width: 10vh;
 }
 
 .order-service-time-select {
@@ -254,13 +254,17 @@
     gap: 1vh;
 }
 
-.css-9gakcf-option {
+.order-service-time-wrapper .css-9gakcf-option {
     background-color: transparent;
 }
 
-.css-1pahdxg-control {
+.order-service-time-wrapper .css-1pahdxg-control {
     border-color: #ff0a0a !important;
     box-shadow: 0 0 10px 1px #ff0a0a !important;
+}
+
+.order-service-time-wrapper .css-4ljt47-MenuList::-webkit-scrollbar {
+    width: 5px;
 }
 
 /*service page end */
