@@ -2,9 +2,9 @@ import { DefaultErrorModal, ErrorModal, SuccessModal } from "./Modals";
 import AuthProvider from "../../utils/providers/AuthProvider";
 import MailProvider from "../../utils/providers/MailProvider";
 import { toRuDate } from "../../utils/common";
-import Select from 'react-select';
 import DatePicker from "./DatePicker";
-import { useEffect, useState } from "react";
+import Select from 'react-select';
+import { useState } from "react";
 
 const DO_LOG = false;
 
@@ -13,39 +13,47 @@ const hours = ["09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19",
 const minutes = ["00", "10", "20", "30", "40", "50"].map(selectValuer);
 
 export default function Rent({ text, cost, minHours, hoursText }) {
-    const [selectedDate, setSelectedDate] = useState(new Date());
-    const [selectedHour, setSelectedHour] = useState(hours[0]);
-    const [selectedMinute, setSelectedMinute] = useState(minutes[0]);
-
-    useEffect(() => console.log(`Selected time: ${selectedHour.value}:${selectedMinute.value}`), [selectedHour, selectedMinute]);
-
     const [successModal, setSuccessModal] = useState(false);
-    const [rentTimeErrorModal, setRentTimeErrorModal] = useState(false);
-    const [errorModal, setErrorModal] = useState(false);
+    const [timeErrorModal, setTimeErrorModal] = useState(false);
+    const [defaultErrorModal, setDefaultErrorModal] = useState(false);
+
+    const [selectedDate, setSelectedDate] = useState(new Date());
+    const [selectedFromHour, setSelectedFromHour] = useState(hours[0]);
+    const [selectedToHour, setSelectedToHour] = useState(hours[2]);
+    const [selectedFromMinute, setSelectedFromMinute] = useState(minutes[0]);
+    const [selectedToMinute, setSelectedToMinute] = useState(minutes[0]);
 
     const submit = async () => {
-        // if(!selectedTime.length) return setRentTimeErrorModal(true);
+        const time = {
+            from: {
+                hour: selectedFromHour.value,
+                minute: selectedFromMinute.value,
+                timestamp: +selectedFromHour.value * 60 + +selectedFromMinute.value
+            },
+            to: {
+                hour: selectedToHour.value,
+                minute: selectedToMinute.value,
+                timestamp: +selectedToHour.value * 60 + +selectedToMinute.value
+            }
+        };
 
-        const hour = selectedHour.value;
-        const minute = selectedMinute.value;
-        console.log(`Submit with selected time: ${hour}:${minute}`);
-        return;
+        if(time.to.timestamp - time.from.timestamp < 120) return setTimeErrorModal(true);
+        const fromTime = `${time.from.hour}:${time.from.minute}`;
+        const toTime = `${time.to.hour}:${time.to.minute}`;
         
         const email = AuthProvider.userData.email;
         const phone = AuthProvider.userData.phone;
-        DO_LOG && console.log(email, phone, text, selectedTime, toRuDate(selectedDate));
+        DO_LOG && console.log(email, phone, text, fromTime, toTime, toRuDate(selectedDate));
 
         try {
-            const result = await MailProvider.sendRentEmail(email, phone, text, selectedTime, toRuDate(selectedDate));
-            if(result.success) {
-                setSuccessModal(true);
-                setSelectedTime("");
-            } else {
-                setErrorModal(true);
+            const result = await MailProvider.sendRentEmail(email, phone, text, fromTime, toTime, toRuDate(selectedDate));
+            if(result.success) setSuccessModal(true);
+            else {
+                setDefaultErrorModal(true);
                 console.error({ result });
             }
         } catch(e) {
-            setErrorModal(true);
+            setDefaultErrorModal(true);
             console.error(e);
         }
     };
@@ -63,13 +71,10 @@ export default function Rent({ text, cost, minHours, hoursText }) {
                 <div className="order-service-day-wrapper">
                     <div className="order-service-day-title">Выбор дня</div>
                     <div className="order-service-day-datepicker">
-                        <DatePicker 
-                            onChange={setSelectedDate}
-                            selected={selectedDate} 
-                            dateFormat="dd.MM.yyyy"
-                            dropdownMode="select"
-                            showYearDropdown
-                            peekNextMonth
+                        <DatePicker
+                            selected={selectedDate} onChange={setSelectedDate}
+                            dateFormat="dd.MM.yyyy" dropdownMode="select"
+                            showYearDropdown peekNextMonth
                         />
                     </div>
                 </div>
@@ -77,30 +82,14 @@ export default function Rent({ text, cost, minHours, hoursText }) {
                     <div className="order-service-time-title">Выбор времени</div>
                     <div className="order-service-time-select">
                         <div className="time-select-from">
-                            <Select
-                                onChange={setSelectedHour}
-                                value={selectedHour}
-                                options={hours}
-                            />
+                            <Select value={selectedFromHour} onChange={setSelectedFromHour} options={hours} />
                             :
-                            <Select
-                                onChange={setSelectedMinute}
-                                value={selectedMinute}
-                                options={minutes}
-                            />
+                            <Select value={selectedFromMinute} onChange={setSelectedFromMinute} options={minutes} />
                         </div>
                         <div className="time-select-to">
-                            <Select
-                                onChange={setSelectedHour}
-                                value={selectedHour}
-                                options={hours}
-                            />
+                            <Select value={selectedToHour} onChange={setSelectedToHour} options={hours} />
                             :
-                            <Select
-                                onChange={setSelectedMinute}
-                                value={selectedMinute}
-                                options={minutes}
-                            />
+                            <Select value={selectedToMinute} onChange={setSelectedToMinute} options={minutes} />
                         </div>
                     </div>
                 </div>
@@ -118,9 +107,9 @@ export default function Rent({ text, cost, minHours, hoursText }) {
             opened={successModal} close={() => setSuccessModal(false)}
         />
         <ErrorModal
-            opened={rentTimeErrorModal} close={() => setRentTimeErrorModal(false)}
-            content="Не выбрано время для аренды."
+            opened={timeErrorModal} close={() => setTimeErrorModal(false)}
+            content="Длительность аренды не может быть менее двух часов."
         />
-        <DefaultErrorModal opened={errorModal} close={() => setErrorModal(false)} />
+        <DefaultErrorModal opened={defaultErrorModal} close={() => setDefaultErrorModal(false)} />
     </>);
 }

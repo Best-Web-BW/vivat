@@ -12,12 +12,12 @@ export default class MailProvider {
         } catch(e) { console.error(e); return { success: 0, reason: "connection_failed" }; }
     }
 
-    static async sendRentEmail(email, phone, service, time, date) {
+    static async sendRentEmail(email, phone, service, fromTime, toTime, date) {
         try {
             const response = await fetch("/api/mail/rent", {
                 method: "POST",
                 headers: { "Content-Type": "application/json;charset=utf-8" },
-                body: JSON.stringify({ email, phone, service, time, date })
+                body: JSON.stringify({ email, phone, service, fromTime, toTime, date })
             });
             const json = await response.json();
             if(json.status === "success") return { success: 1 };
