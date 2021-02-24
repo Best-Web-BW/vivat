@@ -37,14 +37,14 @@ const admin = require("./routes/admin.js");
         https.createServer(options, server).listen(HTTPS_PORT);
         server.use(forceSSL);
 
-        if(dev || true) process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+        // if(dev || true) process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
         
         server.use(fileUpload({}));
         server.use(cookieParser());
         server.use(bodyParser.json());
         server.use(bodyParser.urlencoded({ extended: false }));
         
-        const dynamicFileHandler = (req, res) => res.sendFile(__dirname + path.normalize(req.path));
+        const dynamicFileHandler = (req, res) => res.sendFile(__dirname + path.normalize(decodeURI(req.path)));
         server.post("/documents/*", dynamicFileHandler);
         server.get("/documents/*", dynamicFileHandler);
         server.post("/images/*", dynamicFileHandler);
