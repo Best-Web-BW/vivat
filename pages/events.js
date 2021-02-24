@@ -1,7 +1,7 @@
 import EventCalendar from "../components/common/EventCalendar";
 import ContentHeader from "../components/common/ContentHeader";
 import EventSlider from "../components/sliders/EventSlider";
-import DBProvider from "../utils/providers/DBProvider";
+import SSRProvider from "../utils/providers/SSRProvider";
 import { useEffect, useState } from "react";
 
 export default function Events({ events }) {
@@ -37,9 +37,11 @@ export default function Events({ events }) {
     );
 }
 
-export async function getServerSideProps() {
-    const result = { props: { events: [] } };
-    try { result.props.events = await DBProvider.getEventList() }
-    catch(e) { console.error(e) }
-    finally { return result }
-}
+export const getServerSideProps = async () => ({ props: { events: await SSRProvider.getEventList() } });
+
+// export async function get_ServerSideProps() {
+//     const result = { props: { events: [] } };
+//     try { result.props.events = await SSRProvider.getEventList() }
+//     catch(e) { console.error(e) }
+//     finally { return result }
+// }

@@ -4,6 +4,7 @@ import AlbumListProvider from "../utils/providers/AlbumListProvider";
 import ContentHeader from "../components/common/ContentHeader";
 import { ForAdmin } from "../utils/providers/AuthProvider";
 import ImageLoader from "../components/common/ImageLoader";
+import SSRProvider from "../utils/providers/SSRProvider";
 import DBProvider from "../utils/providers/DBProvider";
 import { toRuDate, sleep } from "../utils/common";
 import Router from "next/router";
@@ -37,12 +38,14 @@ function Album({ id, cover, cdate, title, edit, remove }) {
     );
 }
 
-export async function getServerSideProps() {
-    const result = { props: { albums: [] } };
-    try { result.props.albums = await DBProvider.getAlbumList() }
-    catch(e) { console.error(e) }
-    finally { return result }
-}
+export const getServerSideProps = async () => ({ props: { albums: await SSRProvider.getAlbumList() } });
+
+// export async function get_ServerSideProps() {
+//     const result = { props: { albums: [] } };
+//     try { result.props.albums = await SSRProvider.getAlbumList() }
+//     catch(e) { console.error(e) }
+//     finally { return result }
+// }
 
 export default function Gallery({ albums }) {
     const [deleteModalOpened, setDeleteModalOpened] = useState(false);

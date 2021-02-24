@@ -17,58 +17,63 @@ router.get("/", (_, res) => {
 	res.end("Hello world! index");
 });
 
-router.get("/events", async (req, res) => {
-    const { date } = req.query;
-
-    const query = date ? { "dates.0": { $lte: date }, "dates.1": { $gte: date } } : { };
+router.get("/events", async (req, res) => res.json(await getEventList(req.query.date)));
+const getEventList = async date => {
+    const query = date ? { "dates.0": { $lte: date }, "dates.1": { $get: date } } : { };
     const projection = { _id: 0, id: 1, title: 1, dates: 1, tags: 1, category: 1, cdate: 1 };
-    
-    const result = await events.find(query, { projection }).sort({ id: 1 }).toArray();
-    res.json(result);
-});
+    try { return await events.find(query, { projection }).sort({ id: 1 }).toArray() }
+    catch(e) { return [] }
+};
 
-router.get("/events/stats", async (_, res) => {
-    const result = await events.find({ }, { projection: { _id: 0, tags: 1, category: 1 } }).toArray();
+router.get("/events/stats", async (_, res) => res.json(await getEventStats()));
+const getEventStats = async () => {
+    let result;
+    try { result = await events.find({ }, { projection: { _id: 0, tags: 1, category: 1 } }).toArray() }
+    catch(e) { return { tags: [], categories: [] } }
     
     const uniqueTags = new Set(), uniqueCategories = new Set();
     for(const { tags, category } of result) {
         for(const tag of tags) uniqueTags.add(tag);
         uniqueCategories.add(category);
     }
+    return { tags: [...uniqueTags], categories: [...uniqueCategories] };
+};
 
-    res.json({ tags: [...uniqueTags], categories: [...uniqueCategories] });
-});
+router.get("/events/:id", async (req, res) => res.json({ ...(await getEventDetails(+req.params.id)), full: true }));
+const getEventDetails = async id => {
+    try { return await events.findOne({ id }, { projection: { _id: 0 } }) }
+    catch(e) { return { id: 0, title: "", contents: "", documents: [], tags: [] } }
+}
 
-router.get("/events/:id", async (req, res) => {
-    const result = await events.findOne({ id: +req.params.id }, { projection: { _id: 0 } });
-    res.json({ ...result, full: true });
-});
-
-router.get("/albums", async (_, res) => {
+router.get("/albums", async (_, res) => res.json(await getAlbumList()));
+const getAlbumList = async () => {
     const projection = { _id: 0, id: 1, title: 1, cover: { url: 1 }, cdate: 1 };
-    const result = await albums.find({ }, { projection }).sort({ id: 1 }).toArray();
-    res.json(result);
-});
+    try { return await albums.find({ }, { projection }).sort({ id: 1 }).toArray() }
+    catch(e) { return [] }
+};
 
-router.get("/albums/stats", async (_, res) => {
-    const result = await albums.find({ }, { projection: { _id: 0, tags: 1, category: 1 } }).toArray();
+router.get("/albums/stats", async (_, res) => res.json(await getAlbumStats()));
+const getAlbumStats = async () => {
+    let result;
+    try { result = await albums.find({ }, { projection: { _id: 0, tags: 1, category: 1 } }).toArray() }
+    catch(e) { return { tags: [], categories: [] } }
     
     const uniqueTags = new Set(), uniqueCategories = new Set();
     for(const { tags, category } of result) {
         for(const tag of tags) uniqueTags.add(tag);
         uniqueCategories.add(category);
     }
+    return { tags: [...uniqueTags], categories: [...uniqueCategories] };
+};
 
-    res.json({ tags: [...uniqueTags], categories: [...uniqueCategories] });
-});
+router.get("/albums/:id", async ({ params: { id } }, res) => res.json({ ...(await getAlbumDetails(+id)), full: true }));
+const getAlbumDetails = async id => {
+    try { return await albums.findOne({ id }, { projection: { _id: 0 } }) }
+    catch(e) { return { id: 0, title: "", images: [], desc: "", tags: [], category: ""} }
+}
 
-router.get("/albums/:id", async (req, res) => {
-    const result = await albums.findOne({ id: +req.params.id }, { projection: { _id: 0 } });
-    res.json({ ...result, full: true });
-});
-
-router.get("/posts", async (req, res) => {
-    const { categories, tags, search } = req.query;
+router.get("/posts", async ({ query: { categories, tags, search } }, res) => res.json(await getPostList(categories, tags, search)));
+const getPostList = async (categories, tags, search) => {
     const query = { };
 
     DO_LOG && console.log(categories, tags, search);
@@ -87,12 +92,15 @@ router.get("/posts", async (req, res) => {
 
     DO_LOG && console.log(query, query.$or);
 
-    const result = await posts.find(query, { projection: { _id: false } }).sort({ id: 1 }).toArray();
-    res.json(result);
-});
+    try { return await posts.find(query, { projection: { _id: false } }).sort({ id: 1 }).toArray() }
+    catch(e) { return [] }
+};
 
-router.get("/posts/stats", async (_, res) => {
-    const result = await posts.find({ }, { projection: { _id: false, tags: true, category: true } }).toArray();
+router.get("/posts/stats", async (_, res) => res.json(await getPostStats()));
+const getPostStats = async () => {
+    let result;
+    try { result = await posts.find({ }, { projection: { _id: false, tags: true, category: true } }).toArray() }
+    catch(e) { return { tags: [], counts: { } } }
     
     const uniqueTags = new Set();
     const counts = result.reduce((acc, { tags, category }) => {
@@ -100,18 +108,14 @@ router.get("/posts/stats", async (_, res) => {
         return { ...acc, [category]: (acc[category] ?? 0) + 1 };
     }, { });
 
-    res.json({ tags: [...uniqueTags], counts })
-});
+    return { tags: [...uniqueTags], counts };
+}
 
-router.get("/posts/:id", async (req, res) => {
-    const { id } = req.params;
-    let result;
-
-    try { result = await posts.findOne({ id: +id }); }
-    catch(e) { return res.json({ success: false, reason: "no_post_found" }); }
-
-    res.json({ success: true, result: { ...result, _id: undefined } });
-});
+router.get("/posts/:id", async ({ params: { id } }, res) => res.json({ success: true, result: await getPostDetails(+id) }));
+const getPostDetails = async id => {
+    try { return await posts.findOne({ id }, { projection: { _id: 0 } }) }
+    catch(e) { return { id: 0, title: "", contents: "", tags: [], category: "" } }
+};
 
 router.get("/cat", (_, res) => {
     res.sendFile(path.join(__dirname + "/cat.html"));
@@ -122,3 +126,12 @@ router.get("/:woppa", (req, res) => {
 });
 
 module.exports = router;
+module.exports.getEventList = getEventList;
+module.exports.getEventStats = getEventStats;
+module.exports.getEventDetails = getEventDetails;
+module.exports.getAlbumList = getAlbumList;
+module.exports.getAlbumStats = getAlbumStats;
+module.exports.getAlbumDetails = getAlbumDetails;
+module.exports.getPostList = getPostList;
+module.exports.getPostStats = getPostStats;
+module.exports.getPostDetails = getPostDetails;

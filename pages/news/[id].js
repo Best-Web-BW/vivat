@@ -1,4 +1,5 @@
 import ContentHeader from "../../components/common/ContentHeader";
+import SSRProvider from "../../utils/providers/SSRProvider";
 import DBProvider from "../../utils/providers/DBProvider";
 import { removeTagsFromText } from "../../utils/common";
 import Router from "next/router";
@@ -42,9 +43,11 @@ export default function PostPage({ post: { id, title, contents, tags, category }
     </>);
 }
 
-export async function getServerSideProps({ query: { id } }) {
-    const result = { props: { post: { } } };
-    try { result.props.post = (await DBProvider.getPostDetails(+id)).result }
-    catch(e) { console.error(e) }
-    finally { return result }
-}
+export const getServerSideProps = async ({ query: { id } }) => ({ props: { post: await SSRProvider.getPostDetails(+id) } });
+
+// export async function get_ServerSideProps({ query: { id } }) {
+//     const result = { props: { post: { } } };
+//     try { result.props.post = await SSRProvider.getPostDetails(+id) }
+//     catch(e) { console.error(e) }
+//     finally { return result }
+// }

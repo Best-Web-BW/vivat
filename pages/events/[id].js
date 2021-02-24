@@ -1,9 +1,9 @@
-import EventListProvider from "../../utils/providers/EventListProvider";
 import ContentHeader from "../../components/common/ContentHeader";
 import EventSlider from "../../components/sliders/EventSlider";
+import SSRProvider from "../../utils/providers/SSRProvider";
+import { removeTagsFromText } from "../../utils/common";
 import { useMemo } from "react";
 import Link from "next/link";
-import { removeTagsFromText } from "../../utils/common";
 
 function DocumentBlock({ url, name }) {
     return (
@@ -24,13 +24,13 @@ export default function EventPage({ events, event: { id, title, contents, docume
     const _contents = useMemo(() => contents.replace(/script/gi, "sсrірt"), [id]);
     const description = useMemo(() => removeTagsFromText(_contents), [_contents]);
     const keywords = useMemo(() => [...tags, "событие", "мероприятие", "кск", "Виват", "Россия"], [tags]);
-
+    
     return (
         <>
             <ContentHeader
                 pages={[["events", "Мероприятия"], [`events/${id}`, title]]} {...{ description, keywords }}
                 afterTitle={<EventSlider events={events} containerClass="day-events-container" />}
-            />
+                />
             <div className="event-page-content content-block">
                 <article className="event-article" dangerouslySetInnerHTML={{ __html: _contents }} />
                 <div className="event-documents-wrapper">
@@ -41,15 +41,10 @@ export default function EventPage({ events, event: { id, title, contents, docume
     );
 }
 
-export async function getServerSideProps({ query: { id } }) {
-    const result = { props: { events: [], event: { } } };
-    try {
-        const [events, event] = await Promise.all([
-            EventListProvider.getEventList(),
-            EventListProvider.getEventDetails(+id)
-        ]);
-        result.props = { events, event };
-    }
-    catch(e) { console.error(e) }
-    finally { return result }
+export const getServerSideProps = async ({ query: { id } }) => {
+    const [events, event] = await Promise.all([
+        SSRProvider.getEventList(),
+        SSRProvider.getEventDetails(+id)
+    ]);
+    return { props: { events, event } };
 }

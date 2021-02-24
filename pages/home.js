@@ -5,6 +5,7 @@ import EventSlider from "../components/sliders/EventSlider";
 import Translator from "../components/common/Translator";
 import { useEffect, useState } from "react";
 import Head from "next/head";
+import SSRProvider from "../utils/providers/SSRProvider";
 
 let translator = new Translator({
     ru: {
@@ -86,9 +87,11 @@ export default function Home({ events }) {
     );
 }
 
-export async function getServerSideProps() {
-    const result = { props: { events: [] } };
-    try { result.props.events = await EventListProvider.getEventList() }
-    catch(e) { console.error(e) }
-    finally { return result }
-}
+export const getServerSideProps = async () => ({ props: { events: await SSRProvider.getEventList() } })
+
+// export async function get_ServerSideProps() {
+//     const result = { props: { events: [] } };
+//     try { result.props.events = await EventListProvider.getEventList() }
+//     catch(e) { console.error(e) }
+//     finally { return result }
+// }

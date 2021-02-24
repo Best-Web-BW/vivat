@@ -1,8 +1,8 @@
 import ModalImageSlider from "../../components/sliders/ModalImageSlider";
 import ContentHeader from "../../components/common/ContentHeader";
-import DBProvider from "../../utils/providers/DBProvider";
-import { useMemo, useState } from "react";
+import SSRProvider from "../../utils/providers/SSRProvider";
 import { removeTagsFromText } from "../../utils/common";
+import { useMemo, useState } from "react";
 
 export default function AlbumPage({ album: { id, title, images, desc, tags, category } }) {
     const [active, switchSlide] = useState(0);
@@ -35,9 +35,11 @@ export default function AlbumPage({ album: { id, title, images, desc, tags, cate
     </>);
 }
 
-export async function getServerSideProps({ query: { id } }) {
-    const result = { props: { album: { } } };
-    try { result.props.album = await DBProvider.getAlbumDetails(+id) }
-    catch(e) { console.error(e) }
-    finally { return result }
-}
+export const getServerSideProps = async ({ query: { id } }) => ({ props: { album: await SSRProvider.getAlbumDetails(+id) } });
+
+// export async function get_ServerSideProps({ query: { id } }) {
+//     const result = { props: { album: { id: 0, title: "", images: [], desc: "", tags: [], category: ""} } };
+//     try { result.props.album = await SSRProvider.getAlbumDetails(+id) }
+//     catch(e) { console.error(e) }
+//     finally { return result }
+// }

@@ -287,7 +287,7 @@ export default function News({ query: { categories: _categories, tags: _tags, se
 }
 
 News.getInitialProps = ({ query }) => ({ query });
-// export async function getServerSideProps({ query: { categories, tags, search } }) {
+// export async function get_ServerSideProps({ query: { categories, tags, search } }) {
 //     const result = { props: { originalPosts: [], uniqueTags: [], uniqueCategories: [] } };
 //     try {
 //         const [originalPosts, { tags: uniqueTags, counts }] = await Promise.all([

@@ -7,7 +7,7 @@ import Router from "next/router";
 
 const DO_LOG = false;
 
-export async function getServerSideProps({ query: { email, uuid } }) {
+export const getServerSideProps = async ({ query: { email, uuid } }) => {
     if(email && uuid) {
         const result = await AuthProvider.checkForgotPassword(email, uuid);
         if(result.success) return { props: { type: "password", email, uuid } };
