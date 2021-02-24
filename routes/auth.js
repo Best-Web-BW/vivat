@@ -56,8 +56,8 @@ router.post("/register", async (req, res) => {
         email, name: { first, second, middle },
         birthdate, password_hash: passwordHash,
         sex: "male", image: {
-            url: "/images/profile/avatar_placeholder.webp",
-            name: "avatar_placeholder.webp"
+            url: "/images/users/placeholder.webp",
+            name: "placeholder.webp"
         }
     };
     

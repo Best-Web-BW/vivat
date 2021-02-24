@@ -8,8 +8,8 @@ import Router from "next/router"
 
 const DO_LOG = false;
 const defaultImage = {
-    url: "/images/profile/avatar_placeholder.webp",
-    name: "avatar_placeholder.webp"
+    url: "/images/users/placeholder.webp",
+    name: "placeholder.webp"
 }
 
 export default function Change() {
