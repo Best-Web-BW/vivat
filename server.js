@@ -20,6 +20,7 @@ const seo = require("./routes/seo.js");
 const api = require("./routes/api.js");
 const mail = require("./routes/mail.js");
 const auth = require("./routes/auth.js");
+const user = require("./routes/user.js");
 const admin = require("./routes/admin.js");
 
 (async () => {
@@ -52,6 +53,7 @@ const admin = require("./routes/admin.js");
         server.use("/sitemap.xml", seo.sitemap);
         server.use("/robots.txt", seo.robots);
         server.use("/api/admin", admin);
+        server.use("/api/user", user);
         server.use("/api/auth", auth);
         server.use("/api/mail", mail);
 		server.use("/api", api);

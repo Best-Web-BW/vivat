@@ -1,13 +1,16 @@
-import AuthProvider, { ForUser, useAuth } from "../../utils/providers/AuthProvider";
 import { DefaultErrorModal, ErrorModal, SuccessModal } from "../../components/common/Modals";
+import AuthProvider, { ForUser, useAuth } from "../../utils/providers/AuthProvider";
 import ProfileMenu from "../../components/common/ProfileMenu";
 import DatePicker from "../../components/common/DatePicker";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { sleep } from "../../utils/common";
 import Router from "next/router"
-import ImageLoader from "../../components/common/ImageLoader";
 
 const DO_LOG = false;
+const defaultImage = {
+    url: "/images/profile/avatar_placeholder.webp",
+    name: "avatar_placeholder.webp"
+}
 
 export default function Change() {
     const [successModal, setSuccessModal] = useState(false);
@@ -48,7 +51,7 @@ export default function Change() {
             second: refs.name.second.current.value,
             middle: refs.name.middle.current.value
         },
-        image: image ?? { url: "/images/profile/avatar_placeholder.webp", name: "avatar_placeholder.webp" },
+        image,
         birthdate: birthdate.toISOString(),
         email: refs.email.current.value,
         phone: refs.phone.current.value,
@@ -88,10 +91,26 @@ export default function Change() {
         }
     }
 
-    const defaultImage = useMemo(() => user ? [user.image] : [], [user]);
-    const [image, setImage] = useState();
     const [birthdate, setBirthdate] = useState(new Date());
     useEffect(() => user && setBirthdate(new Date(user.birthdate)), [user]);
+
+    const imageInputRef = useRef();
+    const [image, setImage] = useState(defaultImage);
+    useEffect(() => user && setImage(user.image), [user]);
+    const loadImage = async () => {
+        const image = imageInputRef.current.files[0];
+        if(!image) return;
+
+        const formData = new FormData();
+        formData.append("image", image);
+
+        const response = await fetch("/api/user/load_image/", { method: "POST", body: formData });
+        const json = await response.json();
+        DO_LOG && console.log(json);
+
+        if(json.status === "success") setImage(json.result);
+        else setErrorModal("Не удалось загрузить фото, попробуйте позже.");
+    };
 
     return (
         <ForUser>
@@ -100,11 +119,16 @@ export default function Change() {
                 <div className="profile-row flex-row">
                     <div className="personal-wrapper">
                         <div className="profile-photo-wrapper" onClick={() => DO_LOG && console.log(crawl())}>
-                            { image ? <img src={image.url} alt="" width="100%" /> : null }
+                            <img src={image.url} alt="" width="100%" />
                         </div>
                         <div className="change-photo-wrapper">
-                            <span className="change-photo" />
-                            {/* <ImageLoader isSingle type="users" onChange={images => setImage(images[0])} defaultImages={defaultImage} /> */}
+                            <label>
+                                <span className="change-photo" />
+                                <input
+                                    ref={imageInputRef} type="file" accept="image/*"
+                                    onChange={loadImage} style={{ display: "none" }}
+                                />
+                            </label>
                         </div>
                         <div className="profile-name">
                             <p className="name-p">{ user && `${user.name.second} ${user.name.first} ${user.name.middle}`}</p>
