@@ -37,7 +37,7 @@ export default function Rent({ text, cost, minHours, hoursText }) {
             }
         };
 
-        if(time.to.timestamp - time.from.timestamp < 120) return setTimeErrorModal(true);
+        if(time.to.timestamp - time.from.timestamp < minHours * 60) return setTimeErrorModal(true);
         const fromTime = `${time.from.hour}:${time.from.minute}`;
         const toTime = `${time.to.hour}:${time.to.minute}`;
         
