@@ -1208,6 +1208,8 @@ window.Ya || (window.Ya = {}), Ya.URL || (Ya.URL = function(e, t) {
 				"inited" !== e && (new i(p.getElementById("ya-site-results")), e = "inited")
 			},
 			triggerResultsDelivered: function(e) {
+                e = e.replace(/<yass-div class="b-page__user-style-css".+?<\/yass-div>/gi, "");
+                e = e.replace(/\s?onmousedown="rc.+?"/gi, "");
 				Ya.Site.$ && Ya.Site.$("#ya-site-results").trigger("Ya.site-results-delivered", e)
 			}
 		}
