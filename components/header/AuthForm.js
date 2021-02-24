@@ -51,7 +51,7 @@ export default function AuthForm({ opened, close, active, setActive }) {
         else {
             const [success, reason] = await AuthProvider.authenticate(email, password);
 
-            if(success) setSuccessModal("Успешный вход!");
+            if(success) close();
             else if(reason === "invalid_email" || reason === "invalid_password") setErrorModal("Неверная комбинация email и пароля.");
             else if(reason === "not_verified") setErrorModal("Пользователь не подтвердил свой email.");
             else setDefaultErrorModal(true);
