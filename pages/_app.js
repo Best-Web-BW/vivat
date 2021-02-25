@@ -38,10 +38,10 @@ export default function MyApp({ Component, pageProps }) {
                 <link rel="stylesheet" href="/css/cookies.css" />
                 <link rel="stylesheet" href="/css/datepicker.css" />
                 <link rel="stylesheet" href="/css/react-big-calendar.css" />
-                <link rel="stylesheet" href="/css/react-images-upload.css" />
+                {/* <link rel="stylesheet" href="/css/react-images-upload.css" /> */}
                 <link rel="stylesheet" href="/css/admin.css" />
-                <link rel="stylesheet" href="/css/Clock.css" />
-                <link rel="stylesheet" href="/css/TimePicker.css" />
+                {/* <link rel="stylesheet" href="/css/Clock.css" /> */}
+                {/* <link rel="stylesheet" href="/css/TimePicker.css" /> */}
                 <link rel="shortcut icon" href="/favicon.ico" />
                 <script src="/yandex_all.js" async={true} />
             </Head>
