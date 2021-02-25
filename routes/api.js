@@ -47,7 +47,7 @@ const getEventDetails = async id => {
 
 router.get("/albums", async (_, res) => res.json(await getAlbumList()));
 const getAlbumList = async () => {
-    const projection = { _id: 0, id: 1, title: 1, cover: { url: 1 }, cdate: 1 };
+    const projection = { _id: 0, id: 1, title: 1, cover: 1, cdate: 1 };
     try { return await albums.find({ }, { projection }).sort({ id: 1 }).toArray() }
     catch(e) { return [] }
 };
